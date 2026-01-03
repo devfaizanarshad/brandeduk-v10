@@ -21,7 +21,7 @@
   position: absolute;
   left: 0;
   top: 0;
-  width: 20%;
+  width: 14%;
   height: 100%;
   background: linear-gradient(135deg, #6b21a8 0%, #9333ea 100%);
   border-radius: 12px;
@@ -262,7 +262,7 @@
   transform: rotate(-45deg) translateX(0);
 }
 
-/* Element positions */
+/* Element positions - 7 panels */
 .hero-el:nth-child(1) {
   transform: translate3d(0%, 0, 0);
   transform-origin: 10% 50%;
@@ -272,56 +272,79 @@
 .hero-el:nth-child(1) .hero-el__bg:before { 
   transition-delay: 0s;
   background-image: url('../../hero/images/apron.jpg');
-  background-position: calc(45% + 40px) calc(50% + 5px);
+  background-position: center center;
 }
 
 .hero-el:nth-child(2) {
-  transform: translate3d(105%, 0, 0);
-  transform-origin: 30% 50%;
+  transform: translate3d(calc(100% + 4px), 0, 0);
+  transform-origin: 25% 50%;
 }
-.hero-el:nth-child(2) .hero-el__inner { transition-delay: 0.1s; }
-.hero-el:nth-child(2) .hero-el__bg { transform: translate3d(-18%, 0, 0); }
+.hero-el:nth-child(2) .hero-el__inner { transition-delay: 0.07s; }
+.hero-el:nth-child(2) .hero-el__bg { transform: translate3d(-14%, 0, 0); }
 .hero-el:nth-child(2) .hero-el__bg:before { 
-  transition-delay: 0.1s;
+  transition-delay: 0.07s;
   background-image: url('../../hero/images/hoodies.jpg');
-  background-position: 5% center;
+  background-position: center center;
 }
 
 .hero-el:nth-child(3) {
-  transform: translate3d(210%, 0, 0);
-  transform-origin: 50% 50%;
+  transform: translate3d(calc(200% + 8px), 0, 0);
+  transform-origin: 40% 50%;
 }
-.hero-el:nth-child(3) .hero-el__inner { transition-delay: 0.2s; }
-.hero-el:nth-child(3) .hero-el__bg { transform: translate3d(-36%, 0, 0); }
+.hero-el:nth-child(3) .hero-el__inner { transition-delay: 0.14s; }
+.hero-el:nth-child(3) .hero-el__bg { transform: translate3d(-28%, 0, 0); }
 .hero-el:nth-child(3) .hero-el__bg:before { 
-  transition-delay: 0.2s;
+  transition-delay: 0.14s;
   background-image: url('../../hero/images/beanie.jpg');
-  background-position: calc(35% - 10px) center;
+  background-position: center center;
 }
 
 .hero-el:nth-child(4) {
-  transform: translate3d(315%, 0, 0);
-  transform-origin: 70% 50%;
+  transform: translate3d(calc(300% + 12px), 0, 0);
+  transform-origin: 55% 50%;
 }
-.hero-el:nth-child(4) .hero-el__inner { transition-delay: 0.3s; }
-.hero-el:nth-child(4) .hero-el__bg { transform: translate3d(-54%, 0, 0); }
+.hero-el:nth-child(4) .hero-el__inner { transition-delay: 0.21s; }
+.hero-el:nth-child(4) .hero-el__bg { transform: translate3d(-42%, 0, 0); }
 .hero-el:nth-child(4) .hero-el__bg:before { 
-  transition-delay: 0.3s;
+  transition-delay: 0.21s;
   background-image: url('../../hero/images/Hi-Viz.jpg');
-  background-position: 5% center;
-  background-size: 150%;
+  background-position: center center;
 }
 
 .hero-el:nth-child(5) {
-  transform: translate3d(420%, 0, 0);
-  transform-origin: 90% 50%;
+  transform: translate3d(calc(400% + 16px), 0, 0);
+  transform-origin: 70% 50%;
 }
-.hero-el:nth-child(5) .hero-el__inner { transition-delay: 0.4s; }
-.hero-el:nth-child(5) .hero-el__bg { transform: translate3d(-72%, 0, 0); }
+.hero-el:nth-child(5) .hero-el__inner { transition-delay: 0.28s; }
+.hero-el:nth-child(5) .hero-el__bg { transform: translate3d(-56%, 0, 0); }
 .hero-el:nth-child(5) .hero-el__bg:before { 
-  transition-delay: 0.4s;
+  transition-delay: 0.28s;
   background-image: url('../../hero/images/Polo.jpg');
-  background-position: -30% center;
+  background-position: center center;
+}
+
+.hero-el:nth-child(6) {
+  transform: translate3d(calc(500% + 20px), 0, 0);
+  transform-origin: 85% 50%;
+}
+.hero-el:nth-child(6) .hero-el__inner { transition-delay: 0.35s; }
+.hero-el:nth-child(6) .hero-el__bg { transform: translate3d(-70%, 0, 0); }
+.hero-el:nth-child(6) .hero-el__bg:before { 
+  transition-delay: 0.35s;
+  background-image: url('../../hero/images/Jacket.jpeg');
+  background-position: center center;
+}
+
+.hero-el:nth-child(7) {
+  transform: translate3d(calc(600% + 24px), 0, 0);
+  transform-origin: 100% 50%;
+}
+.hero-el:nth-child(7) .hero-el__inner { transition-delay: 0.42s; }
+.hero-el:nth-child(7) .hero-el__bg { transform: translate3d(-84%, 0, 0); }
+.hero-el:nth-child(7) .hero-el__bg:before { 
+  transition-delay: 0.42s;
+  background-image: url('../../hero/images/Sustainable.jpg');
+  background-position: center center;
 }
 
 /* Inactive states for non-active elements */
