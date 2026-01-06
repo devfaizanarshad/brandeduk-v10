@@ -195,6 +195,35 @@ function initSearch() {
             }
         });
     }
+
+    // Toggle search open/close by clicking the lens icon.
+    document.querySelectorAll('.search-wrapper-expand').forEach((wrapper) => {
+        const input = wrapper.querySelector('.search-input-expand');
+        const icon = wrapper.querySelector('.search-icon-expand');
+        if (!(input instanceof HTMLInputElement) || !(icon instanceof SVGElement)) return;
+        if (icon.dataset.searchToggleBound === 'true') return;
+        icon.dataset.searchToggleBound = 'true';
+
+        const toggle = (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            const isOpen = document.activeElement === input;
+            if (isOpen) {
+                input.blur();
+            } else {
+                input.focus();
+            }
+        };
+
+        icon.setAttribute('role', 'button');
+        icon.setAttribute('tabindex', '0');
+        icon.addEventListener('pointerdown', toggle);
+        icon.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                toggle(event);
+            }
+        });
+    });
 }
 
 // ============================================

@@ -245,10 +245,44 @@
         });
     }
 
+    function initSearchExpandToggle() {
+        const containers = document.querySelectorAll('.searchbar-header__search-expand');
+        if (!containers.length) return;
+
+        containers.forEach((container) => {
+            const input = container.querySelector('.search-input-expand');
+            const icon = container.querySelector('.search-icon-expand');
+            if (!(input instanceof HTMLInputElement) || !(icon instanceof SVGElement)) return;
+            if (icon.dataset.searchToggleBound === 'true') return;
+            icon.dataset.searchToggleBound = 'true';
+
+            const toggle = (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                const isOpen = document.activeElement === input;
+                if (isOpen) {
+                    input.blur();
+                } else {
+                    input.focus();
+                }
+            };
+
+            icon.setAttribute('role', 'button');
+            icon.setAttribute('tabindex', '0');
+            icon.addEventListener('pointerdown', toggle);
+            icon.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    toggle(event);
+                }
+            });
+        });
+    }
+
     function initHeaderScripts() {
         initCategoryDropdown();
         initSearchbarHeaderDropdown();
         initModernSearchDropdown();
+        initSearchExpandToggle();
     }
 
     if (document.readyState === 'loading') {

@@ -30,6 +30,42 @@
         .social-icons-mobile .social-icon i {
             font-size: 12px !important;
         }
+
+        /* Category heading under category tabs */
+        .shop-category-heading {
+            margin: 0;
+            padding: 10px 16px 0;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--gray-900);
+            letter-spacing: -0.01em;
+        }
+
+        /* Tablet breadcrumb between tabs and title */
+        .shop-breadcrumbs {
+            display: none;
+            margin: 0;
+            padding: 6px 16px 0;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .shop-breadcrumbs a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .shop-breadcrumbs {
+                display: block;
+            }
+        }
     </style>
     <style>
         /* Desktop header (same as main page) */
@@ -1068,6 +1104,16 @@
         </div>
     </div>
 
+    <p class="shop-breadcrumbs" aria-label="Breadcrumb">
+        <a href="index.html" id="shopBreadcrumbHome">Home</a>
+        <span aria-hidden="true"> - </span>
+        <span>Category</span>
+        <span aria-hidden="true"> - </span>
+        <span id="shopBreadcrumbCategory">All Products</span>
+    </p>
+
+    <h2 class="shop-category-heading" id="shopCategoryHeading">All Products</h2>
+
     <!-- Products Grid -->
     <main class="shop-products-container">
         <div class="products-grid-shop" id="productsGrid">
@@ -1866,7 +1912,7 @@
                 'polo': 'Polo Shirts',
                 'hoodies': 'Hoodies & Sweatshirts',
                 'jackets': 'Jackets & Softshell',
-                'hivis': 'Hi-Viz Clothing',
+                'hivis': 'Hi-Viz',
                 'trousers': 'Work Trousers',
                 'fleeces': 'Fleeces',
                 'bags': 'Bags',
@@ -1876,8 +1922,23 @@
                 'sustainable': 'Sustainable / Recycled & Organic',
                 'workwear': 'Workwear'
             };
-            document.getElementById('categoryTitle').textContent = titles[categoryFilter] || 'Products';
-            document.getElementById('resultsCount').textContent = `${products.length} items`;
+            const pageTitle = titles[categoryFilter] || 'Products';
+            const categoryTitleEl = document.getElementById('categoryTitle');
+            if (categoryTitleEl) {
+                categoryTitleEl.textContent = pageTitle;
+            }
+            const categoryHeadingEl = document.getElementById('shopCategoryHeading');
+            if (categoryHeadingEl) {
+                categoryHeadingEl.textContent = pageTitle;
+            }
+            const breadcrumbCategoryEl = document.getElementById('shopBreadcrumbCategory');
+            if (breadcrumbCategoryEl) {
+                breadcrumbCategoryEl.textContent = String(pageTitle).toUpperCase();
+            }
+            const resultsCountEl = document.getElementById('resultsCount');
+            if (resultsCountEl) {
+                resultsCountEl.textContent = `${products.length} items`;
+            }
 
             grid.innerHTML = '';
 

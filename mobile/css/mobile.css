@@ -86,27 +86,28 @@
    BACK BUTTON
    ======================================== */
 .back-btn-header {
-    position: absolute;
-    left: 16px;
-    top: calc(100% + 12px);
+    position: relative;
+    left: auto;
+    top: auto;
     transform: none;
     width: 36px;
     height: 36px;
     border-radius: 10px;
-    background: #f3f4f6;
+    background: var(--purple);
     border: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #374151;
+    color: #ffffff;
     cursor: pointer;
     transition: all 0.2s ease;
     z-index: 10;
+    flex: 0 0 auto;
 }
 
 .back-btn-header:active {
     transform: scale(0.95);
-    background: #e5e7eb;
+    background: var(--purple-dark);
 }
 
 .back-btn-header svg {
@@ -5105,7 +5106,8 @@ a {
     top: 50%;
     right: 24px;
     transform: translateY(-50%) translateX(50%);
-    pointer-events: none;
+    pointer-events: auto;
+    cursor: pointer;
     color: var(--gray-500);
     transition: opacity 0.2s ease;
 }
@@ -6579,6 +6581,24 @@ a {
 /* ============================================
    SHOP MOBILE PAGE - Desktop-like Cards
    ============================================ */
+
+.shop-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px 0;
+    background: var(--white);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--gray-500);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.shop-breadcrumbs__sep {
+    color: var(--gray-400);
+}
 
 .shop-title-bar {
     display: flex;

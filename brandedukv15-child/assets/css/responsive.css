@@ -57,18 +57,19 @@
         display: flex;
         align-items: center;
         gap: 24px;
-        justify-content: center;
+        justify-content: flex-start;
+        padding-left: 12px;
         flex: 2;
     }
     
     /* === Dynamic 3D Hover Social Icons (EXACT ORIGINAL) === */
-    .social-icons-container {
+    .tablet-top-bar .social-icons-container {
         display: flex;
-        gap: 2px;
+        gap: 4px !important;
     }
     
     .social-icons-mobile {
-        margin-left: 8px !important;
+        margin-left: 38px !important;
     }
     
     .social-icons-mobile .social-icon {
@@ -78,7 +79,7 @@
     }
     
     .social-icons-mobile .social-icon i {
-        font-size: 9px !important;
+        font-size: 16px !important;
     }
     
     .social-icon {
@@ -192,6 +193,11 @@
     body {
         font-size: 15px;
         padding-top: 36px; /* Space for tablet top bar */
+    }
+
+    /* Reduce extra gap between header and first content on tablet */
+    .mobile-main {
+        padding-top: calc(var(--header-height) + 10px);
     }
     
     /* === Header === */
@@ -468,6 +474,24 @@
 }
 
 /* ========================================
+   TABLET ONLY (768px - 1023px)
+   Hero Banner 1: Get In Touch - maximize text height in its box
+   ======================================== */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .hero-banner .neon-container {
+        padding: 0;
+    }
+
+    .neon-text,
+    .flux-text {
+        font-size: clamp(110px, 14vw, 150px);
+        line-height: 0.85;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+/* ========================================
    DESKTOP OVERRIDES (1024px+)
    ======================================== */
 @media (min-width: 1024px) {
@@ -656,7 +680,8 @@
         top: 50%;
         right: 12px;
         transform: translateY(-50%);
-        pointer-events: none;
+        pointer-events: auto;
+        cursor: pointer;
         color: #6b7280;
         transition: color 0.2s ease;
     }
