@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="mobile/css/social-buttons.css?v=20260102X">
     <link rel="stylesheet" href="brandedukv15-child/assets/css/responsive.css?v=20260102X">
     <link rel="stylesheet" href="brandedukv15-child/assets/css/components/header.css?v=20251230">
+    <link rel="stylesheet" href="brandedukv15-child/assets/css/shop-api.css?v=20260107">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -343,6 +344,124 @@
             .mobile-logo-center {
                 margin-left: 40px;
             }
+        }
+
+        /* Mobile Product Controls */
+        .shop-products-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 16px;
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .shop-controls-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .shop-control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .shop-control-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            white-space: nowrap;
+        }
+
+        .shop-control-select {
+            flex: 1;
+            padding: 8px 32px 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1f2937;
+            background: white;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            min-width: 120px;
+        }
+
+        .shop-control-select:focus {
+            outline: none;
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+
+        /* Mobile Pagination */
+        .shop-pagination-mobile {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            padding: 16px;
+            flex-wrap: wrap;
+        }
+
+        .shop-pagination-button {
+            min-width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0 8px;
+        }
+
+        .shop-pagination-button:hover:not(:disabled) {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+            color: #1f2937;
+        }
+
+        .shop-pagination-button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: #f9fafb;
+        }
+
+        .shop-pagination-page {
+            min-width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0 12px;
+        }
+
+        .shop-pagination-page.active {
+            background: #1f2937;
+            border-color: #1f2937;
+            color: white;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -1088,6 +1207,41 @@
 
     <h2 class="shop-category-heading" id="shopCategoryHeading">All Products</h2>
 
+    <!-- Mobile Product Controls -->
+    <div class="shop-products-controls">
+        <div class="shop-controls-row">
+            <div class="shop-control-group">
+                <label for="mobileSortSelect">Sort:</label>
+                <select id="mobileSortSelect" class="shop-control-select">
+                    <option value="best">Best Sellers</option>
+                    <option value="brand-az">Brand A-Z</option>
+                    <option value="brand-za">Brand Z-A</option>
+                    <option value="code-az">Code A-Z</option>
+                    <option value="code-za">Code Z-A</option>
+                    <option value="price-lh">Price: Low to High</option>
+                    <option value="price-hl">Price: High to Low</option>
+                </select>
+            </div>
+            <div class="shop-control-group">
+                <label for="mobileViewSelect">View:</label>
+                <select id="mobileViewSelect" class="shop-control-select">
+                    <option value="12">12 per page</option>
+                    <option value="24" selected>24 per page</option>
+                    <option value="36">36 per page</option>
+                    <option value="48">48 per page</option>
+                </select>
+            </div>
+        </div>
+        <!-- Pagination -->
+        <div class="shop-pagination-mobile" id="mobilePagination" style="display: none;">
+            <button type="button" class="shop-pagination-button" id="mobilePaginationFirst" title="First page">«</button>
+            <button type="button" class="shop-pagination-button" id="mobilePaginationPrev" title="Previous page">&lt;</button>
+            <span id="mobilePaginationPageNumbers"></span>
+            <button type="button" class="shop-pagination-button" id="mobilePaginationNext" title="Next page">&gt;</button>
+            <button type="button" class="shop-pagination-button" id="mobilePaginationLast" title="Last page">»</button>
+        </div>
+    </div>
+
     <!-- Products Grid -->
     <main class="shop-products-container">
         <div class="products-grid-shop" id="productsGrid">
@@ -1231,8 +1385,8 @@
                         <span class="filter-expandable__arrow">›</span>
                     </div>
                     <div class="filter-expandable__content">
-                        <label class="filter-checkbox"><input type="checkbox" value="mens"> Men's</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="womens"> Women's</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="female"> Female </label>
+                        <label class="filter-checkbox"><input type="checkbox" value="male"> Male </label>
                         <label class="filter-checkbox"><input type="checkbox" value="unisex"> Unisex</label>
                     </div>
                 </div>
@@ -1244,12 +1398,9 @@
                         <span class="filter-expandable__arrow">›</span>
                     </div>
                     <div class="filter-expandable__content">
-                        <label class="filter-checkbox"><input type="checkbox" value="adults"> Adults</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="adult"> Adults</label>
                         <label class="filter-checkbox"><input type="checkbox" value="kids"> Kids</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="toddler"> Toddler</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="baby"> Baby</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="junior"> Junior</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="youth"> Youth</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="infant"> Infant</label>
                     </div>
                 </div>
 
@@ -1260,12 +1411,10 @@
                         <span class="filter-expandable__arrow">›</span>
                     </div>
                     <div class="filter-expandable__content">
-                        <label class="filter-checkbox"><input type="checkbox" value="short"> Short Sleeve</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="long"> Long Sleeve</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="34"> 3/4 Sleeve</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="short-sleeve-2"> Short Sleeve</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="long-sleeve-2"> Long Sleeve</label>
                         <label class="filter-checkbox"><input type="checkbox" value="sleeveless"> Sleeveless</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="cap"> Cap Sleeve</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="raglan"> Raglan</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="raglan-sleeve"> Raglan</label>
                     </div>
                 </div>
 
@@ -1276,15 +1425,14 @@
                         <span class="filter-expandable__arrow">›</span>
                     </div>
                     <div class="filter-expandable__content">
-                        <label class="filter-checkbox"><input type="checkbox" value="crew"> Crew Neck</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="vneck"> V-Neck</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="polo"> Polo Collar</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="hooded"> Hooded</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="crew-neck-2"> Crew Neck</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="v-neck-2"> V-Neck</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="polo-neck-2"> Polo Collar</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="hooded-2"> Hooded</label>
                         <label class="filter-checkbox"><input type="checkbox" value="mandarin"> Mandarin</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="scoop"> Scoop Neck</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="round"> Round Neck</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="zip"> Zip Neck</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="button"> Button Down</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="scoop-neck-2"> Scoop Neck</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="zip-neck-2"> Zip Neck</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="button-down-collar"> Button Down</label>
                     </div>
                 </div>
 
@@ -1295,14 +1443,11 @@
                         <span class="filter-expandable__arrow">›</span>
                     </div>
                     <div class="filter-expandable__content">
-                        <label class="filter-checkbox"><input type="checkbox" value="en20471"> EN ISO 20471</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="ris3279"> RIS-3279-TOM Rail</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="oekotex"> OEKO-TEX</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="gots"> GOTS Certified</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="fairtrade"> Fair Trade</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="wrap"> WRAP Certified</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="en343"> EN343 Waterproof</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="en11612"> EN11612 Flame</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="en-iso-20471"> EN ISO 20471</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="ris-3279-tom-rail"> RIS-3279-TOM Rail</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="oeko-tex"> OEKO-TEX</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="gots-licence"> GOTS Certified</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="fairtrade-"> Fair Trade</label>
                     </div>
                 </div>
 
@@ -1378,17 +1523,15 @@
                     </div>
                     <div class="filter-expandable__content">
                         <label class="filter-checkbox"><input type="checkbox" value="classic"> Classic</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="modern"> Modern</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="slim"> Slim Fit</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="regular"> Regular Fit</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="relaxed"> Relaxed</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="crew-neck-1"> Crew Neck</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="hooded-1"> Hooded</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="long-sleeve-1"> Long Sleeve</label>
                         <label class="filter-checkbox"><input type="checkbox" value="oversized"> Oversized</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="athletic"> Athletic</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="workwear"> Workwear</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="casual"> Casual</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="formal"> Formal</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="vintage"> Vintage</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="streetwear"> Streetwear</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="pocket"> Pocket</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="regular"> Regular</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="slim-1"> Slim</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="v-neck"> V-Neck</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="zipped"> Zipped</label>
                     </div>
                 </div>
 
@@ -1399,19 +1542,13 @@
                         <span class="filter-expandable__arrow">›</span>
                     </div>
                     <div class="filter-expandable__content">
-                        <label class="filter-checkbox"><input type="checkbox" value="pockets"> Pockets</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="hood"> Hood</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="zip"> Zip</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="buttons"> Buttons</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="drawstring"> Drawstring</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="elastic"> Elastic Cuffs</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="reflective"> Reflective</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="waterproof"> Waterproof</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="anti-bacterial"> Anti-bacterial</label>
                         <label class="filter-checkbox"><input type="checkbox" value="breathable"> Breathable</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="stretch"> Stretch</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="antibacterial"> Anti-bacterial</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="uv"> UV Protection</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="tearaway"> Tear-away Label</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="eco"> Eco</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="heavyweight"> Heavyweight</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="tear-away"> Tear-away</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="uv-protection"> UV Protection</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="water-resistant"> Water-resistant</label>
                     </div>
                 </div>
 
@@ -1422,7 +1559,6 @@
                         <span class="filter-expandable__arrow">›</span>
                     </div>
                     <div class="filter-expandable__content filter-sizes-grid">
-                        <label class="filter-size"><input type="checkbox" value="xxs"><span>XXS</span></label>
                         <label class="filter-size"><input type="checkbox" value="xs"><span>XS</span></label>
                         <label class="filter-size"><input type="checkbox" value="s"><span>S</span></label>
                         <label class="filter-size"><input type="checkbox" value="m"><span>M</span></label>
@@ -1432,8 +1568,7 @@
                         <label class="filter-size"><input type="checkbox" value="3xl"><span>3XL</span></label>
                         <label class="filter-size"><input type="checkbox" value="4xl"><span>4XL</span></label>
                         <label class="filter-size"><input type="checkbox" value="5xl"><span>5XL</span></label>
-                        <label class="filter-size"><input type="checkbox" value="6xl"><span>6XL</span></label>
-                        <label class="filter-size"><input type="checkbox" value="onesize"><span>One Size</span></label>
+                        <label class="filter-size"><input type="checkbox" value="one-size"><span>One Size</span></label>
                     </div>
                 </div>
 
@@ -1444,18 +1579,12 @@
                         <span class="filter-expandable__arrow">›</span>
                     </div>
                     <div class="filter-expandable__content">
-                        <label class="filter-checkbox"><input type="checkbox" value="cotton100"> 100% Cotton</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="polycotton"> Poly/Cotton</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="polyester100"> 100% Polyester</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="organic"> Organic Cotton</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="recycled"> Recycled Polyester</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="fleece"> Fleece</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="jersey"> Jersey</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="pique"> Pique</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="frenchTerry"> French Terry</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="ripstop"> Ripstop</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="softshell"> Softshell</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="nylon"> Nylon</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="cotton-100"> 100% Cotton</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="polyester-100"> 100% Polyester</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="organic-100"> Organic Cotton</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="recycled-100"> Recycled Polyester</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="nylon-100"> Nylon</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="ringspun-100"> Ringspun</label>
                     </div>
                 </div>
 
@@ -1466,11 +1595,13 @@
                         <span class="filter-expandable__arrow">›</span>
                     </div>
                     <div class="filter-expandable__content">
-                        <label class="filter-checkbox"><input type="checkbox" value="light"> Lightweight (&lt;150g)</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="mid"> Midweight (150-200g)</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="standard"> Standard (200-250g)</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="heavy"> Heavy (250-300g)</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="superheavy"> Super Heavy (300g+)</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="0-50gsm"> 0-50gsm</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="051-100gsm"> 051-100gsm</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="101-150gsm"> 101-150gsm</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="151-200gsm"> 151-200gsm</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="201-250gsm"> 201-250gsm</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="251-300gsm"> 251-300gsm</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="over-300gsm"> Over 300gsm</label>
                     </div>
                 </div>
 
@@ -1481,12 +1612,14 @@
                         <span class="filter-expandable__arrow">›</span>
                     </div>
                     <div class="filter-expandable__content">
-                        <label class="filter-checkbox"><input type="checkbox" value="slim"> Slim Fit</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="regular"> Regular Fit</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="relaxed"> Relaxed Fit</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="loose"> Loose Fit</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="tailored"> Tailored</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="athletic"> Athletic Fit</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="classic"> Classic</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="comfort"> Comfort</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="crop"> Crop</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="fashion"> Fashion</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="fitted"> Fitted</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="oversized"> Oversized</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="relaxed"> Relaxed</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="semi-fitted"> Semi-fitted</label>
                     </div>
                 </div>
 
@@ -1497,18 +1630,11 @@
                         <span class="filter-expandable__arrow">›</span>
                     </div>
                     <div class="filter-expandable__content">
-                        <label class="filter-checkbox"><input type="checkbox" value="construction"> Construction</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="healthcare"> Healthcare</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="hospitality"> Hospitality</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="retail"> Retail</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="security"> Security</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="transport"> Transport</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="warehouse"> Warehouse</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="education"> Education</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="sport"> Sport</label>
                         <label class="filter-checkbox"><input type="checkbox" value="corporate"> Corporate</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="manufacturing"> Manufacturing</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="agriculture"> Agriculture</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="automotive"> Automotive</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="hospitality"> Hospitality</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="travel"> Travel</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="fashion"> Fashion</label>
                     </div>
                 </div>
 
@@ -1519,18 +1645,10 @@
                         <span class="filter-expandable__arrow">›</span>
                     </div>
                     <div class="filter-expandable__content">
-                        <label class="filter-checkbox"><input type="checkbox" value="football"> Football</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="rugby"> Rugby</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="running"> Running</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="gym"> Gym/Fitness</label>
                         <label class="filter-checkbox"><input type="checkbox" value="golf"> Golf</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="tennis"> Tennis</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="cricket"> Cricket</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="basketball"> Basketball</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="cycling"> Cycling</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="gym"> Gym/Fitness</label>
                         <label class="filter-checkbox"><input type="checkbox" value="swimming"> Swimming</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="outdoor"> Outdoor</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="hiking"> Hiking</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="rugby"> Rugby</label>
                     </div>
                 </div>
 
@@ -1541,13 +1659,10 @@
                         <span class="filter-expandable__arrow">›</span>
                     </div>
                     <div class="filter-expandable__content">
-                        <label class="filter-checkbox"><input type="checkbox" value="bestseller"> Best Seller</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="newarrival"> New Arrival</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="staffpick"> Staff Pick</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="eco"> Eco Friendly</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="value"> Value Pick</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="premium"> Premium</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="limited"> Limited Edition</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="adhesives"> Adhesives</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="cut-away-inner-label"> Cut-away Inner Label</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="sewn-tag"> Sewn Tag</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="tagless"> Tagless</label>
                     </div>
                 </div>
 
@@ -1558,14 +1673,12 @@
                         <span class="filter-expandable__arrow">›</span>
                     </div>
                     <div class="filter-expandable__content">
-                        <label class="filter-checkbox"><input type="checkbox" value="plain"> Plain</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="printed"> Printed</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="embroidered"> Embroidered</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="melange"> Melange</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="heather"> Heather</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="tie-dye"> Tie-Dye</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="triblend"> Triblend</label>
                         <label class="filter-checkbox"><input type="checkbox" value="washed"> Washed</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="distressed"> Distressed</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="tiedye"> Tie-Dye</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="camo"> Camo</label>
-                        <label class="filter-checkbox"><input type="checkbox" value="striped"> Striped</label>
+                        <label class="filter-checkbox"><input type="checkbox" value="acid-wash"> Acid-wash</label>
                     </div>
                 </div>
             </div>
@@ -1578,621 +1691,823 @@
     </div>
 
     <script src="brandedukv15-child/assets/js/header.js?v=20251230"></script>
+    <!-- API Integration Scripts -->
+    <script src="brandedukv15-child/assets/js/api.js?v=20260107"></script>
+    <script src="brandedukv15-child/assets/js/shop-api.js?v=20260107"></script>
     <script>
-        console.log('=== SHOP SCRIPT STARTED ===');
-        
-        // Products Database
-        const PRODUCTS_DB = [
-            {
-                code: "GD067",
-                name: "HOODIES & SWEATSHIRTS",
-                price: "17.58",
-                category: "hoodies",
-                image: "https://i.postimg.cc/fbC2Zn4L/GD067-Aquatic-FT.jpg",
-                colors: [
-                    {name: "Aquatic", main: "https://i.postimg.cc/fbC2Zn4L/GD067-Aquatic-FT.jpg"},
-                    {name: "Ash Grey", main: "https://i.postimg.cc/fbC2Zn4t/GD067-Ash-Grey-FT.jpg"},
-                    {name: "Black", main: "https://i.postimg.cc/R0ds95rf/GD067-Black-FT.jpg"},
-                    {name: "Blue Dusk", main: "https://i.postimg.cc/QMm4sGLJ/GD067-Blue-Dusk-FT.jpg"},
-                    {name: "Brown Savana", main: "https://i.postimg.cc/wvBWjfHL/GD067-Brown-Savana-FT.jpg"},
-                    {name: "Cardinal Red", main: "https://i.postimg.cc/SsKZxTqV/GD067-Cardinal-Red-FT.jpg"},
-                    {name: "Carolina Blue", main: "https://i.postimg.cc/V6N7kG1D/GD067-Carolina-Blue-FT.jpg"},
-                    {name: "Cement", main: "https://i.postimg.cc/fLbHR2Z2/GD067-Cement-FT.jpg"},
-                    {name: "Charcoal", main: "https://i.postimg.cc/4d38xLZF/GD067-Charcoal-FT.jpg"},
-                    {name: "Cobalt", main: "https://i.postimg.cc/sX2ng6yL/GD067-Cobalt-FT.jpg"},
-                    {name: "Cocoa", main: "https://i.postimg.cc/d10WVHvb/GD067-Cocoa-FT.jpg"},
-                    {name: "Daisy", main: "https://i.postimg.cc/1tzW3Cs1/GD067-Daisy-FT.jpg"},
-                    {name: "Dark Heather", main: "https://i.postimg.cc/j5kMwHdk/GD067-Dark-Heather-FT.jpg"},
-                    {name: "Dusty Rose", main: "https://i.postimg.cc/fLg8tcTP/GD067-Dusty-Rose-FT.jpg"},
-                    {name: "Forest Green", main: "https://i.postimg.cc/FRnTdys8/GD067-Forest-Green-FT.jpg"},
-                    {name: "Light Pink", main: "https://i.postimg.cc/G2SX8FhW/GD067-Light-Pink-FT.jpg"},
-                    {name: "Maroon", main: "https://i.postimg.cc/zBPxbCG1/GD067-Maroon-FT.jpg"},
-                    {name: "Military Green", main: "https://i.postimg.cc/TwHtLV3f/GD067-Military-Green-FT.jpg"},
-                    {name: "Mustard", main: "https://i.postimg.cc/MTr9M7pZ/GD067-Mustard-FT.jpg"},
-                    {name: "Navy", main: "https://i.postimg.cc/MTr9M7pp/GD067-Navy-FT.jpg"},
-                    {name: "Off-White", main: "https://i.postimg.cc/nzw3j4hz/GD067-Off-White-FT.jpg"},
-                    {name: "Paragon", main: "https://i.postimg.cc/j5kMwHSL/GD067-Paragon-FT.jpg"},
-                    {name: "Pink Lemonade", main: "https://i.postimg.cc/zBPxbCGy/GD067-Pink-Lemonade-FT.jpg"},
-                    {name: "Pistachio", main: "https://i.postimg.cc/xCF6Jv1N/GD067-Pistachio-FT.jpg"},
-                    {name: "Purple", main: "https://i.postimg.cc/C5BmjRRx/GD067-Purple-FT.jpg"},
-                    {name: "Red", main: "https://i.postimg.cc/brD3QZZd/GD067-Red-FT.jpg"},
-                    {name: "Sport Grey", main: "https://i.postimg.cc/zvb0nyyg/GD067-Ringspun-Sport-Grey-FT.jpg"},
-                    {name: "Royal", main: "https://i.postimg.cc/VNmG3sVH/GD067-Royal-FT.jpg"},
-                    {name: "Sage", main: "https://i.postimg.cc/tgpSLRcy/GD067-Sage-FT.jpg"},
-                    {name: "Sand", main: "https://i.postimg.cc/Bv4YdZz3/GD067-Sand-FT.jpg"},
-                    {name: "Sky", main: "https://i.postimg.cc/YSMnJ2Pc/GD067-Sky-FT.jpg"},
-                    {name: "Smoke", main: "https://i.postimg.cc/Xv4HTNPb/GD067-Smoke-FT.jpg"},
-                    {name: "Stone Blue", main: "https://i.postimg.cc/g0mSfc72/GD067-Stone-Blue-FT.jpg"},
-                    {name: "Tangerine", main: "https://i.postimg.cc/25GcmRpr/GD067-Tangerine-FT.jpg"},
-                    {name: "Texas Orange", main: "https://i.postimg.cc/TP07GM8x/GD067-Texas-Orange-FT.jpg"},
-                    {name: "White", main: "https://i.postimg.cc/1zBCPhxQ/GD067-White-FT.jpg"},
-                    {name: "Yellow Haze", main: "https://i.postimg.cc/W48WjLRN/GD067-Yellow-Haze-FT.jpg"}
-                ],
-                customization: ["embroidery", "print"],
-                brand: "Gildan"
+        console.log('=== SHOP SCRIPT STARTED (API MODE) ===');
+
+        // ---------------------------------------------------------------------
+        // EXACT COPY of PC filters & API mapping - matching PC version exactly
+        // ---------------------------------------------------------------------
+
+        // Filter value mappings (Frontend HTML values → API values) - EXACT PC COPY
+        const FILTER_MAPPINGS = {
+            // Quick filters (flag[] array param) - special mappings
+            quickFilter: {
+                'new-in': 'new-in',
+                'bradeal': 'raladeal',  // HTML: bradeal -> API: raladeal
+                'offers': 'offers',
+                'in-stock': 'in-stock',
+                'recycled': 'recycled-organic'  // HTML: recycled -> API: recycled-organic
             },
-            {
-                code: "AP001",
-                name: "APRON",
-                price: "9.95",
-                category: "aprons",
-                image: "hero/images/apron.jpg",
-                colors: [
-                    { name: "Black", main: "hero/images/apron.jpg" },
-                    { name: "Navy", main: "hero/images/apron.jpg" },
-                    { name: "White", main: "hero/images/apron.jpg" }
-                ],
-                customization: ["embroidery", "print"],
-                brand: "Premier"
+            // Gender - values match API spec directly
+            gender: {
+                'female': 'female',
+                'male': 'male',
+                'unisex': 'unisex'
             },
-            {
-                code: "PO001",
-                name: "Classic Polo Shirt",
-                price: "11.50",
-                category: "polo",
-                image: "hero/images/Polo.jpg",
-                colors: [
-                    { name: "Black", main: "hero/images/Polo.jpg" },
-                    { name: "Navy", main: "hero/images/Polo.jpg" },
-                    { name: "White", main: "hero/images/Polo.jpg" }
-                ],
-                customization: ["embroidery", "print"],
-                brand: "Gildan"
+            // Age Group - values match API spec directly
+            ageGroup: {
+                'adult': 'adult',
+                'infant': 'infant',
+                'kids': 'kids'
             },
-            {
-                code: "JK001",
-                name: "Softshell Jacket",
-                price: "29.99",
-                category: "jackets",
-                image: "hero/images/Jacket.jpg",
-                colors: [
-                    { name: "Black", main: "hero/images/Jacket.jpg" },
-                    { name: "Grey", main: "hero/images/Jacket.jpg" },
-                    { name: "Navy", main: "hero/images/Jacket.jpg" }
-                ],
-                customization: ["embroidery"],
-                brand: "Regatta"
+            // Sleeve - values match API spec directly
+            sleeve: {
+                'long-sleeve-2': 'long-sleeve-2',
+                'short-sleeve-2': 'short-sleeve-2',
+                'sleeveless': 'sleeveless',
+                'raglan-sleeve': 'raglan-sleeve',
+                'set-in-sleeve': 'set-in-sleeve',
+                'roll-sleeve': 'roll-sleeve'
             },
-            {
-                code: "HV001",
-                name: "Hi-Vis Vest",
-                price: "6.25",
-                category: "hivis",
-                image: "hero/images/Hi-Viz.jpg",
-                colors: [
-                    { name: "Yellow", main: "hero/images/Hi-Viz.jpg" },
-                    { name: "Orange", main: "hero/images/Hi-Viz.jpg" }
-                ],
-                customization: ["print"],
-                brand: "Result"
+            // Neckline - values match API spec directly
+            neckline: {
+                'crew-neck-2': 'crew-neck-2',
+                'v-neck-2': 'v-neck-2',
+                'mandarin': 'mandarin',
+                'wide-neck': 'wide-neck',
+                'roll-neck': 'roll-neck',
+                'button-down-collar': 'button-down-collar',
+                'keyhole': 'keyhole',
+                'polo-neck-2': 'polo-neck-2',
+                'hooded-2': 'hooded-2',
+                'scoop-neck-2': 'scoop-neck-2',
+                'zip-neck-2': 'zip-neck-2'
             },
-            {
-                code: "FL001",
-                name: "Full Zip Fleece",
-                price: "18.95",
-                category: "fleeces",
-                image: "brandedukv15-child/assets/images/ui/icons/categories/Fleece.png",
-                colors: [
-                    { name: "Black", main: "brandedukv15-child/assets/images/ui/icons/categories/Fleece.png" },
-                    { name: "Navy", main: "brandedukv15-child/assets/images/ui/icons/categories/Fleece.png" }
-                ],
-                customization: ["embroidery"],
-                brand: "Westford Mill"
+            // Accreditations - values match API spec directly
+            accreditations: {
+                'vegan-tested': 'vegan-tested',
+                'oeko-tex': 'oeko-tex',
+                'global-compact': 'global-compact',
+                'sedex': 'sedex',
+                'un-global-compact': 'un-global-compact',
+                'polylana': 'polylana',
+                'ocs-blended-licence': 'ocs-blended-licence',
+                'ocs-100-licence': 'ocs-100-licence',
+                'oeko-tex-step': 'oeko-tex-step',
+                'rcs-blended-licence': 'rcs-blended-licence',
+                'global-recycled-standard': 'global-recycled-standard',
+                'sa8000': 'sa8000',
+                'amfori-bsci': 'amfori-bsci',
+                'recycled': 'recycled',
+                'b-corp': 'b-corp',
+                'gots-licence': 'gots-licence',
+                'organic': 'organic',
+                'fairtrade-': 'fairtrade-',
+                'certified-organic': 'certified-organic',
+                'en-iso-20471': 'en-iso-20471',
+                'ris-3279-tom-rail': 'ris-3279-tom-rail'
             },
-            {
-                code: "BG001",
-                name: "Everyday Tote Bag",
-                price: "4.99",
-                category: "bags",
-                image: "brandedukv15-child/assets/images/ui/icons/categories/Bags.png",
-                colors: [
-                    { name: "Natural", main: "brandedukv15-child/assets/images/ui/icons/categories/Bags.png" },
-                    { name: "Black", main: "brandedukv15-child/assets/images/ui/icons/categories/Bags.png" }
-                ],
-                customization: ["print"],
-                brand: "Beechfield"
+            // Primary Colour - values match API spec directly
+            primaryColour: {
+                'black': 'black',
+                'blue': 'blue',
+                'grey': 'grey',
+                'green': 'green',
+                'white': 'white',
+                'red': 'red',
+                'pink': 'pink',
+                'yellow': 'yellow',
+                'neutral': 'neutral',
+                'purple': 'purple',
+                'orange': 'orange',
+                'brown': 'brown',
+                'pattern': 'pattern',
+                'other': 'other'
             },
-            {
-                code: "CP001",
-                name: "Classic Cap",
-                price: "7.49",
-                category: "caps",
-                image: "hero/images/Hats Beanie.jpg",
-                colors: [
-                    { name: "Black", main: "hero/images/Hats Beanie.jpg" },
-                    { name: "Navy", main: "hero/images/Hats Beanie.jpg" },
-                    { name: "Grey", main: "hero/images/Hats Beanie.jpg" }
-                ],
-                customization: ["embroidery"],
-                brand: "Beechfield"
+            // Colour Shade - values match API spec directly
+            colourShade: {
+                'black - black': 'black - black',
+                'blue - navy': 'blue - navy',
+                'grey - dark grey': 'grey - dark grey',
+                'white - white': 'white - white'
             },
-            {
-                code: "TS001",
-                name: "T-SHIRT",
-                price: "6.99",
-                category: "tshirts",
-                image: "brandedukv15-child/assets/images/ui/icons/categories/icon-shirt-71%201.png",
-                colors: [
-                    { name: "Black", main: "brandedukv15-child/assets/images/ui/icons/categories/icon-shirt-71%201.png" },
-                    { name: "White", main: "brandedukv15-child/assets/images/ui/icons/categories/icon-shirt-71%201.png" }
-                ],
-                customization: ["print"],
-                brand: "Gildan"
+            // Style - values match API spec directly
+            style: {
+                'classic': 'classic',
+                'crew-neck-1': 'crew-neck-1',
+                'hooded-1': 'hooded-1',
+                'long-sleeve-1': 'long-sleeve-1',
+                'oversized': 'oversized',
+                'pocket': 'pocket',
+                'regular': 'regular',
+                'slim-1': 'slim-1',
+                'v-neck': 'v-neck',
+                'zipped': 'zipped'
             },
-            {
-                code: "BN001",
-                name: "HEADWEAR / ACCESSORIES",
-                price: "4.99",
-                category: "beanies",
-                image: "https://i.postimg.cc/fbC2Zn4L/GD067-Aquatic-FT.jpg",
-                colors: [
-                    { name: "Aquatic", main: "https://i.postimg.cc/fbC2Zn4L/GD067-Aquatic-FT.jpg" },
-                    { name: "Black", main: "https://i.postimg.cc/R0ds95rf/GD067-Black-FT.jpg" }
-                ],
-                customization: ["embroidery", "print"],
-                brand: "Gildan"
+            // Features - values match API spec directly (NOTE: singular 'feature' for API)
+            feature: {
+                'anti-bacterial': 'anti-bacterial',
+                'breathable': 'breathable',
+                'eco': 'eco',
+                'heavyweight': 'heavyweight',
+                'tear-away': 'tear-away',
+                'uv-protection': 'uv-protection',
+                'water-resistant': 'water-resistant'
             },
-            {
-                code: "SU001",
-                name: "SUSTAINABLE / RECYCLED & ORGANIC",
-                price: "17.58",
-                category: "sustainable",
-                image: "https://i.postimg.cc/fbC2Zn4L/GD067-Aquatic-FT.jpg",
-                colors: [
-                    { name: "Aquatic", main: "https://i.postimg.cc/fbC2Zn4L/GD067-Aquatic-FT.jpg" },
-                    { name: "Black", main: "https://i.postimg.cc/R0ds95rf/GD067-Black-FT.jpg" }
-                ],
-                customization: ["embroidery", "print"],
-                brand: "Gildan"
+            // Size - values match API spec directly
+            size: {
+                's': 's',
+                'm': 'm',
+                'l': 'l',
+                'xl': 'xl',
+                '2xl': '2xl',
+                '3xl': '3xl',
+                'xs': 'xs',
+                'one-size': 'one-size',
+                '4xl': '4xl',
+                '5xl': '5xl'
             },
-            {
-                code: "TR001",
-                name: "WORK TROUSERS",
-                price: "17.58",
-                category: "trousers",
-                image: "https://i.postimg.cc/fbC2Zn4L/GD067-Aquatic-FT.jpg",
-                colors: [
-                    { name: "Aquatic", main: "https://i.postimg.cc/fbC2Zn4L/GD067-Aquatic-FT.jpg" },
-                    { name: "Black", main: "https://i.postimg.cc/R0ds95rf/GD067-Black-FT.jpg" }
-                ],
-                customization: ["embroidery", "print"],
-                brand: "Gildan"
+            // Fabric - values match API spec directly
+            fabric: {
+                'recycled-100': 'recycled-100',
+                'organic-100': 'organic-100',
+                'polyester-100': 'polyester-100',
+                'cotton-100': 'cotton-100',
+                'nylon-100': 'nylon-100',
+                'ringspun-100': 'ringspun-100'
+            },
+            // Weight - values match API spec directly
+            weight: {
+                '0-50gsm': '0-50gsm',
+                '051-100gsm': '051-100gsm',
+                '101-150gsm': '101-150gsm',
+                '151-200gsm': '151-200gsm',
+                '201-250gsm': '201-250gsm',
+                '251-300gsm': '251-300gsm',
+                'over-300gsm': 'over-300gsm'
+            },
+            // Fit - values match API spec directly
+            fit: {
+                'classic': 'classic',
+                'comfort': 'comfort',
+                'crop': 'crop',
+                'fashion': 'fashion',
+                'fitted': 'fitted',
+                'oversized': 'oversized',
+                'relaxed': 'relaxed',
+                'semi-fitted': 'semi-fitted'
+            },
+            // Related Sector - values match API spec directly
+            sector: {
+                'sport': 'sport',
+                'corporate': 'corporate',
+                'hospitality': 'hospitality',
+                'travel': 'travel',
+                'fashion': 'fashion'
+            },
+            // Related Sport - values match API spec directly
+            sport: {
+                'golf': 'golf',
+                'gym': 'gym',
+                'swimming': 'swimming',
+                'rugby': 'rugby'
+            },
+            // Tag - values match API spec directly
+            tag: {
+                'adhesives': 'adhesives',
+                'cut-away-inner-label': 'cut-away-inner-label',
+                'sewn-tag': 'sewn-tag',
+                'tagless': 'tagless'
+            },
+            // Effect - values match API spec directly
+            effect: {
+                'melange': 'melange',
+                'heather': 'heather',
+                'tie-dye': 'tie-dye',
+                'triblend': 'triblend',
+                'washed': 'washed',
+                'acid-wash': 'acid-wash'
             }
-        ];
-
-        // Demo behaviour: no matter which category you open, we show the same reference product card.
-
-        const PRICE_BREAKS_BY_CODE = {
-            GD067: [
-                { min: 1, max: 9, price: 17.58 },
-                { min: 10, max: 24, price: 16.54 },
-                { min: 25, max: 49, price: 16.18 },
-                { min: 50, max: 99, price: 14.94 },
-                { min: 100, max: 249, price: 13.49 },
-                { min: 250, max: 99999, price: 12.59 }
-            ]
         };
 
-        // Get category from URL
-        const urlParams = new URLSearchParams(window.location.search);
+        // State (EXACT PC COPY)
+        let currentState = {
+            page: 1,
+            limit: 24,
+            total: 0,
+            category: 'all',
+            search: '',
+            priceMin: null,
+            priceMax: null,
+            sort: 'best',
+            filters: {
+                gender: [],
+                ageGroup: [],
+                sleeve: [],
+                neckline: [],
+                fabric: [],
+                size: [],
+                primaryColour: [],
+                colourShade: [],
+                style: [],
+                tag: [],
+                weight: [],
+                fit: [],
+                sector: [],
+                sport: [],
+                effect: [],
+                accreditations: [],
+                feature: [], // NOTE: singular 'feature' not 'features'
+                quickFilters: [] // Initialize quickFilters
+            }
+        };
 
+        // Helpers from PC script
         function normalizeCategory(raw) {
             const value = String(raw || '').trim().toLowerCase();
             if (!value) return 'all';
-
             const aliases = {
-                't-shirt': 'tshirts',
-                't-shirts': 'tshirts',
-                'tees': 'tshirts',
-                'tee': 'tshirts',
-                'polo-shirts': 'polo',
-                'polos': 'polo',
-                'hi-viz': 'hivis',
-                'hi-vis': 'hivis',
-                'hi-vis clothing': 'hivis',
-                'hi-viz clothing': 'hivis'
+                't-shirt': 'tshirts', 't-shirts': 'tshirts', 'tees': 'tshirts', 'tee': 'tshirts',
+                'polo-shirts': 'polo', 'polos': 'polo',
+                'hi-viz': 'hivis', 'hi-vis': 'hivis', 'hi-vis clothing': 'hivis', 'hi-viz clothing': 'hivis'
             };
-
             return aliases[value] || value;
         }
 
-        const VALID_CATEGORIES = new Set(['all', 'tshirts', 'polo', 'hoodies', 'jackets', 'hivis', 'trousers', 'fleeces', 'bags', 'caps', 'beanies', 'aprons', 'sustainable', 'workwear']);
-        let categoryFilter = normalizeCategory(urlParams.get('category')) || 'all';
-        if (!VALID_CATEGORIES.has(categoryFilter)) {
-            categoryFilter = 'all';
-        }
-        console.log('Category filter:', categoryFilter);
-        console.log('Products in DB:', PRODUCTS_DB.length);
-
-        // VAT Functions - will be loaded from mobile.js
-        function formatCurrency(baseAmount) {
-            const VAT_RATE = 0.20;
-            let value = Number(baseAmount) || 0;
-            const vatOn = localStorage.getItem('brandeduk-vat-mode') === 'on';
-            if (vatOn) {
-                value = value * (1 + VAT_RATE);
-            }
-            return '£' + value.toFixed(2);
-        }
-
-        function vatSuffix() {
-            const vatOn = localStorage.getItem('brandeduk-vat-mode') === 'on';
-            return vatOn ? 'inc VAT' : 'ex VAT';
-        }
-
-        function formatPriceRange(minPrice, maxPrice) {
-            const minVal = Number(minPrice) || 0;
-            const maxVal = Number(maxPrice) || 0;
-            if (Math.abs(minVal - maxVal) < 0.005) {
-                return formatCurrency(minVal);
-            }
-            return formatCurrency(minVal) + ' - ' + formatCurrency(maxVal);
-        }
-
-        function getProductPriceRange(product) {
-            const breaks = PRICE_BREAKS_BY_CODE[product.code];
-            if (!breaks || !breaks.length) {
-                const base = Number(product.price) || 0;
-                return { min: base, max: base };
-            }
-            const values = breaks.map(step => Number(step.price)).filter(price => price > 0);
-            return {
-                min: Math.min(...values),
-                max: Math.max(...values)
+        function getApiCategoryName(categorySlug) {
+            const slugToApiName = {
+                'tshirts': 'T-Shirts','caps':'Caps','hoodies':'Hoodies','jackets':'Jackets','polo':'Polos','shirts':'Shirts','sweatshirts':'Sweatshirts','beanies':'Beanies','blouses':'Blouses','chinos':'Chinos','fleeces':'Fleeces','hivis':'Hi-Vis','trousers':'Trousers','workwear':'Workwear'
             };
+            return slugToApiName[categorySlug] || null;
         }
 
-        // Filter products
-        function getFilteredProducts() {
-            const hoodie = PRODUCTS_DB.find(p => p.code === 'GD067') || PRODUCTS_DB.find(p => p.category === 'hoodies') || PRODUCTS_DB[0];
-            return hoodie ? [hoodie] : [];
+        function mapFilterValue(filterType, frontendValue) {
+            const mapping = FILTER_MAPPINGS[filterType];
+            return mapping && mapping[frontendValue] ? mapping[frontendValue] : frontendValue;
         }
 
-        // Render Products
-        function renderProducts() {
-            const grid = document.getElementById('productsGrid');
-            if (!grid) {
-                console.error('Grid element not found!');
+        function buildApiParams() {
+            const params = {};
+
+            // Pagination (always included)
+            params.page = currentState.page || 1;
+            params.limit = currentState.limit || 24;
+
+            // Sort parameter
+            if (currentState.sort) {
+                const sortMap = {
+                    'best': 'best',
+                    'brand-az': 'brand-az',
+                    'brand-za': 'brand-za',
+                    'code-az': 'code-az',
+                    'code-za': 'code-za',
+                    'price-lh': 'price-lh',
+                    'price-hl': 'price-hl'
+                };
+                const apiSort = sortMap[currentState.sort] || currentState.sort;
+                params.sort = apiSort;
+            }
+
+            // Search query (mutually exclusive with productType)
+            if (currentState.search && currentState.search.trim()) {
+                params.q = currentState.search.trim();
+            } else if (currentState.category !== 'all') {
+                // Map category slug to API productType name only if no search
+                const apiCategoryName = getApiCategoryName(currentState.category);
+                if (apiCategoryName) {
+                    params.productType = apiCategoryName;
+                } else {
+                    params.productType = currentState.category;
+                }
+            }
+
+            // Price range (numeric values)
+            if (currentState.priceMin !== null && currentState.priceMin !== undefined) {
+                params.priceMin = Number(currentState.priceMin);
+            }
+            if (currentState.priceMax !== null && currentState.priceMax !== undefined) {
+                params.priceMax = Number(currentState.priceMax);
+            }
+
+            // Build array parameters from filters
+            const filterMap = {
+                'gender': 'gender',
+                'ageGroup': 'ageGroup',
+                'sleeve': 'sleeve',
+                'neckline': 'neckline',
+                'accreditations': 'accreditations',
+                'primaryColour': 'primaryColour',
+                'colourShade': 'colourShade',
+                'style': 'style',
+                'feature': 'feature', // Singular, not features
+                'size': 'size',
+                'fabric': 'fabric',
+                'weight': 'weight',
+                'fit': 'fit',
+                'sector': 'sector',
+                'sport': 'sport',
+                'tag': 'tag',
+                'effect': 'effect'
+            };
+
+            // Process each filter
+            Object.keys(currentState.filters).forEach(filterKey => {
+                const filterValues = currentState.filters[filterKey];
+                const values = Array.isArray(filterValues) ? filterValues : [];
+                
+                if (values.length > 0) {
+                    const apiParam = filterMap[filterKey];
+                    if (apiParam) {
+                        // Map each value using FILTER_MAPPINGS
+                        const mappedValues = values.map(val => {
+                            return FILTER_MAPPINGS[filterKey]?.[val] || val;
+                        }).filter(v => v); // Remove any null/undefined values
+                        
+                        if (mappedValues.length > 0) {
+                            params[`${apiParam}[]`] = mappedValues;
+                        }
+                    }
+                }
+            });
+
+            // Handle quick filters separately (flag[] param with special mappings)
+            if (currentState.filters.quickFilters) {
+                const quickValues = Array.isArray(currentState.filters.quickFilters) 
+                    ? currentState.filters.quickFilters 
+                    : [];
+                
+                if (quickValues.length > 0) {
+                    const mappedQuickFilters = quickValues.map(val => FILTER_MAPPINGS.quickFilter?.[val] || val).filter(v => v);
+                    if (mappedQuickFilters.length > 0) {
+                        params['flag[]'] = mappedQuickFilters;
+                    }
+                }
+            }
+
+            return params;
+        }
+
+        async function fetchProducts() {
+            try {
+                const params = buildApiParams();
+                const data = await BrandedAPI.getProducts(params);
+                currentState.total = data.total || 0;
+                return data.items || [];
+            } catch (err) {
+                console.error('Error fetching products (mobile):', err);
+                return [];
+            }
+        }
+
+        async function fetchFilterCounts() {
+            try {
+                const params = buildApiParams();
+                const counts = await BrandedAPI.getFilterAggregations(params);
+                updateFilterCounts(counts);
+            } catch (err) {
+                console.error('Error fetching filter counts (mobile):', err);
+            }
+        }
+
+        function updateFilterCounts(counts) {
+            if (!counts) return;
+            // counts shape: { filterName: { slug: count, ... }, ... }
+            Object.keys(counts).forEach(apiFilterName => {
+                const section = document.querySelector(`.filter-expandable[data-filter="${apiFilterName}"]`);
+                if (!section) return;
+                const content = section.querySelector('.filter-expandable__content');
+                if (!content) return;
+                Object.keys(counts[apiFilterName]).forEach(slug => {
+                    const checkbox = content.querySelector(`input[value="${slug}"]`);
+                    if (checkbox) {
+                        let countSpan = checkbox.parentElement.querySelector('.count');
+                        if (!countSpan) {
+                            countSpan = document.createElement('span');
+                            countSpan.className = 'count';
+                            checkbox.parentElement.appendChild(countSpan);
+                        }
+                        countSpan.textContent = `(${counts[apiFilterName][slug]})`;
+                    }
+                });
+            });
+        }
+
+        function updateURL() {
+            const url = new URL(window.location);
+            url.searchParams.set('category', currentState.category);
+            url.searchParams.set('page', currentState.page);
+            if (currentState.limit && currentState.limit !== 24) {
+                url.searchParams.set('limit', currentState.limit);
+            } else {
+                url.searchParams.delete('limit');
+            }
+            if (currentState.sort && currentState.sort !== 'best') {
+                url.searchParams.set('sort', currentState.sort);
+            } else {
+                url.searchParams.delete('sort');
+            }
+            if (currentState.search) url.searchParams.set('q', currentState.search); else url.searchParams.delete('q');
+            if (currentState.priceMin !== null) url.searchParams.set('priceMin', currentState.priceMin); else url.searchParams.delete('priceMin');
+            if (currentState.priceMax !== null) url.searchParams.set('priceMax', currentState.priceMax); else url.searchParams.delete('priceMax');
+            window.history.replaceState({}, '', url);
+        }
+
+        function updateMobilePagination() {
+            const paginationContainer = document.getElementById('mobilePagination');
+            if (!paginationContainer) return;
+            
+            const totalPages = Math.ceil(currentState.total / currentState.limit);
+            
+            if (totalPages <= 1) {
+                paginationContainer.style.display = 'none';
                 return;
             }
             
-            const products = getFilteredProducts();
-            console.log('Rendering products:', products.length);
+            paginationContainer.style.display = 'flex';
             
-            // Update title
-            const titles = {
-                'all': 'All Products',
-                'tshirts': 'T-Shirts',
-                'polo': 'Polo Shirts',
-                'hoodies': 'Hoodies & Sweatshirts',
-                'jackets': 'Jackets & Softshell',
-                'hivis': 'Hi-Viz',
-                'trousers': 'Work Trousers',
-                'fleeces': 'Fleeces',
-                'bags': 'Bags',
-                'caps': 'Caps',
-                'beanies': 'Headwear / Accessories',
-                'aprons': 'Work & Uniforms',
-                'sustainable': 'Sustainable / Recycled & Organic',
-                'workwear': 'Workwear'
+            const firstBtn = document.getElementById('mobilePaginationFirst');
+            const prevBtn = document.getElementById('mobilePaginationPrev');
+            const nextBtn = document.getElementById('mobilePaginationNext');
+            const lastBtn = document.getElementById('mobilePaginationLast');
+            const pageNumbersContainer = document.getElementById('mobilePaginationPageNumbers');
+            
+            if (firstBtn) firstBtn.disabled = currentState.page === 1;
+            if (prevBtn) prevBtn.disabled = currentState.page === 1;
+            if (nextBtn) nextBtn.disabled = currentState.page === totalPages;
+            if (lastBtn) lastBtn.disabled = currentState.page === totalPages;
+            
+            if (pageNumbersContainer) {
+                pageNumbersContainer.innerHTML = '';
+                const currentPageBtn = document.createElement('button');
+                currentPageBtn.type = 'button';
+                currentPageBtn.className = 'shop-pagination-page active';
+                currentPageBtn.textContent = currentState.page;
+                currentPageBtn.setAttribute('aria-current', 'page');
+                pageNumbersContainer.appendChild(currentPageBtn);
+            }
+        }
+
+        // Price range init adapted for mobile UI
+        async function initPriceRangeSlider() {
+            const slider = document.getElementById('filterPriceRange');
+            const minDisplay = document.getElementById('priceMinDisplay');
+            const maxDisplay = document.getElementById('priceMaxDisplay');
+            if (!slider) return;
+
+            try {
+                const data = await BrandedAPI.getProducts({ limit: 1 });
+                const range = data.priceRange || { min: 14, max: 65 };
+                const catalogMin = Math.floor(range.min || 14);
+                const catalogMax = Math.ceil(range.max || 65);
+                slider.min = catalogMin;
+                slider.max = catalogMax;
+                slider.value = currentState.priceMax !== null ? currentState.priceMax : catalogMax;
+
+                function update() {
+                    let maxVal = parseInt(slider.value);
+                    if (!Number.isFinite(maxVal)) maxVal = catalogMax;
+                    currentState.priceMin = catalogMin;
+                    currentState.priceMax = maxVal;
+                    minDisplay && (minDisplay.textContent = '£' + (isVatOn() ? (catalogMin * 1.2).toFixed(2) : catalogMin.toFixed(2)));
+                    maxDisplay && (maxDisplay.textContent = '£' + (isVatOn() ? (maxVal * 1.2).toFixed(2) : maxVal.toFixed(2)));
+                    currentState.page = 1;
+                    updateURL();
+                    renderProducts();
+                    fetchFilterCounts();
+                }
+
+                slider.addEventListener('input', update);
+                update();
+            } catch (err) {
+                console.error('Error init price slider (mobile):', err);
+            }
+        }
+
+        // Search input handling (mobile filter input + header search)
+        function setupSearchInput() {
+            const searchInput = document.getElementById('filterSearchInput');
+            const headerSearch = document.getElementById('searchbarHeaderInput');
+            const mainSearch = document.getElementById('searchInput');
+
+            if (searchInput) {
+                let t;
+                searchInput.addEventListener('input', (e) => {
+                    clearTimeout(t);
+                    t = setTimeout(() => {
+                        currentState.search = e.target.value.trim();
+                        currentState.page = 1;
+                        updateURL();
+                        renderProducts();
+                        fetchFilterCounts();
+                    }, 500);
+                });
+            }
+
+            [headerSearch, mainSearch].forEach(el => {
+                if (!el) return;
+                el.addEventListener('keypress', async (e) => {
+                    if (e.key === 'Enter') {
+                        currentState.search = el.value.trim();
+                        currentState.page = 1;
+                        updateURL();
+                        await renderProducts();
+                        await fetchFilterCounts();
+                    }
+                });
+            });
+        }
+
+        // Setup checkboxes in mobile filter UI - FIXED to match PC logic
+        function setupFilterCheckboxes() {
+            // Map data-filter attribute to state key (matching PC version)
+            const filterKeyMap = {
+                'gender': 'gender',
+                'ageGroup': 'ageGroup',
+                'sleeve': 'sleeve',
+                'neckline': 'neckline',
+                'accreditations': 'accreditations',
+                'primaryColour': 'primaryColour',
+                'colourShade': 'colourShade',
+                'style': 'style',
+                'features': 'feature', // HTML uses 'features' but API uses 'feature'
+                'size': 'size',
+                'fabric': 'fabric',
+                'weight': 'weight',
+                'fit': 'fit',
+                'sector': 'sector',
+                'sport': 'sport',
+                'tag': 'tag',
+                'effect': 'effect'
             };
-            const pageTitle = titles[categoryFilter] || 'Products';
-            const categoryTitleEl = document.getElementById('categoryTitle');
-            if (categoryTitleEl) {
-                categoryTitleEl.textContent = pageTitle;
-            }
-            const categoryHeadingEl = document.getElementById('shopCategoryHeading');
-            if (categoryHeadingEl) {
-                categoryHeadingEl.textContent = pageTitle;
-            }
-            const breadcrumbCategoryEl = document.getElementById('shopBreadcrumbCategory');
-            if (breadcrumbCategoryEl) {
-                breadcrumbCategoryEl.textContent = String(pageTitle).toUpperCase();
-            }
-            const resultsCountEl = document.getElementById('resultsCount');
-            if (resultsCountEl) {
-                resultsCountEl.textContent = `${products.length} items`;
-            }
+
+            document.querySelectorAll('.filter-expandable').forEach(section => {
+                const htmlFilterKey = section.dataset.filter;
+                if (!htmlFilterKey) return;
+                
+                // Map HTML key to state key
+                const stateKey = filterKeyMap[htmlFilterKey] || htmlFilterKey;
+                const content = section.querySelector('.filter-expandable__content');
+                if (!content) return;
+
+                content.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                    // Avoid duplicate listeners
+                    if (cb.dataset.listenerAttached === 'true') return;
+                    cb.dataset.listenerAttached = 'true';
+
+                    cb.addEventListener('change', async () => {
+                        const checked = Array.from(content.querySelectorAll('input[type="checkbox"]:checked')).map(c => c.value);
+                        currentState.filters[stateKey] = checked;
+                        currentState.page = 1;
+                        updateURL();
+                        await renderProducts();
+                        await fetchFilterCounts();
+                    });
+                });
+            });
+        }
+
+        // Setup quick filter toggles - NEW FUNCTION
+        function setupQuickFilterToggles() {
+            // Map data-filter attribute to quickFilter value
+            const quickFilterMap = {
+                'newIn': 'new-in',
+                'bradeal': 'bradeal',
+                'offers': 'offers',
+                'inStock': 'in-stock',
+                'recycled': 'recycled',
+                'plusSizes': 'plus-sizes' // Note: not in API, but keep for UI
+            };
+
+            document.querySelectorAll('.filters-toggles .vat-checkbox').forEach(checkbox => {
+                if (checkbox.dataset.listenerAttached === 'true') return;
+                checkbox.dataset.listenerAttached = 'true';
+
+                checkbox.addEventListener('change', async () => {
+                    const filterId = checkbox.dataset.filter;
+                    const filterValue = quickFilterMap[filterId];
+                    
+                    if (!filterValue || filterId === 'plusSizes') return; // Skip plusSizes (not in API)
+
+                    // Update quickFilters array
+                    if (checkbox.checked) {
+                        if (!currentState.filters.quickFilters.includes(filterValue)) {
+                            currentState.filters.quickFilters.push(filterValue);
+                        }
+                    } else {
+                        currentState.filters.quickFilters = currentState.filters.quickFilters.filter(v => v !== filterValue);
+                    }
+
+                    currentState.page = 1;
+                    updateURL();
+                    await renderProducts();
+                    await fetchFilterCounts();
+                });
+            });
+        }
+
+        // Setup category filter buttons - NEW FUNCTION
+        function setupCategoryFilters() {
+            document.querySelectorAll('.category-filter-card').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    // Remove active from all
+                    document.querySelectorAll('.category-filter-card').forEach(b => b.classList.remove('active'));
+                    // Add active to clicked
+                    btn.classList.add('active');
+                    // Update state
+                    currentState.category = normalizeCategory(btn.dataset.category) || 'all';
+                    currentState.page = 1;
+                    updateURL();
+                    await renderProducts();
+                    await fetchFilterCounts();
+                });
+            });
+        }
+
+        // Render products using API (delegates to BrandedAPI)
+        async function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            if (!grid) return;
+            grid.innerHTML = '<div style="text-align:center; padding:40px;">Loading...</div>';
+            const products = await fetchProducts();
+            // Update title/count
+            const titleEl = document.getElementById('categoryTitle');
+            const resultsEl = document.getElementById('resultsCount');
+            if (titleEl) titleEl.textContent = (currentState.category && currentState.category !== 'all') ? currentState.category : 'All Products';
+            if (resultsEl) resultsEl.textContent = `${currentState.total} items`;
 
             grid.innerHTML = '';
+            if (!products || products.length === 0) {
+                grid.innerHTML = '<div style="text-align:center; padding:40px; color:#6b7280;">No products found.</div>';
+                updateMobilePagination();
+                return;
+            }
 
-            products.forEach((product, index) => {
+            products.forEach((product, idx) => {
                 const card = document.createElement('div');
                 card.className = 'product-card-shop';
-
-                const badgesLeft = product.customization.filter(c => c === 'print').map(() =>
-                    `<span class="badge print">PRINT</span>`
-                ).join('');
-                
-                const badgesRight = product.customization.filter(c => c === 'embroidery').map(() =>
-                    `<span class="badge embroidery">EMBROIDERY</span>`
-                ).join('');
-
-                const colorIndex = index % product.colors.length;
-                const displayColor = product.colors[colorIndex];
-                
-                const colors = product.colors.map(c => {
-                    return `<button type="button" class="color-dot" data-color="${c.name}" data-main="${c.main}" style="background-image: url('${c.main}'); background-size: cover; background-position: center;" title="${c.name}"></button>`;
-                }).join('');
-
-                const { min: minPrice, max: maxPrice } = getProductPriceRange(product);
-
+                const img = (product.colors && product.colors[0] && (product.colors[0].main || product.colors[0].image)) || product.image || '';
+                const price = (product.priceBreaks && product.priceBreaks.length) ? product.priceBreaks[0].price : product.price;
                 card.innerHTML = `
-                    <div class="product-media">
-                        <div class="product-badges-top">
-                            ${badgesRight}
-                            ${badgesLeft}
-                        </div>
-                        <div class="product-figure">
-                            <img src="${displayColor.main}" alt="${product.name}" class="product-main-img">
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <div class="product-code">
-                            ${product.code}
-                            <img src="https://i.postimg.cc/3WpCDK5M/gildan-logo.png" alt="Gildan" class="brand-logo" title="Gildan">
-                        </div>
-                        <div class="product-name">${product.name}</div>
-                        <div class="product-price" data-price-min="${minPrice}" data-price-max="${maxPrice}">
-                            <span class="product-price-label">Start From</span>
-                            <span class="product-price-value">${formatPriceRange(minPrice, maxPrice)}</span>
-                            <span class="product-price-suffix">${vatSuffix()}</span>
-                        </div>
-                        <div class="product-colors">${colors}</div>
+                    <div class="product-thumb"><img src="${img}" alt="${product.name}"/></div>
+                    <div class="product-meta">
+                        <div class="product-code">${product.code || ''}</div>
+                        <div class="product-name">${product.name || ''}</div>
+                        <div class="product-price" data-price="${price || 0}">${formatCurrency(Number(price) || 0)}</div>
                     </div>
                 `;
 
-                let selectedColor = null;
-                
-                card.querySelectorAll('.color-dot').forEach(dot => {
-                    dot.addEventListener('mouseenter', () => {
-                        if (!selectedColor) {
-                            const img = card.querySelector('.product-main-img');
-                            if (img) img.src = dot.dataset.main;
-                        }
-                    });
-                    
-                    dot.addEventListener('mouseleave', () => {
-                        if (selectedColor) {
-                            const img = card.querySelector('.product-main-img');
-                            const activeDot = card.querySelector('.color-dot.active');
-                            if (img && activeDot) img.src = activeDot.dataset.main;
-                        }
-                    });
-                    
-                    dot.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const img = card.querySelector('.product-main-img');
-                        if (img) img.src = dot.dataset.main;
-                        card.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
-                        dot.classList.add('active');
-                        selectedColor = {
-                            name: dot.dataset.color,
-                            url: dot.dataset.main
-                        };
-                    });
-                });
-
                 card.addEventListener('click', () => {
-                    console.log('Card clicked, going directly to customize:', product.code);
-                    sessionStorage.setItem('selectedProduct', product.code);
+                    sessionStorage.setItem('selectedProduct', product.code || '');
                     sessionStorage.setItem('selectedProductData', JSON.stringify(product));
-                    const activeColorDot = card.querySelector('.color-dot.active');
-                    if (activeColorDot) {
-                        sessionStorage.setItem('selectedColorName', activeColorDot.dataset.color);
-                        sessionStorage.setItem('selectedColorUrl', activeColorDot.dataset.main);
-                        console.log('Selected color:', activeColorDot.dataset.color);
-                    }
-                    console.log('Navigating to customize.html');
-                    window.location.href = 'customize.html';
+                    window.location.href = 'product-detail.html?code=' + encodeURIComponent(product.code || '');
                 });
 
                 grid.appendChild(card);
             });
+            
+            updateMobilePagination();
         }
 
-        // Update prices on VAT change
-        function updatePrices() {
-            document.querySelectorAll('.product-price').forEach(priceEl => {
-                const min = Number(priceEl.dataset.priceMin);
-                const max = Number(priceEl.dataset.priceMax);
-                const valueEl = priceEl.querySelector('.product-price-value');
-                if (valueEl && Number.isFinite(min) && Number.isFinite(max)) {
-                    valueEl.textContent = formatPriceRange(min, max);
-                }
-                const suffixEl = priceEl.querySelector('.product-price-suffix');
-                if (suffixEl) {
-                    suffixEl.textContent = vatSuffix();
-                }
-            });
-        }
-
-        // Initialize when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                console.log('DOMContentLoaded - rendering products...');
-                renderProducts();
-                updateBasketBadge();
-            });
-        } else {
-            console.log('DOM already ready - rendering products immediately...');
-            setTimeout(() => {
-                renderProducts();
-                updateBasketBadge();
-            }, 0);
-        }
-
-        window.addEventListener('vatToggleChanged', () => {
-            console.log('VAT toggle changed - updating prices');
-            updatePrices();
-        });
-
-        // Initialize VAT toggle from mobile.js when it loads
-        document.addEventListener('DOMContentLoaded', () => {
-            // Wait for mobile.js to initialize, then sync
-            setTimeout(() => {
-                updatePrices();
-            }, 100);
-        });
-        
-        // Update basket badge count
+        // ---------------------------------------------------------------------
+        // Preserve page-specific behaviors already present in mobile shop.html
+        // (basket badge update and tablet social icon double-click behavior)
+        // ---------------------------------------------------------------------
         function updateBasketBadge() {
             const basket = JSON.parse(localStorage.getItem('quoteBasket') || '[]');
             let totalItems = 0;
-            
             basket.forEach(item => {
                 const sizes = item.sizes || item.quantities || {};
-                totalItems += Object.values(sizes).reduce((sum, q) => sum + q, 0);
+                totalItems += Object.values(sizes).reduce((sum, q) => sum + (Number(q) || 0), 0);
             });
-            
             const badge = document.getElementById('navBasketBadge');
             if (badge) {
                 if (totalItems > 0) {
-                    badge.textContent = totalItems > 99 ? '99+' : totalItems;
+                    badge.textContent = totalItems > 99 ? '99+' : String(totalItems);
                     badge.style.display = 'flex';
                 } else {
                     badge.style.display = 'none';
                 }
             }
         }
-        
-        // Category Filter Functionality
-        (function() {
-            const filterButtons = document.querySelectorAll('.category-filter-card');
-            const productsGrid = document.getElementById('productsGrid');
-            const categoryTitleEl = document.getElementById('categoryTitle');
-            const resultsCountEl = document.getElementById('resultsCount');
-            
-            filterButtons.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const category = this.dataset.category;
-                    
-                    // Animate button press
-                    this.style.transform = 'scale(0.95)';
-                    setTimeout(() => { this.style.transform = ''; }, 150);
-                    
-                    // Update active state with animation
-                    filterButtons.forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Update URL without reload
-                    const url = new URL(window.location);
-                    url.searchParams.set('category', category);
-                    window.history.replaceState({}, '', url);
-                    
-                    // Update global filter and re-render
-                    categoryFilter = category;
-                    
-                    // Fade out current products
-                    const currentCards = productsGrid.querySelectorAll('.product-card-shop');
-                    currentCards.forEach(card => {
-                        card.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
-                        card.style.opacity = '0';
-                        card.style.transform = 'translateY(-10px)';
-                    });
-                    
-                    // Re-render after fade out
-                    setTimeout(() => {
-                        renderProducts();
-                        
-                        // Animate new cards in
-                        const newCards = productsGrid.querySelectorAll('.product-card-shop');
-                        newCards.forEach((card, i) => {
-                            card.style.opacity = '0';
-                            card.style.transform = 'translateY(20px)';
-                            setTimeout(() => {
-                                card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-                                card.style.opacity = '1';
-                                card.style.transform = 'translateY(0)';
-                            }, i * 50);
-                        });
-                    }, 250);
-                    
-                    // Scroll to show filter is selected
-                    this.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-                });
-            });
-            
-            // Check URL for initial category and set filter
-            const urlParams = new URLSearchParams(window.location.search);
-            let initialCategory = urlParams.get('category') || 'all';
-            if (!VALID_CATEGORIES.has(initialCategory)) {
-                initialCategory = 'all';
-            }
-            categoryFilter = initialCategory;
-            
-            // Set active button
-            filterButtons.forEach(b => {
-                b.classList.remove('active');
-                if (b.dataset.category === initialCategory) {
-                    b.classList.add('active');
-                }
-            });
-        })();
-        
-        // Tablet Social Icons - Single/Double Click
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateBasketBadge();
+        });
+
         document.addEventListener('DOMContentLoaded', function() {
             const tabletSocialIcons = document.querySelectorAll('.tablet-top-bar .social-icon');
             let clickTimer = null;
             let clickCount = 0;
             let lastClickedIcon = null;
-            
             tabletSocialIcons.forEach(icon => {
                 icon.addEventListener('click', function(e) {
                     e.preventDefault();
-                    
-                    if (lastClickedIcon !== icon) {
-                        clickCount = 0;
-                        lastClickedIcon = icon;
-                    }
-                    
+                    if (lastClickedIcon !== icon) { clickCount = 0; lastClickedIcon = icon; }
                     clickCount++;
-                    
                     if (clickCount === 1) {
-                        // Single click - toggle active
-                        clickTimer = setTimeout(() => {
-                            icon.classList.toggle('active');
-                            clickCount = 0;
-                        }, 300);
+                        clickTimer = setTimeout(() => { icon.classList.toggle('active'); clickCount = 0; }, 300);
                     } else if (clickCount === 2) {
-                        // Double click - open link
-                        clearTimeout(clickTimer);
-                        clickCount = 0;
-                        const href = icon.getAttribute('href');
-                        if (href) {
-                            window.open(href, '_blank', 'noopener,noreferrer');
-                        }
+                        clearTimeout(clickTimer); clickCount = 0; const href = icon.getAttribute('href'); if (href) window.open(href, '_blank', 'noopener,noreferrer');
                     }
                 });
             });
+            document.addEventListener('click', function(e) { const topBar = document.querySelector('.tablet-top-bar'); if (topBar && !topBar.contains(e.target)) tabletSocialIcons.forEach(icon => icon.classList.remove('active')); });
+        });
+
+        // Initialize filters and product rendering on mobile
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Read initial URL params
+            const urlParams = new URLSearchParams(window.location.search);
+            currentState.category = normalizeCategory(urlParams.get('category')) || 'all';
+            currentState.page = parseInt(urlParams.get('page')) || 1;
+            currentState.limit = parseInt(urlParams.get('limit')) || 24;
+            currentState.sort = urlParams.get('sort') || 'best';
+            currentState.search = urlParams.get('q') || '';
+            currentState.priceMin = urlParams.get('priceMin') ? parseFloat(urlParams.get('priceMin')) : null;
+            currentState.priceMax = urlParams.get('priceMax') ? parseFloat(urlParams.get('priceMax')) : null;
+
+            // Setup all handlers
+            setupCategoryFilters();
+            setupFilterCheckboxes();
+            setupQuickFilterToggles();
+            setupSearchInput();
             
-            // Click outside to deactivate
-            document.addEventListener('click', function(e) {
-                const topBar = document.querySelector('.tablet-top-bar');
-                if (topBar && !topBar.contains(e.target)) {
-                    tabletSocialIcons.forEach(icon => icon.classList.remove('active'));
-                }
-            });
+            // Setup Sort and View controls
+            const sortSelect = document.getElementById('mobileSortSelect');
+            const viewSelect = document.getElementById('mobileViewSelect');
+            
+            if (sortSelect) {
+                sortSelect.value = currentState.sort || 'best';
+                sortSelect.addEventListener('change', async (e) => {
+                    currentState.sort = e.target.value;
+                    currentState.page = 1;
+                    updateURL();
+                    await renderProducts();
+                    await fetchFilterCounts();
+                    updateMobilePagination();
+                });
+            }
+            
+            if (viewSelect) {
+                viewSelect.value = currentState.limit || 24;
+                viewSelect.addEventListener('change', async (e) => {
+                    currentState.limit = parseInt(e.target.value);
+                    currentState.page = 1;
+                    updateURL();
+                    await renderProducts();
+                    await fetchFilterCounts();
+                    updateMobilePagination();
+                });
+            }
+            
+            // Setup pagination buttons
+            const firstBtn = document.getElementById('mobilePaginationFirst');
+            const prevBtn = document.getElementById('mobilePaginationPrev');
+            const nextBtn = document.getElementById('mobilePaginationNext');
+            const lastBtn = document.getElementById('mobilePaginationLast');
+            
+            async function handlePaginationClick(newPage) {
+                currentState.page = newPage;
+                updateURL();
+                await renderProducts();
+                await fetchFilterCounts();
+                updateMobilePagination();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            
+            if (firstBtn) {
+                firstBtn.addEventListener('click', async () => {
+                    if (currentState.page > 1) await handlePaginationClick(1);
+                });
+            }
+            
+            if (prevBtn) {
+                prevBtn.addEventListener('click', async () => {
+                    if (currentState.page > 1) await handlePaginationClick(currentState.page - 1);
+                });
+            }
+            
+            if (nextBtn) {
+                nextBtn.addEventListener('click', async () => {
+                    const totalPages = Math.ceil(currentState.total / currentState.limit);
+                    if (currentState.page < totalPages) await handlePaginationClick(currentState.page + 1);
+                });
+            }
+            
+            if (lastBtn) {
+                lastBtn.addEventListener('click', async () => {
+                    const totalPages = Math.ceil(currentState.total / currentState.limit);
+                    if (currentState.page < totalPages) await handlePaginationClick(totalPages);
+                });
+            }
+
+            await renderProducts();
+            await fetchFilterCounts();
+            await initPriceRangeSlider();
+            updateMobilePagination();
         });
     </script>
     <script src="mobile/js/mobile.js?v=20251230"></script>

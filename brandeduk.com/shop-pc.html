@@ -155,11 +155,38 @@
         .filters-sidebar {
             position: sticky;
             top: 80px;
-            height: fit-content;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+            overflow-x: hidden;
             background: white;
             padding: 24px;
             border-radius: 16px;
             box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+
+        /* Custom Scrollbar for Filters Sidebar */
+        .filters-sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .filters-sidebar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .filters-sidebar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .filters-sidebar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Firefox scrollbar */
+        .filters-sidebar {
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 #f1f1f1;
         }
 
         .filters-header {
@@ -609,12 +636,16 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
         }
 
         .products-header-left {
             display: flex;
             align-items: center;
             gap: 16px;
+            flex: 1;
+            min-width: 0;
         }
 
         .back-btn {
@@ -631,6 +662,8 @@
             cursor: pointer;
             transition: all 0.2s ease;
             text-decoration: none;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .back-btn:hover {
@@ -648,11 +681,69 @@
             font-size: 24px;
             font-weight: 700;
             color: #1f2937;
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        .products-header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            flex-shrink: 0;
         }
 
         .products-count {
             color: #6b7280;
             font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .products-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-group label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            white-space: nowrap;
+        }
+
+        .control-select {
+            padding: 6px 32px 6px 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1f2937;
+            background: white;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            transition: all 0.2s ease;
+            min-width: 130px;
+        }
+
+        .control-select:hover {
+            border-color: #d1d5db;
+        }
+
+        .control-select:focus {
+            outline: none;
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
         }
 
         .products-grid {
@@ -878,6 +969,91 @@
             background: linear-gradient(90deg, #17a2b8, #8b5cf6);
             border-radius: 2px;
             transition: width 0.3s ease;
+        }
+
+        /* Pagination - Inline Style */
+        .pagination-pages {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            margin-top: 30px;
+            padding-bottom: 30px;
+        }
+
+        .pagination-button {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0;
+        }
+
+        .pagination-button:hover:not(:disabled) {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+            color: #1f2937;
+        }
+
+        .pagination-button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: #f9fafb;
+        }
+
+        .pagination-pages {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .pagination-page {
+            min-width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0 8px;
+        }
+
+        .pagination-page:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+            color: #1f2937;
+        }
+
+        .pagination-page.active {
+            background: #1f2937;
+            border-color: #1f2937;
+            color: white;
+            font-weight: 600;
+        }
+
+        .pagination-info {
+            display: none; /* Hide old pagination info */
         }
 
         /* Footer */
@@ -1155,257 +1331,279 @@
         </div>
 
         <!-- Expandable Filter Rows -->
-        <div class="filter-expandable-row" onclick="this.classList.toggle('expanded')">
+        <div class="filter-expandable-row">
             <h4>Gender</h4>
             <span class="filter-expandable-arrow">›</span>
         </div>
         <div class="filter-expandable-content">
             <div class="filter-checkbox-list">
+                <label class="filter-checkbox-item"><input type="checkbox" value="female"><span>Female</span><span class="count">(72)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="male"><span>Male</span><span class="count">(86)</span></label>
                 <label class="filter-checkbox-item"><input type="checkbox" value="unisex"><span>Unisex</span><span class="count">(124)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="mens"><span>Mens</span><span class="count">(86)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="womens"><span>Womens</span><span class="count">(72)</span></label>
             </div>
         </div>
 
-        <div class="filter-expandable-row" onclick="this.classList.toggle('expanded')">
+        <div class="filter-expandable-row">
             <h4>Age Group</h4>
             <span class="filter-expandable-arrow">›</span>
         </div>
         <div class="filter-expandable-content">
             <div class="filter-checkbox-list">
                 <label class="filter-checkbox-item"><input type="checkbox" value="adult"><span>Adult</span><span class="count">(156)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="junior"><span>Junior / Youth</span><span class="count">(48)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="kids"><span>Kids</span><span class="count">(32)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="baby"><span>Baby / Toddler</span><span class="count">(18)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="infant"><span>Infant</span><span class="count">(18)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="kids"><span>Kids</span><span class="count">(48)</span></label>
             </div>
         </div>
 
-        <div class="filter-expandable-row" onclick="this.classList.toggle('expanded')">
+        <div class="filter-expandable-row">
             <h4>Sleeve</h4>
             <span class="filter-expandable-arrow">›</span>
         </div>
         <div class="filter-expandable-content">
             <div class="filter-checkbox-list">
-                <label class="filter-checkbox-item"><input type="checkbox" value="long"><span>Long Sleeve</span><span class="count">(89)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="short"><span>Short Sleeve</span><span class="count">(67)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="long-sleeve-2"><span>Long Sleeve</span><span class="count">(89)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="short-sleeve-2"><span>Short Sleeve</span><span class="count">(67)</span></label>
                 <label class="filter-checkbox-item"><input type="checkbox" value="sleeveless"><span>Sleeveless</span><span class="count">(24)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="three-quarter"><span>3/4 Sleeve</span><span class="count">(12)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="raglan-sleeve"><span>Raglan Sleeve</span><span class="count">(12)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="set-in-sleeve"><span>Set-In Sleeve</span><span class="count">(8)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="roll-sleeve"><span>Roll-Sleeve</span><span class="count">(6)</span></label>
             </div>
         </div>
 
-        <div class="filter-expandable-row" onclick="this.classList.toggle('expanded')">
+        <div class="filter-expandable-row">
             <h4>Neckline</h4>
             <span class="filter-expandable-arrow">›</span>
         </div>
         <div class="filter-expandable-content">
             <div class="filter-checkbox-list">
-                <label class="filter-checkbox-item"><input type="checkbox" value="crew"><span>Crew Neck</span><span class="count">(95)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="v-neck"><span>V-Neck</span><span class="count">(42)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="polo"><span>Polo Collar</span><span class="count">(38)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="hooded"><span>Hooded</span><span class="count">(56)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="scoop"><span>Scoop Neck</span><span class="count">(18)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="zip"><span>Zip Neck</span><span class="count">(14)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="crew-neck-2"><span>Crew Neck</span><span class="count">(95)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="v-neck-2"><span>V-Neck</span><span class="count">(42)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="mandarin"><span>Mandarin</span><span class="count">(15)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="wide-neck"><span>Wide Neck</span><span class="count">(12)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="roll-neck"><span>Roll Neck</span><span class="count">(10)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="button-down-collar"><span>Button-Down Collar</span><span class="count">(38)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="keyhole"><span>Keyhole</span><span class="count">(8)</span></label>
             </div>
         </div>
 
-        <div class="filter-expandable-row" onclick="this.classList.toggle('expanded')">
+        <div class="filter-expandable-row">
             <h4>Accreditations</h4>
             <span class="filter-expandable-arrow">›</span>
         </div>
         <div class="filter-expandable-content">
             <div class="filter-checkbox-list">
-                <label class="filter-checkbox-item"><input type="checkbox" value="oeko-tex"><span>OEKO-TEX®</span><span class="count">(78)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="gots"><span>GOTS Certified</span><span class="count">(34)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="fair-trade"><span>Fair Trade</span><span class="count">(28)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="bci"><span>BCI Cotton</span><span class="count">(45)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="grs"><span>GRS Recycled</span><span class="count">(22)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="vegan-tested"><span>Vegan Tested</span><span class="count">(12)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="oeko-tex"><span>Oeko-Tex</span><span class="count">(78)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="global-compact"><span>Global Compact</span><span class="count">(15)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="sedex"><span>SEDEX</span><span class="count">(8)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="un-global-compact"><span>UN Global Compact</span><span class="count">(10)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="polylana"><span>Polylana®</span><span class="count">(5)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="ocs-blended-licence"><span>OCS Blended (Licence)</span><span class="count">(18)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="ocs-100-licence"><span>OCS 100 (Licence)</span><span class="count">(22)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="oeko-tex-step"><span>Oeko-Tex STeP</span><span class="count">(14)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="rcs-blended-licence"><span>RCS Blended (Licence)</span><span class="count">(16)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="global-recycled-standard"><span>Global Recycled Standard</span><span class="count">(22)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="sa8000"><span>SA8000</span><span class="count">(6)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="amfori-bsci"><span>Amfori BSCI</span><span class="count">(9)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="recycled"><span>Recycled</span><span class="count">(45)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="b-corp"><span>B Corp</span><span class="count">(4)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="gots-licence"><span>GOTS (Licence)</span><span class="count">(34)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="organic"><span>Organic</span><span class="count">(28)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="fairtrade-"><span>Fairtrade</span><span class="count">(28)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="certified-organic"><span>Certified Organic</span><span class="count">(20)</span></label>
             </div>
         </div>
 
-        <div class="filter-expandable-row" onclick="this.classList.toggle('expanded')">
+        <div class="filter-expandable-row">
             <h4>Primary Colour</h4>
             <span class="filter-expandable-arrow">›</span>
         </div>
         <div class="filter-expandable-content">
             <div class="filter-checkbox-list">
                 <label class="filter-checkbox-item"><input type="checkbox" value="black"><span>Black</span><span class="count">(142)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="white"><span>White</span><span class="count">(128)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="navy"><span>Navy</span><span class="count">(98)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="blue"><span>Blue</span><span class="count">(98)</span></label>
                 <label class="filter-checkbox-item"><input type="checkbox" value="grey"><span>Grey</span><span class="count">(76)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="red"><span>Red</span><span class="count">(54)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="royal-blue"><span>Royal Blue</span><span class="count">(48)</span></label>
                 <label class="filter-checkbox-item"><input type="checkbox" value="green"><span>Green</span><span class="count">(42)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="yellow"><span>Yellow</span><span class="count">(28)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="orange"><span>Orange</span><span class="count">(24)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="white"><span>White</span><span class="count">(128)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="red"><span>Red</span><span class="count">(54)</span></label>
                 <label class="filter-checkbox-item"><input type="checkbox" value="pink"><span>Pink</span><span class="count">(32)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="yellow"><span>Yellow</span><span class="count">(28)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="neutral"><span>Neutral</span><span class="count">(24)</span></label>
                 <label class="filter-checkbox-item"><input type="checkbox" value="purple"><span>Purple</span><span class="count">(26)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="orange"><span>Orange</span><span class="count">(24)</span></label>
                 <label class="filter-checkbox-item"><input type="checkbox" value="brown"><span>Brown</span><span class="count">(18)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="pattern"><span>Pattern</span><span class="count">(12)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="other"><span>Other</span><span class="count">(8)</span></label>
             </div>
         </div>
 
-        <div class="filter-expandable-row" onclick="this.classList.toggle('expanded')">
+        <div class="filter-expandable-row">
             <h4>Colour Shade</h4>
             <span class="filter-expandable-arrow">›</span>
         </div>
         <div class="filter-expandable-content">
             <div class="filter-checkbox-list">
-                <label class="filter-checkbox-item"><input type="checkbox" value="light"><span>Light</span><span class="count">(86)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="medium"><span>Medium</span><span class="count">(124)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="dark"><span>Dark</span><span class="count">(98)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="bright"><span>Bright / Vibrant</span><span class="count">(45)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="pastel"><span>Pastel</span><span class="count">(32)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="heather"><span>Heather / Marl</span><span class="count">(28)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="black - black"><span>Black - Black</span><span class="count">(86)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="blue - navy"><span>Blue - Navy</span><span class="count">(98)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="grey - dark grey"><span>Grey - Dark Grey</span><span class="count">(76)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="white - white"><span>White - White</span><span class="count">(128)</span></label>
             </div>
         </div>
 
-        <div class="filter-expandable-row" onclick="this.classList.toggle('expanded')">
+        <div class="filter-expandable-row">
             <h4>Style</h4>
             <span class="filter-expandable-arrow">›</span>
         </div>
         <div class="filter-expandable-content">
             <div class="filter-checkbox-list">
-                <label class="filter-checkbox-item"><input type="checkbox" value="classic"><span>Classic / Regular</span><span class="count">(156)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="slim"><span>Slim Fit</span><span class="count">(68)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="classic"><span>Classic</span><span class="count">(156)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="crew-neck-1"><span>Crew Neck</span><span class="count">(95)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="hooded-1"><span>Hooded</span><span class="count">(56)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="long-sleeve-1"><span>Long Sleeve</span><span class="count">(89)</span></label>
                 <label class="filter-checkbox-item"><input type="checkbox" value="oversized"><span>Oversized</span><span class="count">(34)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="cropped"><span>Cropped</span><span class="count">(18)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="longline"><span>Longline</span><span class="count">(22)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="pocket"><span>Pocket</span><span class="count">(78)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="regular"><span>Regular</span><span class="count">(142)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="slim-1"><span>Slim</span><span class="count">(68)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="v-neck"><span>V-Neck</span><span class="count">(42)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="zipped"><span>Zipped</span><span class="count">(42)</span></label>
             </div>
         </div>
 
-        <div class="filter-expandable-row" onclick="this.classList.toggle('expanded')">
+        <div class="filter-expandable-row">
             <h4>Features</h4>
             <span class="filter-expandable-arrow">›</span>
         </div>
         <div class="filter-expandable-content">
             <div class="filter-checkbox-list">
-                <label class="filter-checkbox-item"><input type="checkbox" value="pocket"><span>With Pocket</span><span class="count">(78)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="zip"><span>With Zip</span><span class="count">(42)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="hood"><span>With Hood</span><span class="count">(56)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="reflective"><span>Reflective</span><span class="count">(24)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="waterproof"><span>Waterproof</span><span class="count">(18)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="anti-bacterial"><span>Anti-bacterial</span><span class="count">(15)</span></label>
                 <label class="filter-checkbox-item"><input type="checkbox" value="breathable"><span>Breathable</span><span class="count">(32)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="stretch"><span>Stretch</span><span class="count">(28)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="eco"><span>Eco-friendly</span><span class="count">(28)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="heavyweight"><span>Heavyweight</span><span class="count">(45)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="tear-away"><span>Tear-away Label</span><span class="count">(142)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="uv-protection"><span>UV Protection</span><span class="count">(18)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="water-resistant"><span>Water Resistant</span><span class="count">(18)</span></label>
             </div>
         </div>
 
-        <div class="filter-expandable-row" onclick="this.classList.toggle('expanded')">
+        <div class="filter-expandable-row">
             <h4>Size</h4>
             <span class="filter-expandable-arrow">›</span>
         </div>
         <div class="filter-expandable-content">
             <div class="filter-checkbox-list">
-                <label class="filter-checkbox-item"><input type="checkbox" value="xxs"><span>XXS</span><span class="count">(45)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="xs"><span>XS</span><span class="count">(86)</span></label>
                 <label class="filter-checkbox-item"><input type="checkbox" value="s"><span>S</span><span class="count">(142)</span></label>
                 <label class="filter-checkbox-item"><input type="checkbox" value="m"><span>M</span><span class="count">(156)</span></label>
                 <label class="filter-checkbox-item"><input type="checkbox" value="l"><span>L</span><span class="count">(156)</span></label>
                 <label class="filter-checkbox-item"><input type="checkbox" value="xl"><span>XL</span><span class="count">(142)</span></label>
                 <label class="filter-checkbox-item"><input type="checkbox" value="2xl"><span>2XL</span><span class="count">(128)</span></label>
                 <label class="filter-checkbox-item"><input type="checkbox" value="3xl"><span>3XL</span><span class="count">(98)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="xs"><span>XS</span><span class="count">(86)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="one-size"><span>One Size</span><span class="count">(24)</span></label>
                 <label class="filter-checkbox-item"><input type="checkbox" value="4xl"><span>4XL</span><span class="count">(68)</span></label>
                 <label class="filter-checkbox-item"><input type="checkbox" value="5xl"><span>5XL</span><span class="count">(42)</span></label>
             </div>
         </div>
 
-        <div class="filter-expandable-row" onclick="this.classList.toggle('expanded')">
+        <div class="filter-expandable-row">
             <h4>Fabric</h4>
             <span class="filter-expandable-arrow">›</span>
         </div>
         <div class="filter-expandable-content">
             <div class="filter-checkbox-list">
-                <label class="filter-checkbox-item"><input type="checkbox" value="cotton"><span>100% Cotton</span><span class="count">(128)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="cotton-poly"><span>Cotton / Polyester</span><span class="count">(86)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="polyester"><span>100% Polyester</span><span class="count">(54)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="organic"><span>Organic Cotton</span><span class="count">(42)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="recycled"><span>Recycled Polyester</span><span class="count">(28)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="fleece"><span>Fleece</span><span class="count">(38)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="softshell"><span>Softshell</span><span class="count">(24)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="recycled-100"><span>Recycled (100%)</span><span class="count">(28)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="organic-100"><span>Organic (100%)</span><span class="count">(42)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="polyester-100"><span>Polyester (100%)</span><span class="count">(54)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="cotton-100"><span>Cotton (100%)</span><span class="count">(128)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="nylon-100"><span>Nylon (100%)</span><span class="count">(18)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="ringspun-100"><span>Ringspun (100%)</span><span class="count">(32)</span></label>
             </div>
         </div>
 
-        <div class="filter-expandable-row" onclick="this.classList.toggle('expanded')">
+        <div class="filter-expandable-row">
             <h4>Weight (GSM)</h4>
             <span class="filter-expandable-arrow">›</span>
         </div>
         <div class="filter-expandable-content">
             <div class="filter-checkbox-list">
-                <label class="filter-checkbox-item"><input type="checkbox" value="light"><span>Lightweight (< 180gsm)</span><span class="count">(78)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="medium"><span>Medium (180-250gsm)</span><span class="count">(124)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="heavy"><span>Heavyweight (250-320gsm)</span><span class="count">(86)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="extra-heavy"><span>Extra Heavy (320gsm+)</span><span class="count">(32)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="0-50gsm"><span>0 - 50gsm</span><span class="count">(24)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="051-100gsm"><span>051 - 100gsm</span><span class="count">(32)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="101-150gsm"><span>101 - 150gsm</span><span class="count">(48)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="151-200gsm"><span>151 - 200gsm</span><span class="count">(124)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="201-250gsm"><span>201 - 250gsm</span><span class="count">(86)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="251-300gsm"><span>251 - 300gsm</span><span class="count">(76)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="over-300gsm"><span>Over 300gsm</span><span class="count">(32)</span></label>
             </div>
         </div>
 
-        <div class="filter-expandable-row" onclick="this.classList.toggle('expanded')">
+        <div class="filter-expandable-row">
             <h4>Fit</h4>
             <span class="filter-expandable-arrow">›</span>
         </div>
         <div class="filter-expandable-content">
             <div class="filter-checkbox-list">
-                <label class="filter-checkbox-item"><input type="checkbox" value="regular"><span>Regular Fit</span><span class="count">(142)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="slim"><span>Slim Fit</span><span class="count">(68)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="relaxed"><span>Relaxed Fit</span><span class="count">(54)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="classic"><span>Classic Fit</span><span class="count">(142)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="comfort"><span>Comfort</span><span class="count">(68)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="crop"><span>Crop</span><span class="count">(18)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="fashion"><span>Fashion Fit</span><span class="count">(24)</span></label>
                 <label class="filter-checkbox-item"><input type="checkbox" value="fitted"><span>Fitted</span><span class="count">(38)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="loose"><span>Loose Fit</span><span class="count">(28)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="oversized"><span>Oversized</span><span class="count">(34)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="relaxed"><span>Relaxed</span><span class="count">(54)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="semi-fitted"><span>Semi-Fitted</span><span class="count">(28)</span></label>
             </div>
         </div>
 
-        <div class="filter-expandable-row" onclick="this.classList.toggle('expanded')">
+        <div class="filter-expandable-row">
             <h4>Related Sector</h4>
             <span class="filter-expandable-arrow">›</span>
         </div>
         <div class="filter-expandable-content">
             <div class="filter-checkbox-list">
-                <label class="filter-checkbox-item"><input type="checkbox" value="hospitality"><span>Hospitality</span><span class="count">(86)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="construction"><span>Construction</span><span class="count">(54)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="healthcare"><span>Healthcare</span><span class="count">(42)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="education"><span>Education</span><span class="count">(68)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="retail"><span>Retail</span><span class="count">(76)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="sport"><span>Sport</span><span class="count">(124)</span></label>
                 <label class="filter-checkbox-item"><input type="checkbox" value="corporate"><span>Corporate</span><span class="count">(98)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="events"><span>Events / Promotional</span><span class="count">(124)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="hospitality"><span>Hospitality</span><span class="count">(86)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="travel"><span>Travel</span><span class="count">(32)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="fashion"><span>Fashion</span><span class="count">(124)</span></label>
             </div>
         </div>
 
-        <div class="filter-expandable-row" onclick="this.classList.toggle('expanded')">
+        <div class="filter-expandable-row">
             <h4>Related Sport</h4>
             <span class="filter-expandable-arrow">›</span>
         </div>
         <div class="filter-expandable-content">
             <div class="filter-checkbox-list">
-                <label class="filter-checkbox-item"><input type="checkbox" value="football"><span>Football</span><span class="count">(42)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="rugby"><span>Rugby</span><span class="count">(28)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="cricket"><span>Cricket</span><span class="count">(18)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="running"><span>Running</span><span class="count">(56)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="gym"><span>Gym / Fitness</span><span class="count">(68)</span></label>
                 <label class="filter-checkbox-item"><input type="checkbox" value="golf"><span>Golf</span><span class="count">(24)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="tennis"><span>Tennis</span><span class="count">(16)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="gym"><span>Gym</span><span class="count">(68)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="swimming"><span>Swimming</span><span class="count">(18)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="rugby"><span>Rugby</span><span class="count">(28)</span></label>
             </div>
         </div>
 
-        <div class="filter-expandable-row" onclick="this.classList.toggle('expanded')">
+        <div class="filter-expandable-row">
             <h4>Tag</h4>
             <span class="filter-expandable-arrow">›</span>
         </div>
         <div class="filter-expandable-content">
             <div class="filter-checkbox-list">
-                <label class="filter-checkbox-item"><input type="checkbox" value="tear-away"><span>Tear-Away Label</span><span class="count">(142)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="printed"><span>Printed Label</span><span class="count">(98)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="woven"><span>Woven Label</span><span class="count">(86)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="adhesives"><span>Adhesives</span><span class="count">(12)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="cut-away-inner-label"><span>Cut-away inner label</span><span class="count">(86)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="sewn-tag"><span>Sewn Tag</span><span class="count">(98)</span></label>
                 <label class="filter-checkbox-item"><input type="checkbox" value="tagless"><span>Tagless</span><span class="count">(54)</span></label>
             </div>
         </div>
 
-        <div class="filter-expandable-row" onclick="this.classList.toggle('expanded')">
+        <div class="filter-expandable-row">
             <h4>Effect</h4>
             <span class="filter-expandable-arrow">›</span>
         </div>
         <div class="filter-expandable-content">
             <div class="filter-checkbox-list">
-                <label class="filter-checkbox-item"><input type="checkbox" value="plain"><span>Plain</span><span class="count">(186)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="vintage"><span>Vintage / Washed</span><span class="count">(32)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="tie-dye"><span>Tie Dye</span><span class="count">(18)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="camo"><span>Camouflage</span><span class="count">(12)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" value="contrast"><span>Contrast Details</span><span class="count">(28)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="melange"><span>Melange</span><span class="count">(24)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="heather"><span>Heather</span><span class="count">(28)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="tie-dye"><span>Tie-Dye</span><span class="count">(18)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="triblend"><span>TriBlend</span><span class="count">(16)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="washed"><span>Washed</span><span class="count">(32)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" value="acid-wash"><span>Acid Wash</span><span class="count">(12)</span></label>
             </div>
         </div>
 
@@ -1422,12 +1620,56 @@
                     Back
                 </button>
                 <h1 id="categoryTitle">Hoodies</h1>
-            </div>
             <span class="products-count" id="productsCount">0 products</span>
+            </div>
+            <div class="products-header-right">
+                <!-- Sort and View Controls -->
+                <div class="products-controls">
+                    <div class="control-group">
+                        <label for="sortSelect">Sort By:</label>
+                        <select id="sortSelect" class="control-select">
+                            <option value="best">Best Sellers</option>
+                            <option value="brand-az">Brand A-Z</option>
+                            <option value="brand-za">Brand Z-A</option>
+                            <option value="code-az">Product Code A-Z</option>
+                            <option value="code-za">Product Code Z-A</option>
+                            <option value="price-lh">Price: Low to High</option>
+                            <option value="price-hl">Price: High to Low</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="viewSelect">View:</label>
+                        <select id="viewSelect" class="control-select">
+                            <option value="24">24 per page</option>
+                            <option value="28" selected>28 per page</option>
+                            <option value="32">32 per page</option>
+                            <option value="48">48 per page</option>
+                            <option value="100">100 per page</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Pagination -->
+                <div class="pagination-pages" id="paginationTop" style="display: none;">
+                    <button type="button" class="pagination-button" id="paginationFirst" title="First page">«</button>
+                    <button type="button" class="pagination-button" id="paginationPrev" title="Previous page">&lt;</button>
+                    <span id="paginationPageNumbers"></span>
+                    <button type="button" class="pagination-button" id="paginationNext" title="Next page">&gt;</button>
+                    <button type="button" class="pagination-button" id="paginationLast" title="Last page">»</button>
+                </div>
+            </div>
         </div>
 
         <div class="products-grid" id="productsGrid">
             <!-- Products will be rendered by JavaScript -->
+        </div>
+        
+        <!-- Pagination Bottom (keep for backward compatibility, but hide it) -->
+        <div class="pagination-container" id="paginationContainer" style="display: none;">
+            <button type="button" class="pagination-button" id="prevPage" disabled>Previous</button>
+            <span class="pagination-info">
+                Page <span id="currentPage">1</span> of <span id="totalPages">1</span>
+            </span>
+            <button type="button" class="pagination-button" id="nextPage" disabled>Next</button>
         </div>
     </section>
 </div>
@@ -1438,10 +1680,236 @@
 </footer>
 
 <script src="../brandedukv15-child/assets/js/header.js?v=20251230"></script>
+<script src="../brandedukv15-child/assets/js/api.js?v=20260107"></script>
 <script src="js/main.js?v=20251230"></script>
 <script>
-// Products Database (same as mobile)
-const PRODUCTS_DB = [
+// ============================================================================
+// API INTEGRATION - Desktop Shop Page
+// ============================================================================
+
+// Filter value mappings (Frontend HTML values → API values) using API spec exactly
+// Most values pass through directly, but some need special mapping
+const FILTER_MAPPINGS = {
+    // Quick filters (flag[] array param) - special mappings
+    quickFilter: {
+        'new-in': 'new-in',
+        'bradeal': 'raladeal',  // HTML: bradeal -> API: raladeal
+        'offers': 'offers',
+        'in-stock': 'in-stock',
+        'recycled': 'recycled-organic'  // HTML: recycled -> API: recycled-organic
+    },
+    // Gender - values match API spec directly
+    gender: {
+        'female': 'female',
+        'male': 'male',
+        'unisex': 'unisex'
+    },
+    // Age Group - values match API spec directly
+    ageGroup: {
+        'adult': 'adult',
+        'infant': 'infant',
+        'kids': 'kids'
+    },
+    // Sleeve - values match API spec directly
+    sleeve: {
+        'long-sleeve-2': 'long-sleeve-2',
+        'short-sleeve-2': 'short-sleeve-2',
+        'sleeveless': 'sleeveless',
+        'raglan-sleeve': 'raglan-sleeve',
+        'set-in-sleeve': 'set-in-sleeve',
+        'roll-sleeve': 'roll-sleeve'
+    },
+    // Neckline - values match API spec directly
+    neckline: {
+        'crew-neck-2': 'crew-neck-2',
+        'v-neck-2': 'v-neck-2',
+        'mandarin': 'mandarin',
+        'wide-neck': 'wide-neck',
+        'roll-neck': 'roll-neck',
+        'button-down-collar': 'button-down-collar',
+        'keyhole': 'keyhole'
+    },
+    // Accreditations - values match API spec directly
+    accreditations: {
+        'vegan-tested': 'vegan-tested',
+        'oeko-tex': 'oeko-tex',
+        'global-compact': 'global-compact',
+        'sedex': 'sedex',
+        'un-global-compact': 'un-global-compact',
+        'polylana': 'polylana',
+        'ocs-blended-licence': 'ocs-blended-licence',
+        'ocs-100-licence': 'ocs-100-licence',
+        'oeko-tex-step': 'oeko-tex-step',
+        'rcs-blended-licence': 'rcs-blended-licence',
+        'global-recycled-standard': 'global-recycled-standard',
+        'sa8000': 'sa8000',
+        'amfori-bsci': 'amfori-bsci',
+        'recycled': 'recycled',
+        'b-corp': 'b-corp',
+        'gots-licence': 'gots-licence',
+        'organic': 'organic',
+        'fairtrade-': 'fairtrade-',
+        'certified-organic': 'certified-organic'
+    },
+    // Primary Colour - values match API spec directly
+    primaryColour: {
+        'black': 'black',
+        'blue': 'blue',
+        'grey': 'grey',
+        'green': 'green',
+        'white': 'white',
+        'red': 'red',
+        'pink': 'pink',
+        'yellow': 'yellow',
+        'neutral': 'neutral',
+        'purple': 'purple',
+        'orange': 'orange',
+        'brown': 'brown',
+        'pattern': 'pattern',
+        'other': 'other'
+    },
+    // Colour Shade - values match API spec directly
+    colourShade: {
+        'black - black': 'black - black',
+        'blue - navy': 'blue - navy',
+        'grey - dark grey': 'grey - dark grey',
+        'white - white': 'white - white'
+    },
+    // Style - values match API spec directly
+    style: {
+        'classic': 'classic',
+        'crew-neck-1': 'crew-neck-1',
+        'hooded-1': 'hooded-1',
+        'long-sleeve-1': 'long-sleeve-1',
+        'oversized': 'oversized',
+        'pocket': 'pocket',
+        'regular': 'regular',
+        'slim-1': 'slim-1',
+        'v-neck': 'v-neck',
+        'zipped': 'zipped'
+    },
+    // Features - values match API spec directly
+    feature: {
+        'anti-bacterial': 'anti-bacterial',
+        'breathable': 'breathable',
+        'eco': 'eco',
+        'heavyweight': 'heavyweight',
+        'tear-away': 'tear-away',
+        'uv-protection': 'uv-protection',
+        'water-resistant': 'water-resistant'
+    },
+    // Size - values match API spec directly
+    size: {
+        's': 's',
+        'm': 'm',
+        'l': 'l',
+        'xl': 'xl',
+        '2xl': '2xl',
+        '3xl': '3xl',
+        'xs': 'xs',
+        'one-size': 'one-size',
+        '4xl': '4xl',
+        '5xl': '5xl'
+    },
+    // Fabric - values match API spec directly
+    fabric: {
+        'recycled-100': 'recycled-100',
+        'organic-100': 'organic-100',
+        'polyester-100': 'polyester-100',
+        'cotton-100': 'cotton-100',
+        'nylon-100': 'nylon-100',
+        'ringspun-100': 'ringspun-100'
+    },
+    // Weight - values match API spec directly
+    weight: {
+        '0-50gsm': '0-50gsm',
+        '051-100gsm': '051-100gsm',
+        '101-150gsm': '101-150gsm',
+        '151-200gsm': '151-200gsm',
+        '201-250gsm': '201-250gsm',
+        '251-300gsm': '251-300gsm',
+        'over-300gsm': 'over-300gsm'
+    },
+    // Fit - values match API spec directly
+    fit: {
+        'classic': 'classic',
+        'comfort': 'comfort',
+        'crop': 'crop',
+        'fashion': 'fashion',
+        'fitted': 'fitted',
+        'oversized': 'oversized',
+        'relaxed': 'relaxed',
+        'semi-fitted': 'semi-fitted'
+    },
+    // Related Sector - values match API spec directly
+    sector: {
+        'sport': 'sport',
+        'corporate': 'corporate',
+        'hospitality': 'hospitality',
+        'travel': 'travel',
+        'fashion': 'fashion'
+    },
+    // Related Sport - values match API spec directly
+    sport: {
+        'golf': 'golf',
+        'gym': 'gym',
+        'swimming': 'swimming',
+        'rugby': 'rugby'
+    },
+    // Tag - values match API spec directly
+    tag: {
+        'adhesives': 'adhesives',
+        'cut-away-inner-label': 'cut-away-inner-label',
+        'sewn-tag': 'sewn-tag',
+        'tagless': 'tagless'
+    },
+    // Effect - values match API spec directly
+    effect: {
+        'melange': 'melange',
+        'heather': 'heather',
+        'tie-dye': 'tie-dye',
+        'triblend': 'triblend',
+        'washed': 'washed',
+        'acid-wash': 'acid-wash'
+    }
+};
+
+// State
+let currentState = {
+    page: 1,
+    limit: 28,
+    total: 0,
+    category: 'all',
+    search: '',
+    priceMin: null,
+    priceMax: null,
+    sort: 'best',
+    filters: {
+        gender: [],
+        ageGroup: [],
+        sleeve: [],
+        neckline: [],
+        fabric: [],
+        size: [],
+        primaryColour: [],
+        colourShade: [],
+        style: [],
+        tag: [],
+        weight: [],
+        fit: [],
+        sector: [],
+        sport: [],
+        effect: [],
+        accreditations: [],
+        features: [],
+        quickFilters: []
+    }
+};
+
+let isLoading = false;
+
+// Legacy static data (kept for fallback, but not used)
+const PRODUCTS_DB_LEGACY = [
     {
         code: "GD067",
         name: "Softstyle™ midweight fleece adult hoodie",
@@ -1712,56 +2180,362 @@ const PRODUCTS_DB = [
     }
 ];
 
-// Price breaks
-const PRICE_BREAKS = [
-    { min: 1, max: 9, price: 17.58 },
-    { min: 10, max: 24, price: 16.54 },
-    { min: 25, max: 49, price: 16.18 },
-    { min: 50, max: 99, price: 14.94 },
-    { min: 100, max: 249, price: 13.49 },
-    { min: 250, max: 99999, price: 12.59 }
-];
+// ============================================================================
+// API INTEGRATION FUNCTIONS
+// ============================================================================
 
-// Get category from URL
+// Parse URL parameters
 const urlParams = new URLSearchParams(window.location.search);
 
+// Category normalization and API name mapping
 function normalizeCategory(raw) {
     const value = String(raw || '').trim().toLowerCase();
     if (!value) return 'all';
-
     const aliases = {
-        't-shirt': 'tshirts',
-        't-shirts': 'tshirts',
-        'tees': 'tshirts',
-        'tee': 'tshirts',
-        'polo-shirts': 'polo',
-        'polos': 'polo',
-        'hi-viz': 'hivis',
-        'hi-vis': 'hivis',
-        'hi-vis clothing': 'hivis',
-        'hi-viz clothing': 'hivis'
+        't-shirt': 'tshirts', 't-shirts': 'tshirts', 'tees': 'tshirts', 'tee': 'tshirts',
+        'polo-shirts': 'polo', 'polos': 'polo',
+        'hi-viz': 'hivis', 'hi-vis': 'hivis', 'hi-vis clothing': 'hivis', 'hi-viz clothing': 'hivis'
     };
-
     return aliases[value] || value;
 }
 
-const VALID_CATEGORIES = new Set(['all', 'tshirts', 'polo', 'hoodies', 'jackets', 'hivis', 'trousers', 'fleeces', 'bags', 'caps', 'beanies', 'aprons', 'sustainable', 'workwear']);
-const demoMode = urlParams.get('demo') === '1';
+// Map frontend category slug to API productType name
+function getApiCategoryName(categorySlug) {
+    const slugToApiName = {
+        'tshirts': 'T-Shirts',
+        'caps': 'Caps',
+        'hoodies': 'Hoodies',
+        'jackets': 'Jackets',
+        'polo': 'Polos',
+        'shirts': 'Shirts',
+        'sweatshirts': 'Sweatshirts',
+        'beanies': 'Beanies',
+        'blouses': 'Blouses',
+        'chinos': 'Chinos',
+        'fleeces': 'Fleeces',
+        'hivis': 'Hi-Vis',
+        'trousers': 'Trousers',
+        'workwear': 'Workwear'
+    };
+    return slugToApiName[categorySlug] || null;
+}
+
+// Initialize state from URL
 let categoryFilter = normalizeCategory(urlParams.get('category')) || 'all';
-if (!VALID_CATEGORIES.has(categoryFilter)) {
-    categoryFilter = 'all';
-}
+currentState.category = categoryFilter;
+currentState.page = parseInt(urlParams.get('page')) || 1;
+currentState.limit = parseInt(urlParams.get('limit')) || 28;
+currentState.sort = urlParams.get('sort') || 'best';
+currentState.search = urlParams.get('q') || '';
+currentState.priceMin = urlParams.get('priceMin') ? parseFloat(urlParams.get('priceMin')) : null;
+currentState.priceMax = urlParams.get('priceMax') ? parseFloat(urlParams.get('priceMax')) : null;
 
-function getDemoProduct() {
-    return PRODUCTS_DB.find(p => p.code === 'GD067') || PRODUCTS_DB[0] || null;
-}
-
-function getCatalogProducts() {
-    if (demoMode) {
-        const demoProduct = getDemoProduct();
-        return demoProduct ? [demoProduct] : [];
+// Handle style parameter (subcategory) from URL
+const styleParam = urlParams.get('style');
+if (styleParam) {
+    // Add style to filters if not already present
+    if (!currentState.filters.style) {
+        currentState.filters.style = [];
     }
-    return categoryFilter === 'all' ? PRODUCTS_DB : PRODUCTS_DB.filter(p => p.category === categoryFilter);
+    // Add style slug to filters (API expects style slugs)
+    const styleSlug = styleParam.toLowerCase().trim();
+    if (!currentState.filters.style.includes(styleSlug)) {
+        currentState.filters.style.push(styleSlug);
+    }
+}
+
+// Map frontend filter values to API slugs
+function mapFilterValue(filterType, frontendValue) {
+    const mapping = FILTER_MAPPINGS[filterType];
+    return mapping && mapping[frontendValue] ? mapping[frontendValue] : frontendValue;
+}
+
+// Build API params from current state
+function buildApiParams() {
+    const params = {};
+
+    // Pagination (always included)
+    params.page = currentState.page || 1;
+    params.limit = currentState.limit || 28;
+
+    // Sort parameter
+    if (currentState.sort) {
+        // Map frontend sort values to API sort values
+        const sortMap = {
+            'best': 'best',
+            'brand-az': 'brand-az',
+            'brand-za': 'brand-za',
+            'code-az': 'code-az',
+            'code-za': 'code-za',
+            'price-lh': 'price-lh',
+            'price-hl': 'price-hl'
+        };
+        const apiSort = sortMap[currentState.sort] || currentState.sort;
+        params.sort = apiSort;
+    }
+
+    // Search query (mutually exclusive with productType)
+    // According to API spec: if q is present, productType is set to null
+    if (currentState.search && currentState.search.trim()) {
+        params.q = currentState.search.trim();
+        // Don't set productType when search is present (mutually exclusive)
+    } else if (currentState.category !== 'all') {
+        // Map category slug to API productType name only if no search
+        const apiCategoryName = getApiCategoryName(currentState.category);
+        if (apiCategoryName) {
+            params.productType = apiCategoryName;
+        } else {
+            params.productType = currentState.category;
+        }
+    }
+
+    // Price range (numeric values)
+    // Send priceMin and priceMax if they are set (even if they match the full range)
+    if (currentState.priceMin !== null && currentState.priceMin !== undefined) {
+        params.priceMin = Number(currentState.priceMin);
+        console.log('💰 Adding priceMin to API params:', params.priceMin);
+    } else {
+        console.log('💰 priceMin is null/undefined, not adding to API params');
+    }
+    if (currentState.priceMax !== null && currentState.priceMax !== undefined) {
+        params.priceMax = Number(currentState.priceMax);
+        console.log('💰 Adding priceMax to API params:', params.priceMax);
+    } else {
+        console.log('💰 priceMax is null/undefined, not adding to API params');
+    }
+
+    // Build array parameters from filters
+    // Map each filter key to its API parameter name
+    const filterMap = {
+        'gender': 'gender',
+        'ageGroup': 'ageGroup',
+        'sleeve': 'sleeve',
+        'neckline': 'neckline',
+        'accreditations': 'accreditations',
+        'primaryColour': 'primaryColour',
+        'colourShade': 'colourShade',
+        'style': 'style',
+        'feature': 'feature', // Singular, not features
+        'size': 'size',
+        'fabric': 'fabric',
+        'weight': 'weight',
+        'fit': 'fit',
+        'sector': 'sector',
+        'sport': 'sport',
+        'tag': 'tag',
+        'effect': 'effect'
+    };
+
+    // Process each filter
+    Object.keys(currentState.filters).forEach(filterKey => {
+        const filterValues = currentState.filters[filterKey];
+        // Ensure filterValues is an array
+        const values = Array.isArray(filterValues) ? filterValues : [];
+        
+        if (values.length > 0) {
+            const apiParam = filterMap[filterKey];
+            if (apiParam) {
+                // Map each value using FILTER_MAPPINGS
+                const mappedValues = values.map(val => {
+                    return FILTER_MAPPINGS[filterKey]?.[val] || val;
+                }).filter(v => v); // Remove any null/undefined values
+                
+                if (mappedValues.length > 0) {
+                    // Store as array param: paramName[] = [value1, value2, ...]
+                    params[`${apiParam}[]`] = mappedValues;
+                }
+            }
+        }
+    });
+
+    // Handle quick filters separately (flag[] param with special mappings)
+    if (currentState.filters.quickFilters) {
+        const quickValues = Array.isArray(currentState.filters.quickFilters) 
+            ? currentState.filters.quickFilters 
+            : [];
+        
+        if (quickValues.length > 0) {
+            const mappedQuickFilters = quickValues.map(val => FILTER_MAPPINGS.quickFilter?.[val] || val).filter(v => v);
+            if (mappedQuickFilters.length > 0) {
+                params['flag[]'] = mappedQuickFilters;
+            }
+        }
+    }
+
+    // Log the final params we will send to the API
+    try {
+        const cleanParams = JSON.parse(JSON.stringify(params));
+        console.log('🔧 buildApiParams() -> Final params:', cleanParams);
+    } catch (e) {
+        console.log('🔧 buildApiParams() -> Final params:', params);
+    }
+    
+    return params;
+}
+
+// Fetch products from API
+async function fetchProducts() {
+    if (isLoading) {
+        console.log('⏳ API call already in progress, skipping...');
+        return;
+    }
+    isLoading = true;
+    
+    try {
+        const params = buildApiParams();
+        
+        // Build the full API URL for logging (matching API spec format)
+        const baseUrl = 'https://brandeduk-backend.onrender.com/api/products';
+        const queryParts = [];
+        
+        Object.keys(params).forEach(key => {
+            const value = params[key];
+            if (value === null || value === undefined || value === '') {
+                return;
+            }
+            
+            // Handle array parameters (keys ending with [])
+            if (key.endsWith('[]') && Array.isArray(value)) {
+                value.forEach(v => {
+                    if (v !== null && v !== undefined && v !== '') {
+                        queryParts.push(`${key}=${encodeURIComponent(v)}`);
+                    }
+                });
+            } else if (Array.isArray(value)) {
+                // If it's an array but key doesn't end with [], add [] to key
+                value.forEach(v => {
+                    if (v !== null && v !== undefined && v !== '') {
+                        queryParts.push(`${key}[]=${encodeURIComponent(v)}`);
+                    }
+                });
+            } else {
+                // Single value parameter
+                queryParts.push(`${key}=${encodeURIComponent(value)}`);
+            }
+        });
+        
+        const queryString = queryParts.join('&');
+        const fullUrl = `${baseUrl}${queryString ? '?' + queryString : ''}`;
+        
+        // Log the API call
+        console.log('🚀 API CALL TRIGGERED:', {
+            method: 'GET',
+            url: fullUrl,
+            params: params,
+            timestamp: new Date().toISOString()
+        });
+        
+        const data = await BrandedAPI.getProducts(params);
+        
+        console.log('✅ API RESPONSE RECEIVED:', {
+            total: data && data.total,
+            itemsCount: (data && data.items && data.items.length) || 0,
+            timestamp: new Date().toISOString()
+        });
+        
+        currentState.total = data.total;
+        return data.items;
+    } catch (error) {
+        console.error('❌ ERROR fetching products:', error);
+        console.error('Error details:', {
+            message: error.message,
+            stack: error.stack,
+            timestamp: new Date().toISOString()
+        });
+        return [];
+    } finally {
+        isLoading = false;
+    }
+}
+
+// Fetch filter counts
+async function fetchFilterCounts() {
+    try {
+        console.log('🔍 Fetching filter counts...');
+        const params = buildApiParams();
+        
+        // Call /api/products with same parameters to get filter aggregations
+        const counts = await BrandedAPI.getFilterCounts(params);
+        
+        console.log('📊 Filter counts received:', counts);
+        updateFilterCounts(counts);
+    } catch (error) {
+        console.error('❌ Error fetching filter counts:', error);
+    }
+}
+
+// Update filter counts in sidebar
+function updateFilterCounts(counts) {
+    if (!counts) return;
+    
+    // Map API filter names to frontend selectors
+    const filterMap = {
+        gender: '.filter-checkbox-item input[value]',
+        ageGroup: '.filter-checkbox-item input[value]',
+        sleeve: '.filter-checkbox-item input[value]',
+        neckline: '.filter-checkbox-item input[value]',
+        fabric: '.filter-checkbox-item input[value]',
+        size: '.filter-checkbox-item input[value]',
+        primaryColour: '.filter-checkbox-item input[value]',
+        colourShade: '.filter-checkbox-item input[value]',
+        style: '.filter-checkbox-item input[value]',
+        tag: '.filter-checkbox-item input[value]',
+        weight: '.filter-checkbox-item input[value]',
+        fit: '.filter-checkbox-item input[value]',
+        sector: '.filter-checkbox-item input[value]',
+        sport: '.filter-checkbox-item input[value]',
+        effect: '.filter-checkbox-item input[value]',
+        accreditations: '.filter-checkbox-item input[value]',
+        feature: '.filter-checkbox-item input[value]'
+    };
+    
+    // Update counts for each filter type
+    Object.keys(counts).forEach(apiFilterName => {
+        const filterSection = document.querySelector(`.filter-expandable-row:has(h4:contains('${apiFilterName}'))`);
+        if (!filterSection) return;
+        
+        const filterContent = filterSection.nextElementSibling;
+        if (!filterContent || !filterContent.classList.contains('filter-expandable-content')) return;
+        
+        Object.keys(counts[apiFilterName]).forEach(slug => {
+            // Find the checkbox with matching value (may need reverse mapping)
+            const checkbox = filterContent.querySelector(`input[value="${slug}"]`);
+            if (checkbox) {
+                const count = counts[apiFilterName][slug];
+                let countSpan = checkbox.parentElement.querySelector('.count');
+                if (!countSpan) {
+                    countSpan = document.createElement('span');
+                    countSpan.className = 'count';
+                    checkbox.parentElement.appendChild(countSpan);
+                }
+                countSpan.textContent = `(${count})`;
+            }
+        });
+    });
+}
+
+// Update URL without reload
+function updateURL() {
+    const url = new URL(window.location);
+    url.searchParams.set('category', currentState.category);
+    url.searchParams.set('page', currentState.page);
+    if (currentState.limit && currentState.limit !== 28) {
+        url.searchParams.set('limit', currentState.limit);
+    } else {
+        url.searchParams.delete('limit');
+    }
+    if (currentState.sort && currentState.sort !== 'best') {
+        url.searchParams.set('sort', currentState.sort);
+    } else {
+        url.searchParams.delete('sort');
+    }
+    if (currentState.search) url.searchParams.set('q', currentState.search);
+    else url.searchParams.delete('q');
+    if (currentState.priceMin !== null) url.searchParams.set('priceMin', currentState.priceMin);
+    else url.searchParams.delete('priceMin');
+    if (currentState.priceMax !== null) url.searchParams.set('priceMax', currentState.priceMax);
+    else url.searchParams.delete('priceMax');
+    window.history.replaceState({}, '', url);
 }
 
 // Category titles
@@ -1805,31 +2579,79 @@ function getPriceRange() {
     return { min: Math.min(...prices), max: Math.max(...prices) };
 }
 
-// Render products
-function renderProducts() {
+// Render products (now uses API data)
+async function renderProducts() {
     const grid = document.getElementById('productsGrid');
-    const products = getCatalogProducts();
+    if (!grid) {
+        console.error('❌ productsGrid element not found!');
+        return;
+    }
     
-    document.getElementById('categoryTitle').textContent = categoryTitles[categoryFilter] || 'Products';
-    document.getElementById('productsCount').textContent = products.length + ' products';
+    console.log('🎨 renderProducts() called - updating product grid...');
     
+    // Keep current products visible - don't show loading state
+    // Store current state to preserve it during fetch
+    const currentProductsCount = grid.children.length;
+    console.log(`📦 Keeping ${currentProductsCount} current products visible while fetching...`);
+    
+    // Fetch new products (keep old ones visible)
+    const products = await fetchProducts();
+    
+    console.log(`📦 Received ${products.length} products from API`);
+    
+    // Update title and count
+    const categoryTitleEl = document.getElementById('categoryTitle');
+    const productsCountEl = document.getElementById('productsCount');
+    
+    if (categoryTitleEl) {
+        categoryTitleEl.textContent = categoryTitles[currentState.category] || 'Products';
+    }
+    if (productsCountEl) {
+        productsCountEl.textContent = `${currentState.total} products`;
+    }
+    
+    // Update pagination
+    updatePagination();
+    
+    // Now replace the grid with new products (only after data arrives)
     grid.innerHTML = '';
     
+    if (products.length === 0) {
+        console.log('⚠️ No products found matching criteria');
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #6b7280;">No products found matching your criteria.</div>';
+        return;
+    }
+    
+    console.log(`✅ Rendering ${products.length} products to grid...`);
+    
     products.forEach((product, index) => {
-        const colorIndex = index % product.colors.length;
-        const displayColor = product.colors[colorIndex];
-        const productPrice = parseFloat(product.price);
+        // Transform API product to frontend format
+        const colors = product.colors || [{ name: 'Default', main: product.image }];
+        const colorIndex = index % colors.length;
+        const displayColor = colors[colorIndex];
+        
+        // Get price range from priceBreaks or use base price
+        let minPrice = parseFloat(product.price) || 0;
+        let maxPrice = minPrice;
+        if (product.priceBreaks && product.priceBreaks.length > 0) {
+            const prices = product.priceBreaks.map(pb => parseFloat(pb.price)).filter(p => !isNaN(p));
+            if (prices.length > 0) {
+                minPrice = Math.min(...prices);
+                maxPrice = Math.max(...prices);
+            }
+        }
+        const productPrice = minPrice;
         
         const card = document.createElement('div');
         card.className = 'product-card';
         
         // Generate ALL colors for this card
-        const colors = product.colors.map((c, i) => 
-            `<button type="button" class="color-dot ${i === colorIndex ? 'active' : ''}" data-color="${c.name}" data-main="${c.main}" style="background-image: url('${c.main}');" title="${c.name}"></button>`
+        const colorsHtml = colors.map((c, i) => 
+            `<button type="button" class="color-dot ${i === colorIndex ? 'active' : ''}" data-color="${c.name}" data-main="${c.main || c.image_url || product.image}" style="background-image: url('${c.main || c.image_url || product.image}');" title="${c.name}"></button>`
         ).join('');
         
         const visibleColors = 7;
-        const progressPercent = Math.min(100, (visibleColors / product.colors.length) * 100);
+        const progressPercent = Math.min(100, (visibleColors / colors.length) * 100);
         
         // Build badges based on customization types
         let badgesHtml = '';
@@ -1853,13 +2675,13 @@ function renderProducts() {
                     <span class="brand-name">${product.brand}</span>
                 </div>
                 <div class="product-name">${product.name}</div>
-                <div class="product-price">
+                <div class="product-price" data-price-min="${minPrice}" data-price-max="${maxPrice}">
                     <span class="price-label">From</span>
                     <span class="price-value">${formatCurrency(productPrice)}</span>
                     <span class="price-suffix">${vatSuffix()}</span>
                 </div>
                 <div class="product-colors-wrapper">
-                    <div class="product-colors">${colors}</div>
+                    <div class="product-colors">${colorsHtml}</div>
                     <div class="color-slider-controls">
                         <button type="button" class="color-arrow color-prev" aria-label="Previous colors">‹</button>
                         <div class="color-progress">
@@ -1918,59 +2740,106 @@ function renderProducts() {
                 sessionStorage.setItem('selectedColorUrl', activeColor.dataset.main);
             }
             // Navigate to product detail page
-            window.location.href = '../product-detail.html';
+            window.location.href = '../product-detail.html?code=' + product.code;
         });
         
         grid.appendChild(card);
     });
+    
+    console.log(`✅ Successfully rendered ${products.length} products to grid!`);
 }
 
-// Toggle switch functionality
+// Toggle switch functionality for special filters
 document.querySelectorAll('.filter-toggle-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
         const isPressed = btn.getAttribute('aria-pressed') === 'true';
         btn.setAttribute('aria-pressed', !isPressed);
+        
+        // Initialize quickFilters if not exists
+        if (!currentState.filters.quickFilters) {
+            currentState.filters.quickFilters = [];
+        }
+        
+        // Map button classes to filter values (matching API spec)
+        const filterValueMap = {
+            'toggle-new-in': 'new-in',
+            'toggle-bradeal': 'bradeal',
+            'toggle-offers': 'offers',
+            'toggle-in-stock': 'in-stock',
+            'toggle-recycled': 'recycled'
+            // Note: 'toggle-plus-sizes' not in API spec, so not mapped
+        };
+        
+        // Find the filter value for this button
+        let filterValue = null;
+        for (const [className, value] of Object.entries(filterValueMap)) {
+            if (btn.classList.contains(className)) {
+                filterValue = value;
+                break;
+            }
+        }
+        
+        if (filterValue) {
+            console.log('🔘 QUICK FILTER TOGGLE CLICKED:', {
+                filterValue: filterValue,
+                isPressed: isPressed,
+                willBeActive: !isPressed,
+                timestamp: new Date().toISOString()
+            });
+            
+            if (!isPressed) {
+                // Add filter
+                if (!currentState.filters.quickFilters.includes(filterValue)) {
+                    currentState.filters.quickFilters.push(filterValue);
+                }
+            } else {
+                // Remove filter
+                currentState.filters.quickFilters = currentState.filters.quickFilters.filter(v => v !== filterValue);
+            }
+            
+            console.log('📊 QUICK FILTER STATE UPDATED:', {
+                quickFilters: currentState.filters.quickFilters,
+                fullState: JSON.parse(JSON.stringify(currentState.filters))
+            });
+            
+            // Build API params to show what will be sent
+            const apiParams = buildApiParams();
+            console.log('📤 API PARAMS BUILT:', apiParams);
+            
+            // Reset to page 1 and fetch new products
+            currentState.page = 1;
+            updateURL();
+            
+            console.log('🔄 Calling renderProducts() to trigger API call...');
+            await renderProducts();
+            await fetchFilterCounts();
+        }
     });
 });
 
 // Clear All button functionality
-document.querySelector('.clear-all-btn')?.addEventListener('click', function() {
+document.querySelector('.clear-all-btn')?.addEventListener('click', async function() {
     // Reset all toggle switches to OFF
     document.querySelectorAll('.filter-toggle-btn').forEach(btn => {
         btn.setAttribute('aria-pressed', 'false');
     });
     
-    // Reset price range slider to full range
-    const products = getCatalogProducts();
-    const prices = products.map(p => parseFloat(p.price)).filter(n => Number.isFinite(n));
-    if (!prices.length) {
-        document.getElementById('productsCount').textContent = '0 products';
-        return;
-    }
-    const catalogMinPrice = Math.floor(Math.min(...prices));
-    const catalogMaxPrice = Math.ceil(Math.max(...prices));
+    // Reset all checkboxes
+    document.querySelectorAll('.filter-checkbox-item input[type="checkbox"]').forEach(cb => {
+        cb.checked = false;
+    });
     
-    const sliderMin = document.getElementById('priceSliderMin');
-    const sliderMax = document.getElementById('priceSliderMax');
-    const rangeSelected = document.getElementById('priceRangeSelected');
-    const rangeDisplay = document.getElementById('priceRangeDisplay');
-    const inputMin = document.getElementById('priceInputMin');
-    const inputMax = document.getElementById('priceInputMax');
+    // Reset state
+    currentState.page = 1;
+    currentState.search = '';
+    currentState.priceMin = null;
+    currentState.priceMax = null;
+    Object.keys(currentState.filters).forEach(key => {
+        currentState.filters[key] = [];
+    });
     
-    if (sliderMin && sliderMax) {
-        sliderMin.value = catalogMinPrice;
-        sliderMax.value = catalogMaxPrice;
-        
-        // Update display
-        rangeSelected.style.left = '0%';
-        rangeSelected.style.width = '100%';
-        
-        const vatMultiplier = isVatOn() ? 1.20 : 1;
-        rangeDisplay.textContent = '£' + (catalogMinPrice * vatMultiplier).toFixed(2) + ' - £' + (catalogMaxPrice * vatMultiplier).toFixed(2);
-        
-        inputMin.value = '£' + catalogMinPrice;
-        inputMax.value = '£' + catalogMaxPrice;
-    }
+    // Reset quick filters
+    currentState.filters.quickFilters = [];
     
     // Clear search input
     const searchInput = document.querySelector('.filter-search');
@@ -1980,14 +2849,11 @@ document.querySelector('.clear-all-btn')?.addEventListener('click', function() {
     const specialFilters = document.querySelector('.special-filters-dropdown');
     if (specialFilters) specialFilters.classList.remove('open');
     
-    // Show all products
-    document.querySelectorAll('.product-card').forEach(card => {
-        card.style.display = '';
-    });
-    
-    // Update count
-    const products2 = getCatalogProducts();
-    document.getElementById('productsCount').textContent = products2.length + ' products';
+    // Reset price range (will be updated after fetching products)
+    updateURL();
+    await renderProducts();
+    await fetchFilterCounts();
+    initPriceRangeSlider();
 });
 
 // Listen for VAT state changes from main.js (legacy)
@@ -2003,7 +2869,11 @@ document.addEventListener('brandeduk:vat-change', function(e) {
 });
 
 // Dual Price Range Slider
-function initPriceRangeSlider() {
+async function initPriceRangeSlider() {
+    // #region agent log
+    fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2698',message:'initPriceRangeSlider ENTRY',data:{timestamp:Date.now()},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
+    console.log('🎚️ Initializing price range slider...');
     const sliderMin = document.getElementById('priceSliderMin');
     const sliderMax = document.getElementById('priceSliderMax');
     const rangeSelected = document.getElementById('priceRangeSelected');
@@ -2011,43 +2881,103 @@ function initPriceRangeSlider() {
     const inputMin = document.getElementById('priceInputMin');
     const inputMax = document.getElementById('priceInputMax');
     
-    if (!sliderMin || !sliderMax) return;
+    // #region agent log
+    fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2707',message:'Element existence check',data:{sliderMinExists:!!sliderMin,sliderMaxExists:!!sliderMax,sliderMinId:sliderMin?.id,sliderMaxId:sliderMax?.id},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+    // #endregion
     
-    // Calculate min/max from current catalog products
-    const products = getCatalogProducts();
-    const prices = products.map(p => parseFloat(p.price)).filter(n => Number.isFinite(n));
-    if (!prices.length) {
-        // Keep products visible; avoid filtering everything out.
-        sliderMin.disabled = true;
-        sliderMax.disabled = true;
+    if (!sliderMin || !sliderMax) {
+        // #region agent log
+        fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2708',message:'Sliders NOT FOUND - early return',data:{sliderMin:!!sliderMin,sliderMax:!!sliderMax},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+        // #endregion
+        console.error('❌ Price sliders not found!', { sliderMin: !!sliderMin, sliderMax: !!sliderMax });
         return;
     }
+    
+    // #region agent log
+    fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2712',message:'Sliders found - continuing',data:{sliderMinDisabled:sliderMin.disabled,sliderMaxDisabled:sliderMax.disabled,sliderMinPointerEvents:getComputedStyle(sliderMin).pointerEvents,sliderMaxPointerEvents:getComputedStyle(sliderMax).pointerEvents},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+    // #endregion
+    console.log('✅ Price sliders found');
+    
+    // Declare variables in function scope
+    let catalogMinPrice = 14;
+    let catalogMaxPrice = 65;
+    let priceUpdateTimeout;
+    
+    // Fetch price range from API (without filters to get full range)
+    try {
+        console.log('📡 Fetching price range from API...');
+        const params = { limit: 1 }; // Just to get priceRange metadata
+        const data = await BrandedAPI.getProducts(params);
+        const priceRange = data.priceRange || { min: 14, max: 65 };
+        
+        catalogMinPrice = Math.floor(priceRange.min || 14);
+        catalogMaxPrice = Math.ceil(priceRange.max || 65);
+        console.log('✅ Price range fetched:', { catalogMinPrice, catalogMaxPrice });
+        
     sliderMin.disabled = false;
     sliderMax.disabled = false;
-
-    const catalogMinPrice = Math.floor(Math.min(...prices));
-    const catalogMaxPrice = Math.ceil(Math.max(...prices));
     
     // Update slider attributes dynamically
     sliderMin.min = catalogMinPrice;
     sliderMin.max = catalogMaxPrice;
-    sliderMin.value = catalogMinPrice;
-    
     sliderMax.min = catalogMinPrice;
     sliderMax.max = catalogMaxPrice;
-    sliderMax.value = catalogMaxPrice;
+        
+        // Initialize slider values from URL params or use full range (but don't set state unless in URL)
+        const urlPriceMin = urlParams.get('priceMin');
+        const urlPriceMax = urlParams.get('priceMax');
+        
+        if (urlPriceMin && !isNaN(parseFloat(urlPriceMin))) {
+            currentState.priceMin = Math.max(catalogMinPrice, Math.min(catalogMaxPrice, parseFloat(urlPriceMin)));
+            sliderMin.value = currentState.priceMin;
+        } else {
+            // Don't set state, just set slider to full range for display
+            sliderMin.value = catalogMinPrice;
+            currentState.priceMin = null; // Keep null so API doesn't filter by price
+        }
+        
+        if (urlPriceMax && !isNaN(parseFloat(urlPriceMax))) {
+            currentState.priceMax = Math.max(catalogMinPrice, Math.min(catalogMaxPrice, parseFloat(urlPriceMax)));
+            sliderMax.value = currentState.priceMax;
+        } else {
+            // Don't set state, just set slider to full range for display
+            sliderMax.value = catalogMaxPrice;
+            currentState.priceMax = null; // Keep null so API doesn't filter by price
+        }
+        
+        console.log('✅ Slider values initialized:', { 
+            minValue: sliderMin.value, 
+            maxValue: sliderMax.value,
+            minRange: catalogMinPrice,
+            maxRange: catalogMaxPrice,
+            statePriceMin: currentState.priceMin,
+            statePriceMax: currentState.priceMax
+        });
+        
+    } catch (error) {
+        console.error('❌ Error initializing price slider:', error);
+        // Use defaults
+        catalogMinPrice = 14;
+        catalogMaxPrice = 65;
+        currentState.priceMin = catalogMinPrice;
+        currentState.priceMax = catalogMaxPrice;
+        sliderMin.min = catalogMinPrice;
+        sliderMin.max = catalogMaxPrice;
+        sliderMax.min = catalogMinPrice;
+        sliderMax.max = catalogMaxPrice;
+        sliderMin.value = catalogMinPrice;
+        sliderMax.value = catalogMaxPrice;
+    }
     
-    function updateSlider() {
+    function updateSlider(triggerAPI = false) {
+        console.log('🎚️ updateSlider() called', { triggerAPI });
         let minVal = parseInt(sliderMin.value);
         let maxVal = parseInt(sliderMax.value);
 
+        console.log('🎚️ Slider values:', { minVal, maxVal, catalogMinPrice, catalogMaxPrice });
+
         if (!Number.isFinite(minVal) || !Number.isFinite(maxVal)) {
-            // Avoid hiding everything if slider values are invalid.
-            document.querySelectorAll('.product-card').forEach(card => {
-                card.style.display = '';
-            });
-            const countEl = document.getElementById('productsCount');
-            if (countEl) countEl.textContent = document.querySelectorAll('.product-card').length + ' products';
+            console.warn('⚠️ Invalid slider values:', { minVal, maxVal });
             return;
         }
         
@@ -2056,50 +2986,274 @@ function initPriceRangeSlider() {
             const temp = minVal;
             minVal = maxVal;
             maxVal = temp;
+            sliderMin.value = minVal;
+            sliderMax.value = maxVal;
         }
         
         // Update selected range bar
         const percentMin = ((minVal - catalogMinPrice) / (catalogMaxPrice - catalogMinPrice)) * 100;
         const percentMax = ((maxVal - catalogMinPrice) / (catalogMaxPrice - catalogMinPrice)) * 100;
+        if (rangeSelected) {
         rangeSelected.style.left = percentMin + '%';
         rangeSelected.style.width = (percentMax - percentMin) + '%';
+        }
         
         // Update display with VAT
         const vatMultiplier = isVatOn() ? 1.20 : 1;
         const displayMin = (minVal * vatMultiplier).toFixed(2);
         const displayMax = (maxVal * vatMultiplier).toFixed(2);
+        if (rangeDisplay) {
         rangeDisplay.textContent = '£' + displayMin + ' - £' + displayMax;
+        }
         
         // Update inputs
-        inputMin.value = '£' + minVal;
-        inputMax.value = '£' + maxVal;
+        if (inputMin) inputMin.value = '£' + minVal;
+        if (inputMax) inputMax.value = '£' + maxVal;
         
-        // Filter products
-        filterProductsByPrice(minVal, maxVal);
+        // Update state immediately
+        currentState.priceMin = minVal;
+        currentState.priceMax = maxVal;
+        
+        console.log('💰 Price state updated:', { priceMin: currentState.priceMin, priceMax: currentState.priceMax });
+        
+        // Always clear any pending timeout
+        clearTimeout(priceUpdateTimeout);
+        
+        // Trigger API call
+        if (triggerAPI) {
+            // Immediate API call (for change events)
+            currentState.page = 1;
+            updateURL();
+            console.log('💰 Triggering IMMEDIATE API call with price range:', { priceMin: minVal, priceMax: maxVal });
+            console.log('📤 Current state before API call:', JSON.parse(JSON.stringify(currentState)));
+            renderProducts().then(() => {
+                console.log('✅ renderProducts() completed');
+            }).catch(err => {
+                console.error('❌ Error in renderProducts():', err);
+            });
+            fetchFilterCounts().then(() => {
+                console.log('✅ fetchFilterCounts() completed');
+            }).catch(err => {
+                console.error('❌ Error in fetchFilterCounts():', err);
+            });
+        } else {
+            // Debounced API call (for input events while dragging)
+        priceUpdateTimeout = setTimeout(async () => {
+                console.log('💰 Price filter changed (debounced), fetching products...', { priceMin: minVal, priceMax: maxVal });
+                console.log('📤 Current state before API call:', JSON.parse(JSON.stringify(currentState)));
+        currentState.page = 1;
+        updateURL();
+                try {
+            await renderProducts();
+                    console.log('✅ renderProducts() completed (debounced)');
+                } catch (err) {
+                    console.error('❌ Error in renderProducts() (debounced):', err);
+                }
+                try {
+            await fetchFilterCounts();
+                    console.log('✅ fetchFilterCounts() completed (debounced)');
+                } catch (err) {
+                    console.error('❌ Error in fetchFilterCounts() (debounced):', err);
+                }
+        }, 500); // Debounce 500ms while dragging
+            console.log('⏳ Debounced API call scheduled (500ms delay)');
+        }
     }
     
-    sliderMin.addEventListener('input', updateSlider);
-    sliderMax.addEventListener('input', updateSlider);
+    // Track last values to detect changes
+    let lastMinVal = parseInt(sliderMin.value);
+    let lastMaxVal = parseInt(sliderMax.value);
     
-    // Input field handlers
+    // Function to check if slider values changed and trigger API
+    function checkAndTriggerAPI() {
+        const currentMin = parseInt(sliderMin.value);
+        const currentMax = parseInt(sliderMax.value);
+        
+        if (currentMin !== lastMinVal || currentMax !== lastMaxVal) {
+            console.log('🔄 Slider values changed:', {
+                old: { min: lastMinVal, max: lastMaxVal },
+                new: { min: currentMin, max: currentMax }
+            });
+            lastMinVal = currentMin;
+            lastMaxVal = currentMax;
+            updateSlider(true); // Always trigger API when values change
+        }
+    }
+    
+    // Update UI and trigger debounced API call on slider movement (while dragging)
+    console.log('🔧 Attaching price slider event listeners...');
+    
+    // #region agent log
+    fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2897',message:'About to attach event listeners',data:{sliderMinType:typeof sliderMin,sliderMaxType:typeof sliderMax,sliderMinIsElement:sliderMin instanceof Element,sliderMaxIsElement:sliderMax instanceof Element},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+    // #endregion
+    
+    // Input event - fires while dragging (debounced)
+    try {
+    sliderMin.addEventListener('input', () => {
+            // #region agent log
+            fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2900',message:'sliderMin input EVENT FIRED',data:{value:sliderMin.value,type:'input'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+            // #endregion
+            console.log('🎚️ sliderMin input event fired, value:', sliderMin.value);
+            updateSlider(false); // Debounced API call while dragging
+        });
+        // #region agent log
+        fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2903',message:'sliderMin input listener ATTACHED',data:{success:true},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+        // #endregion
+    } catch (e) {
+        // #region agent log
+        fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2903',message:'ERROR attaching sliderMin input listener',data:{error:e.message,stack:e.stack},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+        // #endregion
+        console.error('Error attaching sliderMin input listener:', e);
+    }
+    
+    try {
+    sliderMax.addEventListener('input', () => {
+            // #region agent log
+            fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2904',message:'sliderMax input EVENT FIRED',data:{value:sliderMax.value,type:'input'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+            // #endregion
+            console.log('🎚️ sliderMax input event fired, value:', sliderMax.value);
+            updateSlider(false); // Debounced API call while dragging
+        });
+        // #region agent log
+        fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2907',message:'sliderMax input listener ATTACHED',data:{success:true},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+        // #endregion
+    } catch (e) {
+        // #region agent log
+        fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2907',message:'ERROR attaching sliderMax input listener',data:{error:e.message,stack:e.stack},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+        // #endregion
+        console.error('Error attaching sliderMax input listener:', e);
+    }
+    
+    // Change event - fires when slider is released (immediate)
+    try {
+    sliderMin.addEventListener('change', () => {
+            // #region agent log
+            fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2910',message:'sliderMin change EVENT FIRED',data:{value:sliderMin.value,type:'change'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+            // #endregion
+            console.log('🎚️ sliderMin change event fired, value:', sliderMin.value);
+            checkAndTriggerAPI(); // Check and trigger API
+        });
+        // #region agent log
+        fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2913',message:'sliderMin change listener ATTACHED',data:{success:true},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+        // #endregion
+    } catch (e) {
+        // #region agent log
+        fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2913',message:'ERROR attaching sliderMin change listener',data:{error:e.message,stack:e.stack},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+        // #endregion
+        console.error('Error attaching sliderMin change listener:', e);
+    }
+    
+    try {
+    sliderMax.addEventListener('change', () => {
+            // #region agent log
+            fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2915',message:'sliderMax change EVENT FIRED',data:{value:sliderMax.value,type:'change'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+            // #endregion
+            console.log('🎚️ sliderMax change event fired, value:', sliderMax.value);
+            checkAndTriggerAPI(); // Check and trigger API
+        });
+        // #region agent log
+        fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2918',message:'sliderMax change listener ATTACHED',data:{success:true},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+        // #endregion
+    } catch (e) {
+        // #region agent log
+        fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2918',message:'ERROR attaching sliderMax change listener',data:{error:e.message,stack:e.stack},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+        // #endregion
+        console.error('Error attaching sliderMax change listener:', e);
+    }
+    
+    // Mouseup event - backup to ensure API call when slider is released
+    try {
+        sliderMin.addEventListener('mouseup', () => {
+            // #region agent log
+            fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2921',message:'sliderMin mouseup EVENT FIRED',data:{value:sliderMin.value,type:'mouseup'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+            // #endregion
+            console.log('🎚️ sliderMin mouseup event fired, value:', sliderMin.value);
+            setTimeout(() => {
+                checkAndTriggerAPI();
+            }, 50);
+        });
+        sliderMax.addEventListener('mouseup', () => {
+            // #region agent log
+            fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2928',message:'sliderMax mouseup EVENT FIRED',data:{value:sliderMax.value,type:'mouseup'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+            // #endregion
+            console.log('🎚️ sliderMax mouseup event fired, value:', sliderMax.value);
+            setTimeout(() => {
+                checkAndTriggerAPI();
+            }, 50);
+        });
+        // #region agent log
+        fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2933',message:'mouseup listeners ATTACHED',data:{success:true},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+        // #endregion
+    } catch (e) {
+        // #region agent log
+        fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2933',message:'ERROR attaching mouseup listeners',data:{error:e.message,stack:e.stack},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+        // #endregion
+        console.error('Error attaching mouseup listeners:', e);
+    }
+    
+    // Touch end for mobile devices
+    try {
+        sliderMin.addEventListener('touchend', () => {
+            // #region agent log
+            fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2936',message:'sliderMin touchend EVENT FIRED',data:{value:sliderMin.value,type:'touchend'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+            // #endregion
+            console.log('🎚️ sliderMin touchend event fired, value:', sliderMin.value);
+            setTimeout(() => {
+                checkAndTriggerAPI();
+            }, 50);
+        });
+        sliderMax.addEventListener('touchend', () => {
+            // #region agent log
+            fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2943',message:'sliderMax touchend EVENT FIRED',data:{value:sliderMax.value,type:'touchend'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+            // #endregion
+            console.log('🎚️ sliderMax touchend event fired, value:', sliderMax.value);
+            setTimeout(() => {
+                checkAndTriggerAPI();
+            }, 50);
+        });
+    } catch (e) {
+        console.error('Error attaching touchend listeners:', e);
+    }
+    
+    // #region agent log
+    fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:2949',message:'All event listeners attachment complete',data:{success:true},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
+    console.log('✅ All price slider event listeners attached');
+    
+    // Input field handlers - trigger API on change
+        if (inputMin) {
     inputMin.addEventListener('change', function() {
-        let val = parseInt(this.value.replace('£', ''));
+            let val = parseInt(this.value.replace('£', '').replace(/[^0-9]/g, ''));
         if (isNaN(val)) val = catalogMinPrice;
         val = Math.max(catalogMinPrice, Math.min(val, parseInt(sliderMax.value)));
         sliderMin.value = val;
-        updateSlider();
+            updateSlider(true); // Trigger API immediately
     });
+        }
     
+        if (inputMax) {
     inputMax.addEventListener('change', function() {
-        let val = parseInt(this.value.replace('£', ''));
+            let val = parseInt(this.value.replace('£', '').replace(/[^0-9]/g, ''));
         if (isNaN(val)) val = catalogMaxPrice;
         val = Math.min(catalogMaxPrice, Math.max(val, parseInt(sliderMin.value)));
         sliderMax.value = val;
-        updateSlider();
-    });
+            updateSlider(true); // Trigger API immediately
+        });
+    }
     
-    // Initialize
-    updateSlider();
+    // Initialize display (without triggering API on initial load)
+    updateSlider(false);
+    // #region agent log
+    fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:3071',message:'initPriceRangeSlider EXIT - function complete',data:{sliderMinValue:sliderMin.value,sliderMaxValue:sliderMax.value,statePriceMin:currentState.priceMin,statePriceMax:currentState.priceMax},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
+    console.log('✅ Price slider initialization complete');
+    console.log('📊 Final slider state:', {
+        sliderMinValue: sliderMin.value,
+        sliderMaxValue: sliderMax.value,
+        statePriceMin: currentState.priceMin,
+        statePriceMax: currentState.priceMax,
+        catalogRange: { min: catalogMinPrice, max: catalogMaxPrice }
+    });
 }
 
 function updatePriceRangeDisplay() {
@@ -2119,30 +3273,377 @@ function updatePriceRangeDisplay() {
     rangeDisplay.textContent = '£' + displayMin + ' - £' + displayMax;
 }
 
-function filterProductsByPrice(min, max) {
-    const cards = document.querySelectorAll('.product-card');
-    cards.forEach(card => {
-        const priceText = card.querySelector('.price-value')?.textContent || '';
-        const price = parseFloat(priceText.replace('£', ''));
-        const basePrice = isVatOn() ? price / 1.20 : price;
+// Filter checkbox handlers
+function setupFilterCheckboxes() {
+    console.log('🔧 Setting up filter checkboxes...');
+    
+    // Setup expandable filter rows
+    const expandableRows = document.querySelectorAll('.filter-expandable-row');
+    console.log(`📋 Found ${expandableRows.length} expandable filter rows`);
+    
+    expandableRows.forEach(row => {
+        row.addEventListener('click', function(e) {
+            // Toggle expanded state when clicking on the row (h4, span, or row itself)
+            // Checkboxes are in sibling .filter-expandable-content, so they won't trigger this
+            this.classList.toggle('expanded');
+        });
+    });
+
+    // Map filter section headers to state keys and API param names
+    const filterMap = {
+        'Gender': 'gender',
+        'Age Group': 'ageGroup',
+        'Sleeve': 'sleeve',
+        'Neckline': 'neckline',
+        'Accreditations': 'accreditations',
+        'Primary Colour': 'primaryColour',
+        'Colour Shade': 'colourShade',
+        'Style': 'style',
+        'Features': 'feature', // Note: singular for API
+        'Size': 'size',
+        'Fabric': 'fabric',
+        'Weight (GSM)': 'weight',
+        'Fit': 'fit',
+        'Related Sector': 'sector',
+        'Related Sport': 'sport',
+        'Tag': 'tag',
+        'Effect': 'effect'
+    };
+    
+    // For each expandable row, find its h4 and map to filter key
+    document.querySelectorAll('.filter-expandable-row').forEach(row => {
+        const h4 = row.querySelector('h4');
+        if (!h4) return;
         
-        if (basePrice >= min && basePrice <= max) {
-            card.style.display = '';
-        } else {
-            card.style.display = 'none';
-        }
+        const headerText = h4.textContent.trim();
+        const filterKey = filterMap[headerText];
+        if (!filterKey) return;
+        
+        // Find the content div that follows this row
+        let content = row.nextElementSibling;
+        if (!content || !content.classList.contains('filter-expandable-content')) return;
+        
+        // Setup checkboxes in this content section
+        const checkboxes = content.querySelectorAll('input[type="checkbox"]');
+        console.log(`  ✓ ${headerText}: Found ${checkboxes.length} checkboxes`);
+        
+        checkboxes.forEach((checkbox, index) => {
+            // Check if event listener already attached (avoid duplicates)
+            if (checkbox.dataset.listenerAttached === 'true') {
+                return;
+            }
+            checkbox.dataset.listenerAttached = 'true';
+            
+            checkbox.addEventListener('change', async (e) => {
+                e.stopPropagation();
+                
+                console.log('🔘 FILTER CHECKBOX CLICKED:', {
+                    filterKey: filterKey,
+                    checkboxValue: checkbox.value,
+                    isChecked: checkbox.checked,
+                    timestamp: new Date().toISOString()
+                });
+                
+                // Collect all checked values for this filter
+                const checkedBoxes = Array.from(content.querySelectorAll('input[type="checkbox"]:checked'))
+                    .map(cb => cb.value);
+                
+                // Update currentState.filters[filterKey] - store as array
+                if (checkedBoxes.length > 0) {
+                currentState.filters[filterKey] = checkedBoxes;
+                } else {
+                    // Clear filter if no boxes checked
+                    currentState.filters[filterKey] = [];
+                }
+                
+                console.log('📊 FILTER STATE UPDATED:', {
+                    filterKey: filterKey,
+                    checkedValues: checkedBoxes,
+                    fullState: JSON.parse(JSON.stringify(currentState.filters))
+                });
+                
+                // Build API params to show what will be sent
+                const apiParams = buildApiParams();
+                console.log('📤 API PARAMS BUILT:', apiParams);
+                
+                // Reset to page 1 and fetch new products
+                currentState.page = 1;
+                updateURL();
+                
+                console.log('🔄 Calling renderProducts() to trigger API call...');
+                try {
+                await renderProducts();
+                await fetchFilterCounts();
+                    console.log('✅ Products updated successfully!');
+                } catch (error) {
+                    console.error('❌ Error updating products:', error);
+                }
+            });
+        });
     });
     
-    // Update count
-    const visibleCards = document.querySelectorAll('.product-card:not([style*="display: none"])').length;
-    const countEl = document.getElementById('productsCount');
-    if (countEl) countEl.textContent = visibleCards + ' products';
+    console.log('✅ Filter checkboxes setup complete!');
+    console.log('📝 To test: Click any filter checkbox and check the console for API call logs');
+}
+
+// Search input handler
+function setupSearchInput() {
+    const searchInput = document.querySelector('.filter-search');
+    if (searchInput) {
+        // Only trigger API call on Enter key press
+        searchInput.addEventListener('keypress', async (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                currentState.search = e.target.value.trim();
+                currentState.page = 1;
+                updateURL();
+                await renderProducts();
+                await fetchFilterCounts();
+            }
+        });
+        
+        // Also allow clearing search on Escape
+        searchInput.addEventListener('keydown', async (e) => {
+            if (e.key === 'Escape') {
+                e.target.value = '';
+                currentState.search = '';
+                currentState.page = 1;
+                updateURL();
+                await renderProducts();
+                await fetchFilterCounts();
+            }
+        });
+    }
+    
+    // Header search input
+    const headerSearch = document.getElementById('searchbarHeaderInput');
+    if (headerSearch) {
+        headerSearch.addEventListener('keypress', async (e) => {
+            if (e.key === 'Enter') {
+                currentState.search = e.target.value.trim();
+                currentState.page = 1;
+                updateURL();
+                await renderProducts();
+                await fetchFilterCounts();
+            }
+        });
+    }
 }
 
 // Initialize
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('🚀 Page loaded, initializing filters and products...');
+    
+    // Initialize filters first
+    setupFilterCheckboxes();
+    setupSearchInput();
+    
+    // Verify filter checkboxes are set up
+    const totalCheckboxes = document.querySelectorAll('.filter-checkbox-item input[type="checkbox"]').length;
+    console.log(`✅ Found ${totalCheckboxes} filter checkboxes, event handlers attached`);
+    
+    // Load initial products
+    await renderProducts();
+    await fetchFilterCounts();
+    // #region agent log
+    fetch('http://127.0.0.1:7244/ingest/ff4bdadc-0eae-4978-b238-71d56c718ed8',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'shop-pc.html:3274',message:'About to CALL initPriceRangeSlider',data:{documentReady:document.readyState},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
+    await initPriceRangeSlider();
+    
+    // Update prices when VAT changes
+    window.addEventListener('vatToggleChanged', () => {
+        updatePrices();
+        updatePriceRangeDisplay();
+    });
+    
+    console.log('✅ Initialization complete!');
+});
+
+// Update prices on VAT change
+function updatePrices() {
+    document.querySelectorAll('.product-price').forEach(priceEl => {
+        const min = Number(priceEl.dataset.priceMin);
+        const max = Number(priceEl.dataset.priceMax);
+        const valueEl = priceEl.querySelector('.price-value');
+        if (valueEl && Number.isFinite(min)) {
+            valueEl.textContent = formatCurrency(min);
+        }
+        const suffixEl = priceEl.querySelector('.price-suffix');
+        if (suffixEl) {
+            suffixEl.textContent = vatSuffix();
+        }
+    });
+}
+
+// Pagination functions
+function updatePagination() {
+    const paginationTop = document.getElementById('paginationTop');
+    const paginationContainer = document.getElementById('paginationContainer');
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+    const currentPageSpan = document.getElementById('currentPage');
+    const totalPagesSpan = document.getElementById('totalPages');
+    
+    const totalPages = Math.ceil(currentState.total / currentState.limit);
+    
+    // Update old pagination (keep for backward compatibility, but hide it)
+    if (paginationContainer) {
+        paginationContainer.style.display = 'none';
+    if (currentPageSpan) currentPageSpan.textContent = currentState.page;
+    if (totalPagesSpan) totalPagesSpan.textContent = totalPages;
+        if (prevBtn) prevBtn.disabled = currentState.page === 1;
+        if (nextBtn) nextBtn.disabled = currentState.page === totalPages || totalPages === 0;
+    }
+    
+    // Update new pagination (inline in header)
+    if (!paginationTop) return;
+    
+    const firstBtn = document.getElementById('paginationFirst');
+    const prevTopBtn = document.getElementById('paginationPrev');
+    const nextTopBtn = document.getElementById('paginationNext');
+    const lastBtn = document.getElementById('paginationLast');
+    const pageNumbersContainer = document.getElementById('paginationPageNumbers');
+    
+    if (totalPages <= 1) {
+        paginationTop.style.display = 'none';
+        return;
+    }
+    
+    paginationTop.style.display = 'flex';
+    
+    // Enable/disable navigation buttons
+    if (firstBtn) firstBtn.disabled = currentState.page === 1;
+    if (prevTopBtn) prevTopBtn.disabled = currentState.page === 1;
+    if (nextTopBtn) nextTopBtn.disabled = currentState.page === totalPages;
+    if (lastBtn) lastBtn.disabled = currentState.page === totalPages;
+    
+    // Render page numbers (show current page and adjacent pages)
+    if (pageNumbersContainer) {
+        pageNumbersContainer.innerHTML = '';
+        
+        // Show current page in black circle
+        const currentPageBtn = document.createElement('button');
+        currentPageBtn.type = 'button';
+        currentPageBtn.className = 'pagination-page active';
+        currentPageBtn.textContent = currentState.page;
+        currentPageBtn.setAttribute('aria-current', 'page');
+        pageNumbersContainer.appendChild(currentPageBtn);
+    }
+}
+
+// Pagination button handlers
 document.addEventListener('DOMContentLoaded', function() {
-    renderProducts();
-    initPriceRangeSlider();
+    // Old pagination buttons (keep for backward compatibility)
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', async () => {
+            if (currentState.page > 1) {
+                currentState.page--;
+                updateURL();
+                await renderProducts();
+                await fetchFilterCounts();
+                updatePagination();
+                document.getElementById('productsGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    }
+    
+    if (nextBtn) {
+        nextBtn.addEventListener('click', async () => {
+            const totalPages = Math.ceil(currentState.total / currentState.limit);
+            if (currentState.page < totalPages) {
+                currentState.page++;
+                updateURL();
+                await renderProducts();
+                await fetchFilterCounts();
+                updatePagination();
+                document.getElementById('productsGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    }
+    
+    // New pagination buttons (top right style)
+    const firstBtn = document.getElementById('paginationFirst');
+    const prevTopBtn = document.getElementById('paginationPrev');
+    const nextTopBtn = document.getElementById('paginationNext');
+    const lastBtn = document.getElementById('paginationLast');
+    
+    async function handlePaginationClick(newPage) {
+        currentState.page = newPage;
+        updateURL();
+        await renderProducts();
+        await fetchFilterCounts();
+        updatePagination();
+        document.getElementById('productsGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    
+    if (firstBtn) {
+        firstBtn.addEventListener('click', async () => {
+            if (currentState.page > 1) {
+                await handlePaginationClick(1);
+            }
+        });
+    }
+    
+    if (prevTopBtn) {
+        prevTopBtn.addEventListener('click', async () => {
+            if (currentState.page > 1) {
+                await handlePaginationClick(currentState.page - 1);
+            }
+        });
+    }
+    
+    if (nextTopBtn) {
+        nextTopBtn.addEventListener('click', async () => {
+            const totalPages = Math.ceil(currentState.total / currentState.limit);
+            if (currentState.page < totalPages) {
+                await handlePaginationClick(currentState.page + 1);
+            }
+        });
+    }
+    
+    if (lastBtn) {
+        lastBtn.addEventListener('click', async () => {
+            const totalPages = Math.ceil(currentState.total / currentState.limit);
+            if (currentState.page < totalPages) {
+                await handlePaginationClick(totalPages);
+            }
+        });
+    }
+    
+    // Sort By dropdown handler
+    const sortSelect = document.getElementById('sortSelect');
+    if (sortSelect) {
+        // Initialize from currentState
+        sortSelect.value = currentState.sort || 'best';
+        
+        sortSelect.addEventListener('change', async (e) => {
+            currentState.sort = e.target.value;
+            currentState.page = 1; // Reset to first page when sorting changes
+            updateURL();
+            await renderProducts();
+            await fetchFilterCounts();
+            updatePagination();
+        });
+    }
+    
+    // View per page dropdown handler
+    const viewSelect = document.getElementById('viewSelect');
+    if (viewSelect) {
+        // Initialize from currentState
+        viewSelect.value = currentState.limit || 28;
+        
+        viewSelect.addEventListener('change', async (e) => {
+            currentState.limit = parseInt(e.target.value);
+            currentState.page = 1; // Reset to first page when limit changes
+            updateURL();
+            await renderProducts();
+            await fetchFilterCounts();
+            updatePagination();
+        });
+    }
 });
 </script>
 

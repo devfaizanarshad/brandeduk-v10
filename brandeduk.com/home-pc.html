@@ -683,6 +683,91 @@
                 transform: translateX(-50%) translateY(0);
             }
         }
+        
+        /* Make category dropdown scrollable with invisible scrollbar */
+        .category-dropdown .dropdown-box {
+            max-height: 70vh;
+            overflow-y: auto;
+            overflow-x: visible !important; /* Allow megamenu to overflow horizontally */
+            /* Hide scrollbar but keep functionality */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+            z-index: 40;
+        }
+        
+        /* Hide scrollbar for Chrome, Safari, Opera */
+        .category-dropdown .dropdown-box::-webkit-scrollbar {
+            display: none;
+            width: 0;
+            height: 0;
+        }
+        
+        /* Ensure dropdown-box and parent containers allow overflow */
+        .category-dropdown {
+            overflow: visible !important;
+            z-index: 50;
+        }
+        
+        .category-dropdown .category-menu {
+            overflow: visible !important;
+        }
+        
+        /* Ensure megamenu (subcategories) appear ON TOP as overlay */
+        .category-dropdown .category-menu > li {
+            position: relative; /* Relative positioning for megamenu */
+        }
+        
+        /* Make megamenu overlay on top - JavaScript will position it */
+        .category-dropdown .category-menu > li > .megamenu {
+            z-index: 10000 !important; /* Very high z-index to appear on top */
+            position: fixed !important; /* Fixed positioning so it overlays on top */
+            pointer-events: auto !important;
+            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.3) !important;
+            background: #ffffff !important;
+            border-radius: 18px !important;
+            border: 1px solid var(--brandeduk-header-gray) !important;
+            padding: 22px 28px !important;
+            min-width: 320px !important;
+            max-width: 420px !important;
+            transform: translateX(0) !important;
+        }
+        
+        /* When hovering, show megamenu on top */
+        .category-dropdown .category-menu > li:hover > .megamenu,
+        .category-dropdown .category-menu > li.is-expanded > .megamenu,
+        .category-dropdown .category-menu > li:focus-within > .megamenu {
+            z-index: 10000 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
+            opacity: 1 !important;
+            display: block !important;
+        }
+        
+        /* Ensure dropdown-box allows overflow and doesn't clip */
+        .category-dropdown .dropdown-box {
+            overflow-y: auto !important;
+            overflow-x: visible !important;
+            clip-path: none !important;
+            clip: auto !important;
+        }
+        
+        /* Ensure parent containers don't clip */
+        .category-dropdown {
+            overflow: visible !important;
+        }
+        
+        .header-bottom {
+            overflow: visible !important;
+        }
+        
+        .header-container {
+            overflow: visible !important;
+        }
+        
+        /* Make sure site-header allows overflow */
+        .site-header {
+            overflow: visible !important;
+        }
     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
@@ -809,267 +894,13 @@
                     <span class="category-toggle-caret" aria-hidden="true"></span>
                 </button>
                 <div class="dropdown-box" role="region" aria-label="Browse categories">
-                    <ul class="menu vertical-menu category-menu">
-                        <li class="has-children">
-                            <a href="category-tshirts.html">
-                                <img class="category-icon" src="../brandedukv15-child/assets/images/ui/icons/categories/icon-shirt-71%201.png" alt="" aria-hidden="true">
-                                <span class="category-text">T-Shirts</span>
-                                <span class="category-caret" aria-hidden="true"></span>
-                            </a>
-                            <ul class="megamenu">
-                                <li>
-                                    <ul>
-                                        <li><a href="#">Crew Neck</a></li>
-                                        <li><a href="#">Heavyweight / Workwear</a></li>
-                                        <li><a href="#">Kids T-shirts</a></li>
-                                        <li><a href="#">Lightweight</a></li>
-                                        <li><a href="#">Long Sleeve T-shirts</a></li>
-                                        <li><a href="#">Performance / Sports</a></li>
-                                        <li><a href="#">Short Sleeve T-shirts</a></li>
-                                        <li><a href="#">Tank Tops</a></li>
-                                        <li><a href="#">T-shirts for Embroidery</a></li>
-                                        <li><a href="#">T-shirts for Print</a></li>
-                                        <li><a href="#">V-Neck</a></li>
-                                        <li><a href="#">Women's T-shirts</a></li>
-                                    </ul>
+                    <ul class="menu vertical-menu category-menu" id="categoryMenu">
+                        <!-- Categories will be loaded dynamically from API -->
+                        <li style="text-align: center; padding: 20px;">
+                            <span style="color: #6b7280;">Loading categories...</span>
                                 </li>
-                            </ul>
-                        </li>
-                        <li class="has-children">
-                            <a href="category-polo.html">
-                                <img class="category-icon" src="../brandedukv15-child/assets/images/ui/icons/categories/Polo.png" alt="" aria-hidden="true">
-                                <span class="category-text">Polo Shirts</span>
-                                <span class="category-caret" aria-hidden="true"></span>
-                            </a>
-                            <ul class="megamenu">
-                                <li>
-                                    <ul>
-                                        <li><a href="#">Classic Cotton Polos</a></li>
-                                        <li><a href="#">Kids Polos</a></li>
-                                        <li><a href="#">Long Sleeve Polos</a></li>
-                                        <li><a href="#">Performance Polos</a></li>
-                                        <li><a href="#">Poly Cotton Polos</a></li>
-                                        <li><a href="#">Polos for Embroidery</a></li>
-                                        <li><a href="#">Short Sleeve Polos</a></li>
-                                        <li><a href="#">Slim Fit Polos</a></li>
-                                        <li><a href="#">Women's Polos</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="has-children">
-                            <a href="category-hoodies.html">
-                                <img class="category-icon" src="../brandedukv15-child/assets/images/ui/icons/categories/icon-hoodies-71%201.png" alt="" aria-hidden="true">
-                                <span class="category-text">Hoodies &amp; Sweatshirts</span>
-                                <span class="category-caret" aria-hidden="true"></span>
-                            </a>
-                            <ul class="megamenu">
-                                <li>
-                                    <ul>
-                                        <li><a href="#">Heavyweight Hoodies</a></li>
-                                        <li><a href="#">Kids Hoodies</a></li>
-                                        <li><a href="#">Lightweight Hoodies</a></li>
-                                        <li><a href="#">Premium / Workwear Hoodies</a></li>
-                                        <li><a href="#">Pullover Hoodies</a></li>
-                                        <li><a href="#">Sweatshirts (Crew Neck)</a></li>
-                                        <li><a href="#">Women's Hoodies</a></li>
-                                        <li><a href="#">Zip Hoodies</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="has-children">
-                            <a href="category-jackets.html">
-                                <img class="category-icon" src="../brandedukv15-child/assets/images/ui/icons/categories/Jacket.png" alt="" aria-hidden="true">
-                                <span class="category-text">Jackets &amp; Softshell</span>
-                                <span class="category-caret" aria-hidden="true"></span>
-                            </a>
-                            <ul class="megamenu">
-                                <li>
-                                    <ul>
-                                        <li><a href="#">Bodywarmers / Gilets</a></li>
-                                        <li><a href="#">Bomber Jackets</a></li>
-                                        <li><a href="#">Fleece Jackets</a></li>
-                                        <li><a href="#">High-performance Jackets</a></li>
-                                        <li><a href="#">Softshell Jackets</a></li>
-                                        <li><a href="#">Waterproof Jackets</a></li>
-                                        <li><a href="#">Windbreakers</a></li>
-                                        <li><a href="#">Women's Jackets</a></li>
-                                        <li><a href="#">Workwear Jackets</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="has-children">
-                            <a href="category-hivis.html">
-                                <img class="category-icon" src="../brandedukv15-child/assets/images/ui/icons/categories/Hi%20Vis.png" alt="" aria-hidden="true">
-                                <span class="category-text">Hi-Vis Clothing</span>
-                                <span class="category-caret" aria-hidden="true"></span>
-                            </a>
-                            <ul class="megamenu">
-                                <li>
-                                    <ul>
-                                        <li><a href="#">EN ISO 20471 Certified</a></li>
-                                        <li><a href="#">Hi-vis Hoodies</a></li>
-                                        <li><a href="#">Hi-vis Jackets</a></li>
-                                        <li><a href="#">Hi-vis Polos</a></li>
-                                        <li><a href="#">Hi-vis T-shirts</a></li>
-                                        <li><a href="#">Hi-vis Trousers</a></li>
-                                        <li><a href="#">Hi-vis Vests</a></li>
-                                        <li><a href="#">RIS-3279 Rail</a></li>
-                                        <li><a href="#">Waterproof Hi-Vis</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="has-children">
-                            <a href="category-trousers.html">
-                                <img class="category-icon" src="../brandedukv15-child/assets/images/ui/icons/categories/Trousers.png" alt="" aria-hidden="true">
-                                <span class="category-text">Work Trousers</span>
-                                <span class="category-caret" aria-hidden="true"></span>
-                            </a>
-                            <ul class="megamenu">
-                                <li>
-                                    <ul>
-                                        <li><a href="#">Cargo Pants</a></li>
-                                        <li><a href="#">Ripstop Trousers</a></li>
-                                        <li><a href="#">Stretch Work Trousers</a></li>
-                                        <li><a href="#">Waterproof / Over-trousers</a></li>
-                                        <li><a href="#">Work Shorts</a></li>
-                                        <li><a href="#">Work Trousers</a></li>
-                                        <li><a href="#">Women's Work Trousers</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="has-children">
-                            <a href="category-workwear.html">
-                                <img class="category-icon" src="../brandedukv15-child/assets/images/ui/icons/categories/Apron.png" alt="" aria-hidden="true">
-                                <span class="category-text">Work &amp; Uniforms</span>
-                                <span class="category-caret" aria-hidden="true"></span>
-                            </a>
-                            <ul class="megamenu">
-                                <li>
-                                    <ul>
-                                        <li><a href="#">Work Trousers</a></li>
-                                        <li><a href="#">Workwear Jackets</a></li>
-                                        <li><a href="#">Workwear Hoodies</a></li>
-                                        <li><a href="#">Work Accessories</a></li>
-                                        <li><a href="#">Aprons</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="has-children">
-                            <a href="category-fleeces.html">
-                                <img class="category-icon" src="../brandedukv15-child/assets/images/ui/icons/categories/Fleece.png" alt="" aria-hidden="true">
-                                <span class="category-text">Fleeces</span>
-                                <span class="category-caret" aria-hidden="true"></span>
-                            </a>
-                            <ul class="megamenu">
-                                <li>
-                                    <ul>
-                                        <li><a href="#">Full Zip Fleece</a></li>
-                                        <li><a href="#">Half Zip Fleece</a></li>
-                                        <li><a href="#">Heavy Fleece</a></li>
-                                        <li><a href="#">Kids Fleece</a></li>
-                                        <li><a href="#">Microfleece Jackets</a></li>
-                                        <li><a href="#">Women's Fleece</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="has-children">
-                            <a href="category-headwear.html">
-                                <img class="category-icon" src="../brandedukv15-child/assets/images/ui/icons/categories/Cap.png" alt="" aria-hidden="true">
-                                <span class="category-text">Headwear / Accessories</span>
-                                <span class="category-caret" aria-hidden="true"></span>
-                            </a>
-                            <ul class="megamenu">
-                                <li>
-                                    <ul>
-                                        <li><a href="#">Beanies</a></li>
-                                        <li><a href="#">Bucket Hats</a></li>
-                                        <li><a href="#">Caps</a></li>
-                                        <li><a href="#">Gloves &amp; Scarves</a></li>
-                                        <li><a href="#">Hi-Vis Headwear</a></li>
-                                        <li><a href="#">Kids Headwear</a></li>
-                                        <li><a href="#">Work Accessories</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="has-children">
-                            <a href="category-sustainable.html">
-                                <img class="category-icon" src="../brandedukv15-child/assets/images/ui/icons/categories/Recycle.png" alt="" aria-hidden="true">
-                                <span class="category-text">Sustainable / Recycled &amp; Organic</span>
-                                <span class="category-caret" aria-hidden="true"></span>
-                            </a>
-                            <ul class="megamenu brand-grid">
-                                <li class="brand-heading">0 - 9</li>
-                                <li><a href="#">2786</a></li>
-                                <li class="brand-heading">A</li>
-                                <li><a href="#">Adidas</a></li>
-                                <li><a href="#">Asquith &amp; Fox</a></li>
-                                <li><a href="#">AWDis Just Cool</a></li>
-                                <li><a href="#">AWDis Just Hoods</a></li>
-                                <li class="brand-heading">B</li>
-                                <li><a href="#">B&amp;C Collection</a></li>
-                                <li><a href="#">Bagbase</a></li>
-                                <li><a href="#">Beechfield</a></li>
-                                <li><a href="#">Build Your Brand</a></li>
-                                <li class="brand-heading">C</li>
-                                <li><a href="#">Callaway</a></li>
-                                <li><a href="#">Craghoppers</a></li>
-                                <li class="brand-heading">F</li>
-                                <li><a href="#">Finden &amp; Hales</a></li>
-                                <li><a href="#">Flexfit by Yupoong</a></li>
-                                <li><a href="#">Front Row</a></li>
-                                <li class="brand-heading">H</li>
-                                <li><a href="#">Henbury</a></li>
-                                <li><a href="#">Home &amp; Living</a></li>
-                                <li class="brand-heading">K</li>
-                                <li><a href="#">Kariban</a></li>
-                                <li><a href="#">KiMood</a></li>
-                                <li class="brand-heading">L</li>
-                                <li><a href="#">Larkwood</a></li>
-                                <li class="brand-heading">M</li>
-                                <li><a href="#">Madeira</a></li>
-                                <li><a href="#">Mumbles</a></li>
-                                <li class="brand-heading">N</li>
-                                <li><a href="#">New Morning Studios</a></li>
-                                <li><a href="#">Nike</a></li>
-                                <li><a href="#">Nimbus</a></li>
-                                <li><a href="#">Nutshell</a></li>
-                                <li class="brand-heading">P</li>
-                                <li><a href="#">Portwest</a></li>
-                                <li><a href="#">Premier</a></li>
-                                <li><a href="#">Pro RTX</a></li>
-                                <li class="brand-heading">Q</li>
-                                <li><a href="#">Quadra</a></li>
-                                <li class="brand-heading">R</li>
-                                <li><a href="#">RalaFlex</a></li>
-                                <li><a href="#">Regatta Junior</a></li>
-                                <li><a href="#">Regatta Professional</a></li>
-                                <li><a href="#">Result</a></li>
-                                <li><a href="#">Russell Athletic&reg;</a></li>
-                                <li class="brand-heading">S</li>
-                                <li><a href="#">Scruffs</a></li>
-                                <li><a href="#">SF</a></li>
-                                <li class="brand-heading">T</li>
-                                <li><a href="#">Stormtech</a></li>
-                                <li><a href="#">Tee Jays</a></li>
-                                <li><a href="#">Tombo</a></li>
-                                <li><a href="#">TriDri</a></li>
-                                <li class="brand-heading">W</li>
-                                <li><a href="#">Westford Mill</a></li>
-                                <li><a href="#">Wombat</a></li>
-                                <li class="brand-heading">Y</li>
-                                <li><a href="#">Yoko</a></li>
-                            </ul>
-                        </li>
                         <li>
-                            <a href="#" class="view-all-link">
+                            <a href="shop-pc.html?category=all" class="view-all-link">
                                 <span class="category-text">View All Categories</span>
                                 <span class="category-caret" aria-hidden="true"></span>
                             </a>
@@ -1085,103 +916,11 @@
                             All Products
                             <span class="nav-caret" aria-hidden="true"></span>
                         </a>
-                        <ul class="nav-megamenu brand-grid">
-                            <li class="brand-heading">A</li>
-                            <li><a href="#">Accessories</a></li>
-                            <li><a href="#">Anti Static / ESD</a></li>
-                            <li><a href="#">Aprons</a></li>
-                            <li><a href="#">Arc Flash</a></li>
-                            <li><a href="#">Autumn Workwear</a></li>
-                            <li class="brand-heading">B</li>
-                            <li><a href="#">Bags</a></li>
-                            <li><a href="#">Beanies</a></li>
-                            <li><a href="#">Bib &amp; Brace Overalls</a></li>
-                            <li><a href="#">Blouses</a></li>
-                            <li><a href="#">Bodywarmers &amp; Gilets</a></li>
-                            <li class="brand-heading">C</li>
-                            <li><a href="#">Caps</a></li>
-                            <li><a href="#">Chainsaw and Forestry</a></li>
-                            <li><a href="#">Chefswear</a></li>
-                            <li><a href="#">Chem Splash</a></li>
-                            <li><a href="#">Coats &amp; Jackets</a></li>
-                            <li><a href="#">Coldstore</a></li>
-                            <li><a href="#">Construction</a></li>
-                            <li><a href="#">Coveralls</a></li>
-                            <li><a href="#">Covid Test Kit</a></li>
-                            <li class="brand-heading">D</li>
-                            <li><a href="#">Disposable</a></li>
-                            <li><a href="#">Dresses</a></li>
-                            <li><a href="#">DTF Supplies</a></li>
-                            <li class="brand-heading">F</li>
-                            <li><a href="#">Face Masks &amp; Covers</a></li>
-                            <li><a href="#">Flame Retardant</a></li>
-                            <li><a href="#">Fleece Jackets</a></li>
-                            <li><a href="#">Footwear</a></li>
-                            <li class="brand-heading">G</li>
-                            <li><a href="#">Gilets</a></li>
-                            <li><a href="#">Golf</a></li>
-                            <li><a href="#">Gloves PPE</a></li>
-                            <li><a href="#">Gloves Winter</a></li>
-                            <li class="brand-heading">H</li>
-                            <li><a href="#">Headwear</a></li>
-                            <li><a href="#">Healthcare</a></li>
-                            <li><a href="#">Helmets</a></li>
-                            <li><a href="#">Hi-Vis</a></li>
-                            <li><a href="#">Hoodies</a></li>
-                            <li><a href="#">Hospitality</a></li>
-                            <li class="brand-heading">J</li>
-                            <li><a href="#">Jackets</a></li>
-                            <li><a href="#">Joggers</a></li>
-                            <li class="brand-heading">K</li>
-                            <li><a href="#">Knitwear</a></li>
-                            <li class="brand-heading">L</li>
-                            <li><a href="#">Lab / Medical Coats</a></li>
-                            <li><a href="#">Lateral Flow Tests</a></li>
-                            <li><a href="#">Lounge &amp; Underwear</a></li>
-                            <li class="brand-heading">M</li>
-                            <li><a href="#">Maternity</a></li>
-                            <li class="brand-heading">O</li>
-                            <li><a href="#">Offshore Clothing</a></li>
-                            <li><a href="#">Overalls</a></li>
-                            <li class="brand-heading">P</li>
-                            <li><a href="#">Painter &amp; Decorator Clothing</a></li>
-                            <li><a href="#">Plus Size</a></li>
-                            <li><a href="#">Polo Shirts</a></li>
-                            <li><a href="#">PPE</a></li>
-                            <li class="brand-heading">R</li>
-                            <li><a href="#">Rail Spec</a></li>
-                            <li class="brand-heading">S</li>
-                            <li><a href="#">Scarves</a></li>
-                            <li><a href="#">Schoolwear</a></li>
-                            <li><a href="#">Scrubs</a></li>
-                            <li><a href="#">Security</a></li>
-                            <li><a href="#">Shirts</a></li>
-                            <li><a href="#">Shorts</a></li>
-                            <li><a href="#">Skirts</a></li>
-                            <li><a href="#">Socks</a></li>
-                            <li><a href="#">Softshell Jackets</a></li>
-                            <li><a href="#">Sports &amp; Teamwear</a></li>
-                            <li><a href="#">Spring Workwear</a></li>
-                            <li><a href="#">Suits &amp; Tailoring</a></li>
-                            <li><a href="#">Summer Workwear</a></li>
-                            <li><a href="#">Sustainable</a></li>
-                            <li><a href="#">Sweatshirts</a></li>
-                            <li class="brand-heading">T</li>
-                            <li><a href="#">Tabards</a></li>
-                            <li><a href="#">Thermals &amp; Base Layers</a></li>
-                            <li><a href="#">Ties</a></li>
-                            <li><a href="#">Tote Bags</a></li>
-                            <li><a href="#">Towelling</a></li>
-                            <li><a href="#">Trades</a></li>
-                            <li><a href="#">Trousers</a></li>
-                            <li><a href="#">T-Shirts</a></li>
-                            <li><a href="#">Tunics</a></li>
-                            <li class="brand-heading">U</li>
-                            <li><a href="#">Umbrellas</a></li>
-                            <li class="brand-heading">W</li>
-                            <li><a href="#">Waistcoats</a></li>
-                            <li><a href="#">Welding Workwear</a></li>
-                            <li><a href="#">Winter Workwear</a></li>
+                        <ul class="nav-megamenu brand-grid" id="allProductsMenu">
+                            <!-- Product types will be loaded dynamically from API -->
+                            <li style="text-align: center; padding: 20px; grid-column: 1 / -1;">
+                                <span style="color: #6b7280;">Loading products...</span>
+                            </li>
                         </ul>
                     </li>
                     <li><a href="#">BrandedUK</a></li>
@@ -2742,6 +2481,473 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+})();
+
+// ============================================================================
+// CATEGORY DROPDOWN API INTEGRATION
+// ============================================================================
+(function() {
+    const API_BASE_URL = 'https://brandeduk-backend.onrender.com';
+    const CATEGORY_DROPDOWN_ENDPOINT = API_BASE_URL + '/api/categories/dropdown';
+    
+    // Category mapping: API name -> Display name and icon
+    const CATEGORY_MAPPING = {
+        'T-Shirts': {
+            displayName: 'T-Shirts',
+            icon: 'icon-shirt-71%201.png',
+            slug: 'tshirts'
+        },
+        'Caps': {
+            displayName: 'Caps',
+            icon: 'Cap.png',
+            slug: 'caps'
+        },
+        'Hoodies': {
+            displayName: 'Hoodies & Sweatshirts',
+            icon: 'icon-hoodies-71%201.png',
+            slug: 'hoodies'
+        },
+        'Jackets': {
+            displayName: 'Jackets & Softshell',
+            icon: 'Jacket.png',
+            slug: 'jackets'
+        },
+        'Polos': {
+            displayName: 'Polo Shirts',
+            icon: 'Polo.png',
+            slug: 'polo'
+        },
+        'Shirts': {
+            displayName: 'Shirts',
+            icon: 'icon-shirt-71%201.png',
+            slug: 'shirts'
+        },
+        'Sweatshirts': {
+            displayName: 'Sweatshirts',
+            icon: 'icon-hoodies-71%201.png',
+            slug: 'sweatshirts'
+        },
+        'Beanies': {
+            displayName: 'Beanies',
+            icon: 'Cap.png',
+            slug: 'beanies'
+        },
+        'Blouses': {
+            displayName: 'Blouses',
+            icon: 'icon-shirt-71%201.png',
+            slug: 'blouses'
+        },
+        'Chinos': {
+            displayName: 'Chinos',
+            icon: 'Trousers.png',
+            slug: 'chinos'
+        }
+    };
+    
+    // Category display order (priority order)
+    const CATEGORY_ORDER = [
+        'T-Shirts',
+        'Caps',
+        'Hoodies',
+        'Jackets',
+        'Polos',
+        'Sweatshirts',
+        'Shirts',
+        'Beanies',
+        'Blouses',
+        'Chinos'
+    ];
+    
+    // Normalize subcategory slug (remove trailing -1, -2, etc.)
+    function normalizeSubcategorySlug(slug) {
+        if (!slug) return '';
+        return slug.replace(/-\d+$/, '');
+    }
+    
+    // Capitalize subcategory name
+    function capitalizeSubcategoryName(name) {
+        if (!name) return '';
+        return name.split(' ').map(word => 
+            word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        ).join(' ');
+    }
+    
+    // Build category menu HTML
+    function buildCategoryMenu(categories) {
+        const menuContainer = document.getElementById('categoryMenu');
+        if (!menuContainer) return;
+        
+        // Sort categories by display order
+        const sortedCategories = categories.sort((a, b) => {
+            const indexA = CATEGORY_ORDER.indexOf(a.name);
+            const indexB = CATEGORY_ORDER.indexOf(b.name);
+            
+            // If both are in order list, sort by order
+            if (indexA !== -1 && indexB !== -1) {
+                return indexA - indexB;
+            }
+            // If only A is in order list, A comes first
+            if (indexA !== -1) return -1;
+            // If only B is in order list, B comes first
+            if (indexB !== -1) return 1;
+            // If neither is in order list, maintain original order
+            return 0;
+        });
+        
+        // Filter to only include categories in our mapping
+        const mappedCategories = sortedCategories.filter(cat => 
+            CATEGORY_MAPPING.hasOwnProperty(cat.name)
+        );
+        
+        let menuHTML = '';
+        
+        mappedCategories.forEach(category => {
+            const mapping = CATEGORY_MAPPING[category.name];
+            if (!mapping) return;
+            
+            const hasSubcategories = category.subcategories && category.subcategories.length > 0;
+            const categoryClass = hasSubcategories ? 'has-children' : '';
+            
+            // Build subcategories HTML
+            let subcategoriesHTML = '';
+            if (hasSubcategories) {
+                const subcategoriesList = category.subcategories
+                    .map(sub => {
+                        const normalizedSlug = normalizeSubcategorySlug(sub.slug);
+                        const displayName = capitalizeSubcategoryName(sub.name);
+                        return `<li><a href="#" 
+                            data-category-name="${category.name}" 
+                            data-category-slug="${category.slug}"
+                            data-subcategory-slug="${normalizedSlug}"
+                            data-subcategory-name="${sub.name}">${displayName}</a></li>`;
+                    })
+                    .join('');
+                
+                subcategoriesHTML = `
+                    <ul class="megamenu">
+                        <li>
+                            <ul>
+                                ${subcategoriesList}
+                            </ul>
+                        </li>
+                    </ul>`;
+            }
+            
+            menuHTML += `
+                <li class="${categoryClass}">
+                    <a href="#" 
+                       data-category-name="${category.name}" 
+                       data-category-slug="${category.slug}"
+                       class="${hasSubcategories ? '' : 'category-link'}">
+                        <img class="category-icon" 
+                             src="../brandedukv15-child/assets/images/ui/icons/categories/${mapping.icon}" 
+                             alt="" 
+                             aria-hidden="true">
+                        <span class="category-text">${mapping.displayName}</span>
+                        ${hasSubcategories ? '<span class="category-caret" aria-hidden="true"></span>' : ''}
+                    </a>
+                    ${subcategoriesHTML}
+                </li>`;
+        });
+        
+        // Add "View All Categories" link at the end
+        menuHTML += `
+            <li>
+                <a href="shop-pc.html?category=all" class="view-all-link">
+                    <span class="category-text">View All Categories</span>
+                    <span class="category-caret" aria-hidden="true"></span>
+                </a>
+            </li>`;
+        
+        menuContainer.innerHTML = menuHTML;
+        
+        // Setup click handlers
+        setupCategoryClickHandlers();
+        setupMegamenuPositioning();
+    }
+    
+    // Setup megamenu positioning to overlay on top
+    function setupMegamenuPositioning() {
+        const menuItems = document.querySelectorAll('#categoryMenu > li.has-children');
+        
+        menuItems.forEach(menuItem => {
+            const megamenu = menuItem.querySelector('.megamenu');
+            if (!megamenu) return;
+            
+            menuItem.addEventListener('mouseenter', function() {
+                const rect = menuItem.getBoundingClientRect();
+                const dropdownBox = document.querySelector('.category-dropdown .dropdown-box');
+                if (!dropdownBox) return;
+                
+                const dropdownRect = dropdownBox.getBoundingClientRect();
+                
+                // Position megamenu to overlay on top, aligned with the menu item
+                megamenu.style.position = 'fixed';
+                megamenu.style.top = rect.top + 'px';
+                megamenu.style.left = (dropdownRect.right + 10) + 'px';
+                megamenu.style.zIndex = '10000';
+            });
+        });
+    }
+    
+    // Setup click handlers for category links
+    function setupCategoryClickHandlers() {
+        document.querySelectorAll('#categoryMenu a[data-category-name]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const categoryName = this.getAttribute('data-category-name');
+                const categorySlug = this.getAttribute('data-category-slug');
+                const subcategorySlug = this.getAttribute('data-subcategory-slug');
+                const subcategoryName = this.getAttribute('data-subcategory-name');
+                
+                // Build URL for shop-pc.html
+                const params = new URLSearchParams();
+                
+                // Map category name to shop page category slug for URL
+                // The shop page will normalize this and use the category name for API
+                const mapping = CATEGORY_MAPPING[categoryName];
+                if (mapping) {
+                    params.append('category', mapping.slug);
+                } else {
+                    // Fallback: convert category name to slug
+                    params.append('category', categorySlug || categoryName.toLowerCase().replace(/\s+/g, '-'));
+                }
+                
+                // Add subcategory filter if present (API expects style slug)
+                if (subcategorySlug) {
+                    params.append('style', subcategorySlug);
+                }
+                
+                // Store category name in sessionStorage for shop page to use as productType
+                if (categoryName) {
+                    sessionStorage.setItem('selectedCategoryName', categoryName);
+                }
+                
+                // Navigate to shop page
+                window.location.href = `shop-pc.html?${params.toString()}`;
+            });
+        });
+    }
+    
+    // Fetch categories from API
+    async function loadCategories() {
+        const menuContainer = document.getElementById('categoryMenu');
+        if (!menuContainer) {
+            console.error('categoryMenu element not found');
+            return;
+        }
+        
+        try {
+            console.log('Fetching categories from:', CATEGORY_DROPDOWN_ENDPOINT);
+            const response = await fetch(CATEGORY_DROPDOWN_ENDPOINT, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            console.log('Response status:', response.status, response.statusText);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
+            }
+            
+            const categories = await response.json();
+            console.log('Categories loaded:', categories);
+            
+            if (!Array.isArray(categories)) {
+                throw new Error('Invalid response format: expected array');
+            }
+            
+            buildCategoryMenu(categories);
+        } catch (error) {
+            console.error('Error loading categories:', error);
+            console.error('Error details:', {
+                message: error.message,
+                stack: error.stack,
+                endpoint: CATEGORY_DROPDOWN_ENDPOINT
+            });
+            
+            // Show error message in menu
+            if (menuContainer) {
+                menuContainer.innerHTML = `
+                    <li style="text-align: center; padding: 20px;">
+                        <span style="color: #ef4444;">Failed to load categories: ${error.message}</span>
+                        <br><small style="color: #9ca3af;">Check console for details</small>
+                    </li>
+                    <li>
+                        <a href="shop-pc.html?category=all" class="view-all-link">
+                            <span class="category-text">View All Categories</span>
+                            <span class="category-caret" aria-hidden="true"></span>
+                        </a>
+                    </li>`;
+            }
+        }
+    }
+    
+    // Load categories when DOM is ready
+    function initCategoryDropdown() {
+        const menuContainer = document.getElementById('categoryMenu');
+        if (menuContainer) {
+            loadCategories();
+        } else {
+            // Wait a bit and try again if element not found
+            setTimeout(initCategoryDropdown, 100);
+        }
+    }
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCategoryDropdown);
+    } else {
+        // DOM already loaded, run immediately
+        initCategoryDropdown();
+    }
+})();
+
+// ============================================================================
+// ALL PRODUCTS MEGAMENU API INTEGRATION
+// ============================================================================
+(function() {
+    const API_BASE_URL = 'https://brandeduk-backend.onrender.com';
+    const PRODUCT_TYPES_ENDPOINT = API_BASE_URL + '/api/filters/product-types';
+    
+    // Get first letter of product name for alphabetical grouping
+    function getFirstLetter(name) {
+        return name.charAt(0).toUpperCase();
+    }
+    
+    // Build megamenu HTML from product types - sorted alphabetically
+    function buildAllProductsMenu(productTypes) {
+        const menuContainer = document.getElementById('allProductsMenu');
+        if (!menuContainer) return;
+        
+        // Sort all product types alphabetically by name
+        const sortedTypes = [...productTypes].sort((a, b) => a.name.localeCompare(b.name));
+        
+        let menuHTML = '';
+        let currentLetter = '';
+        
+        sortedTypes.forEach(type => {
+            const firstLetter = getFirstLetter(type.name);
+            
+            // Add heading if letter changed
+            if (firstLetter !== currentLetter) {
+                menuHTML += `<li class="brand-heading">${firstLetter}</li>`;
+                currentLetter = firstLetter;
+            }
+            
+            // Add product type link
+            menuHTML += `<li><a href="#" 
+                data-product-type="${type.slug}" 
+                data-product-type-name="${type.name}"
+                class="product-type-link">${type.name}</a></li>`;
+        });
+        
+        menuContainer.innerHTML = menuHTML;
+        
+        // Setup click handlers
+        setupProductTypeClickHandlers();
+    }
+    
+    // Setup click handlers for product type links
+    function setupProductTypeClickHandlers() {
+        document.querySelectorAll('#allProductsMenu a.product-type-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const productTypeSlug = this.getAttribute('data-product-type');
+                const productTypeName = this.getAttribute('data-product-type-name');
+                
+                // Store product type name in sessionStorage for shop page
+                if (productTypeName) {
+                    sessionStorage.setItem('selectedProductTypeName', productTypeName);
+                }
+                
+                // Navigate to shop page with category parameter (shop-pc.html accepts category parameter)
+                const params = new URLSearchParams();
+                params.append('category', productTypeSlug);
+                
+                window.location.href = `shop-pc.html?${params.toString()}`;
+            });
+        });
+    }
+    
+    // Fetch product types from API
+    async function loadProductTypes() {
+        const menuContainer = document.getElementById('allProductsMenu');
+        if (!menuContainer) {
+            console.error('allProductsMenu element not found');
+            return;
+        }
+        
+        try {
+            console.log('Fetching product types from:', PRODUCT_TYPES_ENDPOINT);
+            const response = await fetch(PRODUCT_TYPES_ENDPOINT, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            console.log('Response status:', response.status, response.statusText);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            console.log('Product types loaded:', data);
+            
+            const productTypes = data.productTypes || data || [];
+            
+            if (!Array.isArray(productTypes)) {
+                throw new Error('Invalid response format: expected array');
+            }
+            
+            if (productTypes.length === 0) {
+                throw new Error('No product types found');
+            }
+            
+            buildAllProductsMenu(productTypes);
+        } catch (error) {
+            console.error('Error loading product types:', error);
+            console.error('Error details:', {
+                message: error.message,
+                stack: error.stack,
+                endpoint: PRODUCT_TYPES_ENDPOINT
+            });
+            
+            // Show error message in menu
+            if (menuContainer) {
+                menuContainer.innerHTML = `
+                    <li style="text-align: center; padding: 20px; grid-column: 1 / -1;">
+                        <span style="color: #ef4444;">Failed to load products: ${error.message}</span>
+                        <br><small style="color: #9ca3af;">Check console for details</small>
+                    </li>`;
+            }
+        }
+    }
+    
+    // Load product types when DOM is ready
+    function initAllProductsMenu() {
+        const menuContainer = document.getElementById('allProductsMenu');
+        if (menuContainer) {
+            loadProductTypes();
+        } else {
+            // Wait a bit and try again if element not found
+            setTimeout(initAllProductsMenu, 100);
+        }
+    }
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAllProductsMenu);
+    } else {
+        // DOM already loaded, run immediately
+        initAllProductsMenu();
+    }
 })();
 
 // Responsive routing helper (for DevTools/device emulation)

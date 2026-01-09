@@ -10,8 +10,9 @@
     const VAT_STORAGE_KEY = 'brandeduk-vat-mode';
     const VAT_RATE = 0.20;
 
-    // === GD067 Real Product Colors (37 colors with thumbnails) ===
-    const PRODUCT_COLORS = [
+    // === Product Colors (default GD067 fallback) ===
+    // Will be replaced at runtime if product API data is available
+    let PRODUCT_COLORS = [
         { id: 'aquatic', name: 'Aquatic', hex: '#5BA4A4', image: 'https://i.postimg.cc/fbC2Zn4L/GD067-Aquatic-FT.jpg' },
         { id: 'ash-grey', name: 'Ash Grey', hex: '#B8B8B8', image: 'https://i.postimg.cc/fbC2Zn4t/GD067-Ash-Grey-FT.jpg' },
         { id: 'black', name: 'Black', hex: '#1a1a1a', image: 'https://i.postimg.cc/R0ds95rf/GD067-Black-FT.jpg' },
@@ -51,8 +52,9 @@
         { id: 'yellow-haze', name: 'Yellow Haze', hex: '#E8D44D', image: 'https://i.postimg.cc/W48WjLRN/GD067-Yellow-Haze-FT.jpg' }
     ];
 
-    // === Pricing Rules (GD067 Gildan Softstyle Hoodie) ===
-    const PRICING_RULES = {
+    // === Pricing Rules (GD067 fallback) ===
+    // Will be extended at runtime if product API provides priceBreaks
+    let PRICING_RULES = {
         GD067: {
             basePrice: 17.58,
             tiers: [
@@ -64,6 +66,10 @@
             ]
         }
     };
+
+    // === API ===
+    // Minimal API base used by desktop product.js — reuse here for mobile fetches
+    const API_BASE_URL = 'https://brandeduk-backend.onrender.com/api';
 
     // === State ===
     const state = {
@@ -243,6 +249,119 @@
         updatePricingSummary();
         
         console.log('✅ UI restoration complete');
+    }
+
+    // === HELPERS: load product from sessionStorage or API ===
+    function slugify(text) {
+        return String(text || '')
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)+/g, '');
+    }
+
+    async function loadProductFromSessionOrApi() {
+        try {
+            const savedProductData = sessionStorage.getItem('selectedProductData');
+            const savedProductCode = sessionStorage.getItem('selectedProduct');
+            let productData = null;
+
+            if (savedProductData) {
+                try {
+                    productData = JSON.parse(savedProductData);
+                    console.log('Loaded product data from sessionStorage', productData.code || productData);
+                } catch (e) {
+                    console.warn('Failed to parse selectedProductData from sessionStorage', e);
+                    productData = null;
+                }
+            }
+
+            if (!productData && savedProductCode) {
+                // Fetch from API as fallback
+                try {
+                    const res = await fetch(`${API_BASE_URL}/products/${encodeURIComponent(savedProductCode)}`);
+                    if (res.ok) {
+                        productData = await res.json();
+                        console.log('Fetched product from API:', productData.code || savedProductCode);
+                        // cache for next time
+                        sessionStorage.setItem('selectedProductData', JSON.stringify(productData));
+                    } else {
+                        console.warn('Product API returned', res.status);
+                    }
+                } catch (e) {
+                    console.warn('Failed to fetch product from API', e);
+                }
+            }
+
+            if (!productData) {
+                // No product data available — leave default state (fallback product)
+                return false;
+            }
+
+            // Map productData into our state
+            state.product = state.product || {};
+            state.product.code = productData.code || productData.productCode || productData.sku || productData.id || state.product.code;
+            state.product.sku = productData.sku || productData.code || productData.productCode || productData.id || state.product.sku;
+            state.product.name = productData.name || productData.title || productData.productName || productData.displayName || state.product.name;
+            state.product.basePrice = Number(productData.price || productData.basePrice || productData.startPrice || productData.startingPrice) || state.product.basePrice;
+
+            // Map colors (if present) into PRODUCT_COLORS format
+            const colorsSource = productData.colors || productData.colorOptions || productData.variants || [];
+            if (Array.isArray(colorsSource) && colorsSource.length > 0) {
+                PRODUCT_COLORS = colorsSource.map(c => {
+                    const name = c.name || c.displayName || c.label || c.id || '';
+                    return {
+                        id: slugify(name) || slugify(c.code || c.id || name),
+                        name: name,
+                        hex: c.hex || c.color || '#cccccc',
+                        image: c.main || c.image || c.thumb || c.imageUrl || c.url || productData.image || ''
+                    };
+                });
+            }
+
+            // Map pricing tiers if present
+            const breaks = productData.priceBreaks || productData.tiers || productData.discounts || [];
+            if (Array.isArray(breaks) && breaks.length > 0) {
+                PRICING_RULES = PRICING_RULES || {};
+                PRICING_RULES[state.product.code] = {
+                    basePrice: state.product.basePrice,
+                    tiers: breaks.slice().sort((a,b) => (b.min || 0) - (a.min || 0)).map(pb => ({ min: pb.min || pb.from || 0, price: pb.price || pb.unitPrice || pb.rate || 0 }))
+                };
+            }
+
+            return true;
+        } catch (e) {
+            console.warn('Unexpected error loading product:', e);
+            return false;
+        }
+    }
+
+    // Update visible product DOM elements after dynamic load
+    function refreshProductDOM() {
+        try {
+            // Title and SKU
+            const titleEl = document.querySelector('.product-title');
+            const skuEl = document.querySelector('.product-sku');
+            if (titleEl) titleEl.textContent = state.product?.name || titleEl.textContent;
+            if (skuEl) skuEl.textContent = `#${state.product?.code || ''}` + (state.product?.brand ? ` ${state.product.brand}` : ` ${state.product?.name?.split(' ')[0] || ''}`);
+
+            // Main image
+            const mainImg = document.getElementById('mainImage');
+            if (mainImg) {
+                const imgSrc = state.selectedColorImage || (PRODUCT_COLORS && PRODUCT_COLORS[0] && PRODUCT_COLORS[0].image) || state.product?.image || state.product?.photo || '';
+                if (imgSrc) mainImg.src = imgSrc;
+            }
+
+            // Color count
+            const colorCount = document.querySelector('.color-count');
+            if (colorCount) colorCount.textContent = `${PRODUCT_COLORS.length} colors`;
+
+            // Pricing tiers UI will be rebuilt elsewhere, but update title
+            if (state.product && state.product.name) {
+                document.title = `${state.product.name} - Branded UK`;
+            }
+        } catch (e) {
+            console.warn('Failed to refresh product DOM', e);
+        }
     }
 
     // === Setup State Persistence (save on page leave) ===
@@ -563,14 +682,27 @@
     }
 
     // === Initialize ===
-    function init() {
+    async function init() {
         console.log('🚀 INIT STARTED');
         console.log('DOM Ready State:', document.readyState);
         
         // Restore state from sessionStorage (before anything else)
         const hasRestoredState = restoreCustomizationState();
-        
-        // Check if coming from shop page with selected color
+
+        // Load product data from sessionStorage or API early so product-specific
+        // data like colours and pricing are available before we apply any
+        // shop-provided selected color or render UI.
+        try {
+            const loadedEarly = await loadProductFromSessionOrApi();
+            if (loadedEarly) {
+                console.log('Product loaded early during init:', state.product.code, state.product.name);
+                refreshProductDOM();
+            }
+        } catch (e) {
+            console.warn('Early product load failed, continuing with fallback', e);
+        }
+
+        // Check if coming from shop page with selected color (apply after loading product)
         const shopSelectedColorName = sessionStorage.getItem('selectedColorName');
         const shopSelectedColorUrl = sessionStorage.getItem('selectedColorUrl');
         if (shopSelectedColorName && shopSelectedColorUrl) {
@@ -618,7 +750,7 @@
         // Check and cleanup localStorage if needed
         cleanupLocalStorageIfNeeded();
         
-        // Force render colors first
+        // Force render colors first (PRODUCT_COLORS may have been updated)
         console.log('About to call renderColorButtons...');
         renderColorButtons();
         console.log('renderColorButtons called');
@@ -647,6 +779,8 @@
         // updateOrderCard(); // REMOVED - card viola eliminata
         updateDeliveryDate();
         updateQuoteButtonState();
+    // Ensure sizes/quantities are recalculated after UI setup
+    try { updateSizeQuantities(); } catch (e) { /* ignore if not yet defined */ }
         
         // Update total pieces counter to show basket items at init
         const totalSpan = document.getElementById('totalQty');
@@ -857,8 +991,8 @@
         // Create new item
         const newItem = {
             id: Date.now().toString(),
-            productCode: 'GD067',
-            productName: 'Gildan Softstyle™ Midweight Hoodie',
+            productCode: state.product?.code || 'GD067',
+            productName: state.product?.name || 'Gildan Softstyle™ Midweight Hoodie',
             color: state.selectedColorName || state.selectedColor || 'Black',
             colorId: state.selectedColor,
             colorImage: state.selectedColorImage,
@@ -2040,6 +2174,10 @@
             }
         });
 
+    // Extra listeners to ensure any direct input/change triggers a quantities recalculation
+    container.addEventListener('input', () => updateSizeQuantities());
+    container.addEventListener('change', () => updateSizeQuantities());
+
         // Event delegation for select and input changes
         container.addEventListener('change', (e) => {
             if (e.target.classList.contains('size-select') || e.target.classList.contains('item-qty-input')) {
@@ -2152,6 +2290,9 @@
         const container = document.querySelector('.size-qty-compact');
         if (!container) return;
 
+        console.log('DEBUG: updateSizeQuantities called');
+        try { console.log('DEBUG: container exists?', !!container, 'selected sizes count=', container.querySelectorAll('.size-qty-item').length); } catch(e){}
+
         let total = 0;
         state.sizeQuantities = {};
 
@@ -2159,10 +2300,50 @@
             const select = row.querySelector('.size-select');
             const input = row.querySelector('.item-qty-input');
             const size = select ? select.value : '';
-            const qty = parseInt(input ? input.value : 0) || 0;
+            // Primary: read from input.value
+            let qty = 0;
+            try {
+                if (input) {
+                    // prefer numeric value property
+                    qty = parseInt(input.value || input.getAttribute('value') || 0) || 0;
+                }
+            } catch (e) {
+                qty = 0;
+            }
 
-            if (size && qty > 0) {
-                state.sizeQuantities[size] = (state.sizeQuantities[size] || 0) + qty;
+            // Fallback: some UI variants render the qty as plain text inside buttons/divs
+            if ((!qty || qty === 0) && row) {
+                // look for data attributes first
+                const dataVal = row.querySelector('[data-qty], [data-value]');
+                if (dataVal) {
+                    const v = dataVal.getAttribute('data-qty') || dataVal.getAttribute('data-value');
+                    qty = parseInt(v) || qty;
+                }
+            }
+
+            if ((!qty || qty === 0) && row) {
+                // look for any child element that contains only digits (visible number)
+                const children = Array.from(row.querySelectorAll('*'));
+                for (const el of children) {
+                    try {
+                        const text = (el.innerText || '').trim();
+                        if (/^\d+$/.test(text)) {
+                            qty = parseInt(text, 10) || qty;
+                            break;
+                        }
+                    } catch (e) { /* ignore */ }
+                }
+            }
+
+            // If no explicit size selected but a quantity exists, count it under 'unspecified'
+            let sizeKey = size;
+            if ((!sizeKey || sizeKey === '') && qty > 0) {
+                sizeKey = 'unspecified';
+                console.log('DEBUG: size not selected for a row but quantity present - counting under "unspecified"');
+            }
+
+            if (sizeKey && qty > 0) {
+                state.sizeQuantities[sizeKey] = (state.sizeQuantities[sizeKey] || 0) + qty;
                 total += qty;
             }
         });
@@ -2186,6 +2367,7 @@
             
             if (total > 0) {
                 // Has selection - enable and mark as unsaved
+                console.log('DEBUG: enabling save button, total=', total);
                 saveBtn.disabled = false;
                 saveBtn.classList.remove('saved');
                 saveBtn.style.opacity = '1';
@@ -2199,6 +2381,7 @@
                 state.selectionSaved = false;
             } else {
                 // No selection - disable button
+                console.log('DEBUG: disabling save button, total=', total);
                 saveBtn.disabled = true;
                 saveBtn.classList.remove('saved');
                 saveBtn.style.opacity = '0.5';
@@ -5030,8 +5213,8 @@
         // Create item object with all customization data
         const newItem = {
             id: Date.now().toString(),
-            productCode: 'GD067',
-            productName: 'Gildan Softstyle™ Midweight Hoodie',
+            productCode: state.product?.code || 'GD067',
+            productName: state.product?.name || 'Gildan Softstyle™ Midweight Hoodie',
             color: state.selectedColorName || state.selectedColor,
             colorId: state.selectedColor,
             colorImage: state.selectedColorImage,

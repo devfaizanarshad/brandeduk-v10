@@ -2,18 +2,15 @@
    CONFIG
 --------------------------------------------------- */
 
-const PRODUCT_CODE = "GD067";
-const PRODUCT_NAME = "Gildan Softstyle midweight fleece adult hoodie";
-const BASE_PRICE = 17.58;
+// Product data will be loaded from API or sessionStorage
+let PRODUCT_CODE = null;
+let PRODUCT_NAME = null;
+let BASE_PRICE = null;
+let PRODUCT_DATA = null;
+let DISCOUNTS = [];
 
-const DISCOUNTS = [
-    { min: 1,   max: 9,     price: BASE_PRICE, save: 0  },
-    { min: 10,  max: 24,    price: 16.54,      save: 8  },
-    { min: 25,  max: 49,    price: 16.18,      save: 10 },
-    { min: 50,  max: 99,    price: 14.94,      save: 15 },
-    { min: 100, max: 249,   price: 13.49,      save: 25 },
-    { min: 250, max: 99999, price: 12.59,      save: 30 }
-];
+// API Configuration
+const API_BASE_URL = 'https://brandeduk-backend.onrender.com/api';
 
 const VAT_STORAGE_KEY = 'brandeduk-vat-mode';
 const VAT_FALLBACK_RATE = 0.20;
@@ -114,8 +111,240 @@ document.addEventListener('brandeduk:vat-change', function(event) {
     updateBasketTotalBox(); // Refresh basket box on VAT change
 });
 
-// Initial pricing update on load
-document.addEventListener('DOMContentLoaded', function() {
+// ===== LOAD PRODUCT DATA =====
+async function loadProductData() {
+    // Try to get product code from sessionStorage first
+    const savedProductCode = sessionStorage.getItem('selectedProduct');
+    const savedProductData = sessionStorage.getItem('selectedProductData');
+    
+    let productData = null;
+    
+    // Try to parse saved product data
+    if (savedProductData) {
+        try {
+            productData = JSON.parse(savedProductData);
+            console.log('✅ Loaded product from sessionStorage:', productData);
+        } catch (e) {
+            console.warn('Failed to parse saved product data:', e);
+        }
+    }
+    
+    // If we have a product code but no data, or data doesn't match, fetch from API
+    const productCode = savedProductCode || (productData && productData.code);
+    
+    if (productCode && (!productData || productData.code !== productCode)) {
+        console.log('Fetching product from API...', productCode);
+        try {
+            const response = await fetch(`${API_BASE_URL}/products/${productCode}`);
+            if (response.ok) {
+                productData = await response.json();
+                console.log('✅ Loaded product from API:', productData);
+                // Save to sessionStorage for next time
+                sessionStorage.setItem('selectedProductData', JSON.stringify(productData));
+            } else {
+                console.error('❌ API returned error:', response.status);
+            }
+        } catch (error) {
+            console.error('❌ Failed to fetch product from API:', error);
+        }
+    }
+    
+    if (!productData) {
+        console.error('❌ No product data available!');
+        alert('Product not found. Please go back and select a product.');
+        return false;
+    }
+    
+    // Initialize product variables
+    PRODUCT_DATA = productData;
+    PRODUCT_CODE = productData.code;
+    PRODUCT_NAME = productData.name;
+    BASE_PRICE = productData.price;
+    
+    // Convert priceBreaks to DISCOUNTS format
+    if (productData.priceBreaks && productData.priceBreaks.length > 0) {
+        DISCOUNTS = productData.priceBreaks.map((breakItem, index) => {
+            const prevPrice = index > 0 ? productData.priceBreaks[index - 1].price : BASE_PRICE;
+            const save = prevPrice > 0 ? Math.round(((prevPrice - breakItem.price) / prevPrice) * 100) : 0;
+            return {
+                min: breakItem.min,
+                max: breakItem.max,
+                price: breakItem.price,
+                save: save
+            };
+        });
+    } else {
+        // Fallback: single price tier
+        DISCOUNTS = [{ min: 1, max: 99999, price: BASE_PRICE, save: 0 }];
+    }
+    
+    console.log('✅ Product initialized:', {
+        code: PRODUCT_CODE,
+        name: PRODUCT_NAME,
+        price: BASE_PRICE,
+        discounts: DISCOUNTS
+    });
+    
+    return true;
+}
+
+// Initialize tier pricing from API data
+function initTierPricing() {
+    const tierPricingContainer = document.getElementById('tierPricingContainer');
+    if (!tierPricingContainer || !DISCOUNTS || DISCOUNTS.length === 0) {
+        return;
+    }
+    
+    // Clear existing tier items
+    tierPricingContainer.innerHTML = '';
+    
+    // Create tier items from DISCOUNTS array
+    DISCOUNTS.forEach((tier, index) => {
+        const tierItem = document.createElement('div');
+        tierItem.className = 'tier-item';
+        tierItem.setAttribute('data-min', tier.min);
+        tierItem.setAttribute('data-max', tier.max);
+        tierItem.setAttribute('data-base-price', tier.price);
+        
+        // Format quantity range
+        let qtyText = '';
+        if (tier.max >= 99999) {
+            qtyText = `${tier.min}+`;
+        } else {
+            qtyText = `${tier.min}-${tier.max}`;
+        }
+        
+        // Calculate save percentage (compared to first tier/base price)
+        const firstTierPrice = DISCOUNTS[0].price;
+        const savePercent = firstTierPrice > 0 && tier.price < firstTierPrice 
+            ? Math.round(((firstTierPrice - tier.price) / firstTierPrice) * 100) 
+            : 0;
+        
+        tierItem.innerHTML = `
+            <span class="tier-qty">${qtyText}</span>
+            <span class="tier-price">£${tier.price.toFixed(2)}</span>
+            ${savePercent > 0 ? `<span class="tier-save">-${savePercent}%</span>` : ''}
+        `;
+        
+        tierPricingContainer.appendChild(tierItem);
+    });
+}
+
+// Initialize product data and then update page
+document.addEventListener('DOMContentLoaded', async function() {
+    const loaded = await loadProductData();
+    if (loaded) {
+        // Update page title
+        if (PRODUCT_NAME) {
+            document.title = `${PRODUCT_NAME} - Branded UK`;
+        }
+        
+        // Update product name and code in the page (if elements exist)
+        const productNameEl = document.querySelector('.product-name, h1, [data-product-name], .garment-main-title');
+        if (productNameEl && PRODUCT_NAME) {
+            productNameEl.textContent = PRODUCT_NAME;
+        }
+        
+        const productCodeEl = document.querySelector('.product-code, [data-product-code], .prod-code-value');
+        if (productCodeEl && PRODUCT_CODE) {
+            productCodeEl.textContent = PRODUCT_CODE;
+        }
+        
+        // Update description box title (h2)
+        const descTitleEl = document.querySelector('.description-box h2');
+        if (descTitleEl && PRODUCT_NAME) {
+            descTitleEl.textContent = PRODUCT_NAME;
+        }
+        
+        // Update sidebar product name and code
+        const sidebarProductName = document.getElementById('sidebarProductName');
+        if (sidebarProductName && PRODUCT_NAME) {
+            sidebarProductName.textContent = PRODUCT_NAME;
+        }
+        
+        const sidebarProductCode = document.getElementById('sidebarProductCode');
+        if (sidebarProductCode && PRODUCT_CODE) {
+            sidebarProductCode.textContent = 'EE-' + PRODUCT_CODE;
+        }
+        
+        // Set initial main image from images array or top-level image field
+        if (mainImage && PRODUCT_DATA) {
+            if (PRODUCT_DATA.images && Array.isArray(PRODUCT_DATA.images)) {
+                const mainImageData = PRODUCT_DATA.images.find(img => img.type === 'main');
+                if (mainImageData && mainImageData.url) {
+                    mainImage.src = mainImageData.url;
+                } else if (PRODUCT_DATA.colors && PRODUCT_DATA.colors.length > 0) {
+                    // Fallback to first color's main image
+                    mainImage.src = PRODUCT_DATA.colors[0].main;
+                }
+            } else if (PRODUCT_DATA.image) {
+                // Use top-level image field if images array is not available
+                mainImage.src = PRODUCT_DATA.image;
+            } else if (PRODUCT_DATA.colors && PRODUCT_DATA.colors.length > 0) {
+                // Final fallback to first color's main image
+                mainImage.src = PRODUCT_DATA.colors[0].main;
+            }
+        }
+        
+        // Update description if available
+        if (PRODUCT_DATA && PRODUCT_DATA.description) {
+            const descEl = document.querySelector('.description-box');
+            if (descEl) {
+                // Find or create paragraph element
+                let descText = descEl.querySelector('p');
+                if (!descText) {
+                    descText = document.createElement('p');
+                    descEl.appendChild(descText);
+                }
+                // Use innerHTML to preserve any HTML formatting from API
+                descText.innerHTML = PRODUCT_DATA.description;
+            }
+        }
+        
+        // Update product details (fabric, fit, weight, care)
+        if (PRODUCT_DATA && PRODUCT_DATA.details) {
+            const details = PRODUCT_DATA.details;
+            const detailsHTML = [];
+            
+            if (details.fabric) detailsHTML.push(`<b>Fabric:</b> ${details.fabric}`);
+            if (details.weight) detailsHTML.push(`<b>Weight:</b> ${details.weight}`);
+            if (details.fit) detailsHTML.push(`<b>Fit:</b> ${details.fit}`);
+            if (details.care) detailsHTML.push(`<b>Care:</b> ${details.care}`);
+            
+            if (detailsHTML.length > 0) {
+                const detailsEl = document.querySelector('.description-box, [data-details]');
+                if (detailsEl) {
+                    // Find or create details section
+                    let detailsSection = detailsEl.querySelector('.product-details');
+                    if (!detailsSection) {
+                        detailsSection = document.createElement('div');
+                        detailsSection.className = 'product-details';
+                        detailsEl.appendChild(detailsSection);
+                    }
+                    detailsSection.innerHTML = detailsHTML.join('<br>');
+                }
+            }
+        }
+        
+        // Initialize thumbnail column from API data
+        if (PRODUCT_DATA && PRODUCT_DATA.colors) {
+            initThumbnailColumn(PRODUCT_DATA.colors);
+        }
+        
+        // Initialize colors from API data
+        if (PRODUCT_DATA && PRODUCT_DATA.colors) {
+            initColors(PRODUCT_DATA.colors);
+        }
+        
+        // Initialize sizes from API data
+        if (PRODUCT_DATA && PRODUCT_DATA.sizes) {
+            initSizes(PRODUCT_DATA.sizes);
+        }
+        
+        // Initialize tier pricing from API data
+        initTierPricing();
+    }
+    
     updateAllPricing();
     updateBasketTotalBox(); // Load basket total box
 });
@@ -339,7 +568,7 @@ const mainPriceEl  = document.getElementById("mainPrice");
 const addContinueButton = document.getElementById("addContinueButton");
 const addCustomizeButton = document.getElementById("addCustomizeButton");
 const belowSummary = document.getElementById("belowBtnSummary");
-const thumbButtons = Array.from(document.querySelectorAll('.thumb-item'));
+const productThumbColumn = document.getElementById("productThumbColumn");
 
 const sizesGrid = document.getElementById("sizesGrid");
 const colorGrid = document.getElementById("colorGrid");
@@ -358,64 +587,20 @@ const logoPreviewPopup = document.getElementById("logoPreview");
    COLORS
 --------------------------------------------------- */
 
-const colors = [
-    ["Aquatic", "https://i.postimg.cc/fbC2Zn4L/GD067-Aquatic-FT.jpg"],
-    ["Ash Grey", "https://i.postimg.cc/fbC2Zn4t/GD067-Ash-Grey-FT.jpg"],
-    ["Black", "https://i.postimg.cc/R0ds95rf/GD067-Black-FT.jpg"],
-    ["Blue Dusk", "https://i.postimg.cc/QMm4sGLJ/GD067-Blue-Dusk-FT.jpg"],
-    ["Brown Savana", "https://i.postimg.cc/wvBWjfHL/GD067-Brown-Savana-FT.jpg"],
-    ["Cardinal Red", "https://i.postimg.cc/SsKZxTqV/GD067-Cardinal-Red-FT.jpg"],
-    ["Carolina Blue", "https://i.postimg.cc/V6N7kG1D/GD067-Carolina-Blue-FT.jpg"],
-    ["Cement", "https://i.postimg.cc/fLbHR2Z2/GD067-Cement-FT.jpg"],
-    ["Charcoal", "https://i.postimg.cc/4d38xLZF/GD067-Charcoal-FT.jpg"],
-    ["Cobalt", "https://i.postimg.cc/sX2ng6yL/GD067-Cobalt-FT.jpg"],
-    ["Cocoa", "https://i.postimg.cc/d10WVHvb/GD067-Cocoa-FT.jpg"],
-    ["Daisy", "https://i.postimg.cc/1tzW3Cs1/GD067-Daisy-FT.jpg"],
-    ["Dark Heather", "https://i.postimg.cc/j5kMwHdk/GD067-Dark-Heather-FT.jpg"],
-    ["Dusty Rose", "https://i.postimg.cc/fLg8tcTP/GD067-Dusty-Rose-FT.jpg"],
-    ["Forest Green", "https://i.postimg.cc/FRnTdys8/GD067-Forest-Green-FT.jpg"],
-    ["Light Pink", "https://i.postimg.cc/G2SX8FhW/GD067-Light-Pink-FT.jpg"],
-    ["Maroon", "https://i.postimg.cc/zBPxbCG1/GD067-Maroon-FT.jpg"],
-    ["Military Green", "https://i.postimg.cc/TwHtLV3f/GD067-Military-Green-FT.jpg"],
-    ["Mustard", "https://i.postimg.cc/MTr9M7pZ/GD067-Mustard-FT.jpg"],
-    ["Navy", "https://i.postimg.cc/MTr9M7pp/GD067-Navy-FT.jpg"],
-    ["Off-White", "https://i.postimg.cc/nzw3j4hz/GD067-Off-White-FT.jpg"],
-    ["Paragon", "https://i.postimg.cc/j5kMwHSL/GD067-Paragon-FT.jpg"],
-    ["Pink Lemonade", "https://i.postimg.cc/zBPxbCGy/GD067-Pink-Lemonade-FT.jpg"],
-    ["Pistachio", "https://i.postimg.cc/xCF6Jv1N/GD067-Pistachio-FT.jpg"],
-    ["Purple", "https://i.postimg.cc/C5BmjRRx/GD067-Purple-FT.jpg"],
-    ["Red", "https://i.postimg.cc/brD3QZZd/GD067-Red-FT.jpg"],
-    ["Sport Grey", "https://i.postimg.cc/zvb0nyyg/GD067-Ringspun-Sport-Grey-FT.jpg"],
-    ["Royal", "https://i.postimg.cc/VNmG3sVH/GD067-Royal-FT.jpg"],
-    ["Sage", "https://i.postimg.cc/tgpSLRcy/GD067-Sage-FT.jpg"],
-    ["Sand", "https://i.postimg.cc/Bv4YdZz3/GD067-Sand-FT.jpg"],
-    ["Sky", "https://i.postimg.cc/YSMnJ2Pc/GD067-Sky-FT.jpg"],
-    ["Smoke", "https://i.postimg.cc/Xv4HTNPb/GD067-Smoke-FT.jpg"],
-    ["Stone Blue", "https://i.postimg.cc/g0mSfc72/GD067-Stone-Blue-FT.jpg"],
-    ["Tangerine", "https://i.postimg.cc/25GcmRpr/GD067-Tangerine-FT.jpg"],
-    ["Texas Orange", "https://i.postimg.cc/TP07GM8x/GD067-Texas-Orange-FT.jpg"],
-    ["White", "https://i.postimg.cc/1zBCPhxQ/GD067-White-FT.jpg"],
-    ["Yellow Haze", "https://i.postimg.cc/W48WjLRN/GD067-Yellow-Haze-FT.jpg"]
-];
+// Colors will be loaded dynamically from PRODUCT_DATA
+let colors = [];
 
 // No color selected by default - user must click to select
 let selectedColorName = null;
 let selectedColorURL  = null;
 
-// Check for pre-selected color from shop page BEFORE gallery init
-const shopPreSelectedUrl = sessionStorage.getItem('selectedColorUrl');
-const shopPreSelectedName = sessionStorage.getItem('selectedColorName');
-
-if (shopPreSelectedUrl && shopPreSelectedName) {
-    selectedColorName = shopPreSelectedName;
-    selectedColorURL = shopPreSelectedUrl;
-    // Update main image immediately
-    if (mainImage) {
-        mainImage.src = shopPreSelectedUrl;
-    }
-}
-
-function initStaticGallery() {
+function initThumbnailGallery() {
+    if (!productThumbColumn) return;
+    
+    // Find thumbnails in the slider inner container or directly in column
+    const thumbInner = productThumbColumn.querySelector('.thumb-slider-inner');
+    const thumbContainer = thumbInner || productThumbColumn;
+    const thumbButtons = Array.from(thumbContainer.querySelectorAll('.thumb-item'));
     if (!thumbButtons.length) return;
 
     const setActive = (button) => {
@@ -423,31 +608,46 @@ function initStaticGallery() {
     };
 
     thumbButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const imgSrc = button.dataset.image;
+        // Remove existing listeners to avoid duplicates
+        const newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
+        
+        newButton.addEventListener('click', () => {
+            const imgSrc = newButton.dataset.image;
+            const colorName = newButton.dataset.colorName || newButton.getAttribute('aria-label')?.replace(/^View /, '').split(' ')[0] || '';
+            
             if (!imgSrc) return;
+            
+            // Update main image
             if (mainImage) {
                 mainImage.src = imgSrc;
             }
-            setActive(button);
+            
+            // Find matching color in color grid and select it
+            if (colorName && colors.length > 0) {
+                const matchingColor = colors.find(([name]) => name === colorName);
+                if (matchingColor) {
+                    const [name, url] = matchingColor;
+                    const colorThumb = document.querySelector(`.color-thumb[data-color-name="${name}"]`);
+                    if (colorThumb) {
+                        // Check if there are unsaved items
+                        const currentTotal = Object.values(qty).reduce((a,b)=>a+b,0);
+                        
+                        if (currentTotal > 0) {
+                            // Show confirmation modal
+                            showColorChangeModal(name, url, colorThumb);
+                        } else {
+                            // No unsaved items, change color directly
+                            changeColor(name, url, colorThumb);
+                        }
+                    }
+                }
+            }
+            
+            setActive(newButton);
         });
     });
 
-    // Check if we have a pre-selected color from shop page
-    const preSelectedUrl = sessionStorage.getItem('selectedColorUrl');
-    if (preSelectedUrl) {
-        // Find matching thumbnail button
-        const matchingThumb = thumbButtons.find(btn => btn.dataset.image === preSelectedUrl);
-        if (matchingThumb) {
-            setActive(matchingThumb);
-            if (mainImage) {
-                mainImage.src = preSelectedUrl;
-            }
-            return; // Don't use default
-        }
-    }
-
-    // Default behavior if no pre-selection
     const initialActive = thumbButtons.find(btn => btn.classList.contains('active')) || thumbButtons[0];
     if (initialActive) {
         setActive(initialActive);
@@ -457,62 +657,422 @@ function initStaticGallery() {
     }
 
     window.setGalleryActiveBySrc = (src) => {
+        const thumbInner = productThumbColumn.querySelector('.thumb-slider-inner');
+        const thumbContainer = thumbInner || productThumbColumn;
+        const thumbButtons = Array.from(thumbContainer.querySelectorAll('.thumb-item'));
         const match = thumbButtons.find(btn => btn.dataset.image === src);
         if (match) {
-            setActive(match);
+            thumbButtons.forEach(btn => btn.classList.remove('active'));
+            match.classList.add('active');
+            
+            // Scroll to active thumbnail if it's not visible
+            if (thumbInner && productThumbColumn.querySelectorAll('.thumb-item').length > 5) {
+                const matchIndex = parseInt(match.dataset.index || '0');
+                const itemHeight = 80;
+                const itemsPerView = 5;
+                
+                // Calculate if we need to scroll
+                const currentStart = thumbnailSliderState.currentIndex;
+                const currentEnd = currentStart + itemsPerView - 1;
+                
+                if (matchIndex < currentStart) {
+                    // Scroll up to show the active item
+                    thumbnailSliderState.currentIndex = Math.max(0, matchIndex);
+                } else if (matchIndex > currentEnd) {
+                    // Scroll down to show the active item
+                    const maxIndex = Math.max(0, thumbnailSliderState.totalItems - itemsPerView);
+                    thumbnailSliderState.currentIndex = Math.min(maxIndex, matchIndex - itemsPerView + 1);
+                }
+                
+                const translateY = -thumbnailSliderState.currentIndex * itemHeight;
+                thumbInner.style.transform = `translateY(${translateY}px)`;
+                updateThumbnailSliderButtons();
+            }
         } else {
             thumbButtons.forEach(btn => btn.classList.remove('active'));
         }
     };
 }
 
-initStaticGallery();
+// Thumbnail slider state
+let thumbnailSliderState = {
+    currentIndex: 0,
+    itemsPerView: 5,
+    totalItems: 0
+};
 
-/* BUILD COLOR GRID */
-
-// Check if coming from shop page with pre-selected color
-const preSelectedColorName = sessionStorage.getItem('selectedColorName');
-const preSelectedColorUrl = sessionStorage.getItem('selectedColorUrl');
-
-colors.forEach(([name, url], i) => {
-    const div = document.createElement("div");
-    div.className = "color-thumb";
-    div.style.backgroundImage = `url('${url}')`;
-    div.setAttribute('data-color-name', name);
-    div.setAttribute('title', name);
-
-    // Pre-select color from shop page OR restore from basket
-    const savedColorName = sessionStorage.getItem('selectedColorName');
-    const basket = JSON.parse(localStorage.getItem('quoteBasket') || '[]');
-    const hasItemsForColor = basket.some(item => item.color === name);
+/* Initialize thumbnail column dynamically from product colors with slider */
+function initThumbnailColumn(productColors) {
+    if (!productThumbColumn) {
+        console.warn('Thumbnail column element not found');
+        return;
+    }
     
-    // Pre-select if: coming from shop with this color OR has items in basket for this color
-    if (savedColorName && savedColorName === name) {
-        div.classList.add("active");
-        selectedColorName = name;
-        selectedColorURL = url;
-        mainImage.src = url;
-        // Update gallery thumbnails if function exists
-        if (window.setGalleryActiveBySrc) {
-            window.setGalleryActiveBySrc(url);
+    if (!productColors || !Array.isArray(productColors) || productColors.length === 0) {
+        console.warn('No colors available for thumbnail column');
+        productThumbColumn.innerHTML = '';
+        return;
+    }
+    
+    // Clear existing thumbnails and wrapper
+    productThumbColumn.innerHTML = '';
+    
+    // Create wrapper for slider
+    const sliderWrapper = document.createElement('div');
+    sliderWrapper.className = 'thumb-slider-wrapper';
+    sliderWrapper.style.cssText = 'position: relative; display: flex; flex-direction: column; gap: 8px;';
+    
+    // Create container for thumbnails
+    const thumbContainer = document.createElement('div');
+    thumbContainer.className = 'thumb-slider-container';
+    thumbContainer.style.cssText = 'position: relative; overflow: hidden; max-height: 400px;';
+    
+    // Create inner container for all thumbnails
+    const thumbInner = document.createElement('div');
+    thumbInner.className = 'thumb-slider-inner';
+    thumbInner.style.cssText = 'display: flex; flex-direction: column; gap: 8px; transition: transform 0.3s ease;';
+    
+    // Create all thumbnail buttons
+    productColors.forEach((color, index) => {
+        const colorName = color.name || 'Unknown';
+        const thumbUrl = color.thumb || color.main || color.url || '';
+        const mainUrl = color.main || color.thumb || color.url || '';
+        
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'thumb-item';
+        button.setAttribute('data-image', mainUrl);
+        button.setAttribute('data-color-name', colorName);
+        button.setAttribute('data-index', index);
+        button.setAttribute('aria-label', `View ${colorName} ${PRODUCT_NAME || 'product'}`);
+        button.style.cssText = 'width: 72px; height: 72px; flex-shrink: 0;';
+        
+        // Set first thumbnail as active by default (only if no color is already selected)
+        const savedColorName = sessionStorage.getItem('selectedColorName');
+        if (index === 0 && !savedColorName) {
+            button.classList.add('active');
+        } else if (savedColorName === colorName) {
+            button.classList.add('active');
+        }
+        
+        const img = document.createElement('img');
+        img.src = thumbUrl;
+        img.alt = `${colorName} thumbnail`;
+        img.style.cssText = 'width: 100%; height: 100%; object-fit: contain; border-radius: 8px;';
+        
+        button.appendChild(img);
+        thumbInner.appendChild(button);
+    });
+    
+    thumbContainer.appendChild(thumbInner);
+    
+    // Add navigation buttons if more than 5 colors
+    if (productColors.length > 5) {
+        // Previous button - positioned at top
+        const prevBtn = document.createElement('button');
+        prevBtn.className = 'thumb-slider-btn thumb-slider-prev';
+        prevBtn.setAttribute('aria-label', 'Previous colors');
+        prevBtn.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 12L4 8L8 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        `;
+        prevBtn.style.cssText = `
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 32px;
+            height: 32px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            color: #374151;
+        `;
+        prevBtn.onmouseenter = () => {
+            if (!prevBtn.disabled) {
+                prevBtn.style.background = '#f9fafb';
+                prevBtn.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
+                prevBtn.style.borderColor = '#d1d5db';
+            }
+        };
+        prevBtn.onmouseleave = () => {
+            prevBtn.style.background = 'white';
+            prevBtn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+            prevBtn.style.borderColor = '#e5e7eb';
+        };
+        prevBtn.onclick = (e) => {
+            e.stopPropagation();
+            slideThumbnails('prev');
+        };
+        
+        // Next button - positioned at bottom
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'thumb-slider-btn thumb-slider-next';
+        nextBtn.setAttribute('aria-label', 'Next colors');
+        nextBtn.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 4L12 8L8 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        `;
+        nextBtn.style.cssText = `
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 32px;
+            height: 32px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            color: #374151;
+        `;
+        nextBtn.onmouseenter = () => {
+            if (!nextBtn.disabled) {
+                nextBtn.style.background = '#f9fafb';
+                nextBtn.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
+                nextBtn.style.borderColor = '#d1d5db';
+            }
+        };
+        nextBtn.onmouseleave = () => {
+            nextBtn.style.background = 'white';
+            nextBtn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+            nextBtn.style.borderColor = '#e5e7eb';
+        };
+        nextBtn.onclick = (e) => {
+            e.stopPropagation();
+            slideThumbnails('next');
+        };
+        
+        sliderWrapper.appendChild(thumbContainer);
+        sliderWrapper.appendChild(prevBtn);
+        sliderWrapper.appendChild(nextBtn);
+        
+        // Initialize slider state
+        thumbnailSliderState.totalItems = productColors.length;
+        thumbnailSliderState.currentIndex = 0;
+        updateThumbnailSliderButtons();
+    } else {
+        sliderWrapper.appendChild(thumbContainer);
+    }
+    
+    productThumbColumn.appendChild(sliderWrapper);
+    
+    // Initialize gallery functionality
+    initThumbnailGallery();
+    
+    // Set initial main image from first color if main image not already set
+    const savedColorName = sessionStorage.getItem('selectedColorName');
+    if (productColors.length > 0 && mainImage) {
+        if (savedColorName) {
+            // Use saved color
+            const savedColor = productColors.find(c => c.name === savedColorName);
+            if (savedColor) {
+                const savedMainUrl = savedColor.main || savedColor.thumb || savedColor.url;
+                if (savedMainUrl) {
+                    mainImage.src = savedMainUrl;
+                }
+            }
+        } else {
+            // Use first color
+            const firstColor = productColors[0];
+            const firstMainUrl = firstColor.main || firstColor.thumb || firstColor.url;
+            if (firstMainUrl && (!mainImage.src || mainImage.src.includes('GD067'))) {
+                mainImage.src = firstMainUrl;
+            }
         }
     }
+    
+    console.log('✅ Thumbnail column initialized with', productColors.length, 'colors (slider enabled)');
+}
 
-    div.onclick = () => {
-        // Check if there are unsaved items
-        const currentTotal = Object.values(qty).reduce((a,b)=>a+b,0);
-        
-        if (currentTotal > 0) {
-            // Show confirmation modal
-            showColorChangeModal(name, url, div);
+function slideThumbnails(direction) {
+    const thumbInner = document.querySelector('.thumb-slider-inner');
+    if (!thumbInner) return;
+    
+    const itemHeight = 80; // 72px height + 8px gap
+    const maxIndex = Math.max(0, thumbnailSliderState.totalItems - thumbnailSliderState.itemsPerView);
+    
+    if (direction === 'next') {
+        thumbnailSliderState.currentIndex = Math.min(
+            thumbnailSliderState.currentIndex + 1,
+            maxIndex
+        );
+    } else {
+        thumbnailSliderState.currentIndex = Math.max(
+            thumbnailSliderState.currentIndex - 1,
+            0
+        );
+    }
+    
+    const translateY = -thumbnailSliderState.currentIndex * itemHeight;
+    thumbInner.style.transform = `translateY(${translateY}px)`;
+    
+    updateThumbnailSliderButtons();
+}
+
+function updateThumbnailSliderButtons() {
+    const prevBtn = document.querySelector('.thumb-slider-prev');
+    const nextBtn = document.querySelector('.thumb-slider-next');
+    
+    if (prevBtn) {
+        const isDisabled = thumbnailSliderState.currentIndex === 0;
+        prevBtn.disabled = isDisabled;
+        prevBtn.style.opacity = isDisabled ? '0.3' : '1';
+        prevBtn.style.cursor = isDisabled ? 'not-allowed' : 'pointer';
+        prevBtn.style.pointerEvents = isDisabled ? 'none' : 'auto';
+        if (isDisabled) {
+            prevBtn.style.background = '#f3f4f6';
+            prevBtn.style.color = '#9ca3af';
         } else {
-            // No unsaved items, change color directly
-            changeColor(name, url, div);
+            prevBtn.style.background = 'white';
+            prevBtn.style.color = '#374151';
         }
-    };
+    }
+    
+    if (nextBtn) {
+        const maxIndex = Math.max(0, thumbnailSliderState.totalItems - thumbnailSliderState.itemsPerView);
+        const isDisabled = thumbnailSliderState.currentIndex >= maxIndex;
+        nextBtn.disabled = isDisabled;
+        nextBtn.style.opacity = isDisabled ? '0.3' : '1';
+        nextBtn.style.cursor = isDisabled ? 'not-allowed' : 'pointer';
+        nextBtn.style.pointerEvents = isDisabled ? 'none' : 'auto';
+        if (isDisabled) {
+            nextBtn.style.background = '#f3f4f6';
+            nextBtn.style.color = '#9ca3af';
+        } else {
+            nextBtn.style.background = 'white';
+            nextBtn.style.color = '#374151';
+        }
+    }
+}
 
-    colorGrid.appendChild(div);
-});
+/* BUILD COLOR GRID - Dynamic from API */
+function initColors(productColors) {
+    if (!productColors || !Array.isArray(productColors) || productColors.length === 0) {
+        console.warn('No colors available for this product');
+        return;
+    }
+    
+    // Clear existing colors
+    colorGrid.innerHTML = '';
+    colors = [];
+    
+    // Convert API colors format to internal format: [name, url]
+    productColors.forEach(color => {
+        const name = color.name || 'Unknown';
+        const url = color.main || color.thumb || color.url || '';
+        colors.push([name, url]);
+    });
+    
+    // Check for color filter from home page
+    const filterColorName = sessionStorage.getItem('filterColorName');
+    const savedColorName = sessionStorage.getItem('selectedColorName');
+    const basket = JSON.parse(localStorage.getItem('quoteBasket') || '[]');
+    
+    // Priority: 1. Saved color with basket items, 2. Filter color, 3. Saved color
+    let colorToSelect = null;
+    let colorToSelectUrl = null;
+    
+    if (savedColorName) {
+        const hasItemsForColor = basket.some(item => item.color === savedColorName);
+        if (hasItemsForColor) {
+            // Priority 1: Saved color with basket items
+            const savedColor = colors.find(([name]) => name === savedColorName);
+            if (savedColor) {
+                colorToSelect = savedColorName;
+                colorToSelectUrl = savedColor[1];
+            }
+        }
+    }
+    
+    // If no saved color with basket items, check filter color
+    if (!colorToSelect && filterColorName) {
+        // Try to find matching color (case-insensitive, partial match)
+        const matchingColor = colors.find(([name]) => {
+            const nameLower = name.toLowerCase();
+            const filterLower = filterColorName.toLowerCase();
+            return nameLower === filterLower || nameLower.includes(filterLower) || filterLower.includes(nameLower);
+        });
+        if (matchingColor) {
+            colorToSelect = matchingColor[0];
+            colorToSelectUrl = matchingColor[1];
+        }
+    }
+    
+    // If still no color, use saved color (without basket items requirement)
+    if (!colorToSelect && savedColorName) {
+        const savedColor = colors.find(([name]) => name === savedColorName);
+        if (savedColor) {
+            colorToSelect = savedColorName;
+            colorToSelectUrl = savedColor[1];
+        }
+    }
+    
+    // Build color grid
+    colors.forEach(([name, url], i) => {
+        const div = document.createElement("div");
+        div.className = "color-thumb";
+        div.style.backgroundImage = `url('${url}')`;
+        div.setAttribute('data-color-name', name);
+        div.setAttribute('title', name);
+
+        // Select color if it matches the color to select
+        if (colorToSelect && colorToSelect === name) {
+            div.classList.add("active");
+            selectedColorName = name;
+            selectedColorURL = url;
+            if (mainImage) mainImage.src = url;
+            
+            // Update thumbnail gallery to show this color's image (use setTimeout to ensure gallery is initialized)
+            setTimeout(() => {
+                if (typeof window.setGalleryActiveBySrc === 'function') {
+                    window.setGalleryActiveBySrc(url);
+                }
+            }, 100);
+            
+            // Update step progress and clear filter if color was auto-selected from filter
+            if (filterColorName && filterColorName === colorToSelect) {
+                setTimeout(() => {
+                    updateStepProgress(1);
+                    // Clear filter color after using it
+                    sessionStorage.removeItem('filterColorName');
+                }, 150);
+            }
+        }
+
+        div.onclick = () => {
+            // Check if there are unsaved items
+            const currentTotal = Object.values(qty).reduce((a,b)=>a+b,0);
+            
+            if (currentTotal > 0) {
+                // Show confirmation modal
+                showColorChangeModal(name, url, div);
+            } else {
+                // No unsaved items, change color directly
+                changeColor(name, url, div);
+            }
+        };
+
+        colorGrid.appendChild(div);
+    });
+    
+    console.log('✅ Colors initialized:', colors.length);
+}
 
 // Click outside color grid deselects color if no quantities added
 document.addEventListener('click', (e) => {
@@ -541,11 +1101,33 @@ document.addEventListener('click', (e) => {
    SIZES
 --------------------------------------------------- */
 
-const sizeList = ["XS","S","M","L","XL","2XL","3XL","4XL","5XL"];
+// Sizes will be loaded dynamically from PRODUCT_DATA
+let sizeList = [];
 let qty = {};
-sizeList.forEach(s => qty[s] = 0);
+
+function initSizes(productSizes) {
+    if (!productSizes || !Array.isArray(productSizes)) {
+        console.warn('No sizes available for this product');
+        sizeList = [];
+        qty = {};
+        renderSizes();
+        return;
+    }
+    
+    // Set size list from API
+    sizeList = productSizes;
+    qty = {};
+    sizeList.forEach(s => qty[s] = 0);
+    
+    // Render sizes
+    renderSizes();
+    
+    console.log('✅ Sizes initialized:', sizeList);
+}
 
 function renderSizes() {
+    if (!sizesGrid) return;
+    
     sizesGrid.innerHTML = "";
     
     // Check if color is selected
@@ -579,6 +1161,9 @@ function renderSizes() {
 
     attachSizeEvents();
 }
+
+// Don't render sizes on page load - wait for product data
+// renderSizes(); // Removed - will be called by initSizes()
 
 function updateSizesMessage() {
     let msg = document.getElementById('selectColorMessage');
@@ -797,6 +1382,8 @@ function changeColor(name, url, colorDiv) {
     selectedColorURL  = url;
 
     if (mainImage) mainImage.src = url;
+    
+    // Update thumbnail gallery active state
     if (typeof window.setGalleryActiveBySrc === 'function') {
         window.setGalleryActiveBySrc(url);
     }
@@ -1401,7 +1988,14 @@ function closeCustomizationModal() {
 
 function renderColorSelection() {
     const grid = document.getElementById('colorSelectionGrid');
+    if (!grid) return;
+    
     grid.innerHTML = '';
+    
+    if (!colors || colors.length === 0) {
+        console.warn('No colors available for color selection');
+        return;
+    }
     
     colors.forEach(([name, url]) => {
         const circle = document.createElement('div');
