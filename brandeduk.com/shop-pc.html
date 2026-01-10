@@ -684,6 +684,7 @@
             color: #1f2937;
             margin: 0;
             white-space: nowrap;
+            transition: opacity 0.3s ease;
         }
 
         .products-header-right {
@@ -699,6 +700,7 @@
             font-size: 14px;
             font-weight: 500;
             white-space: nowrap;
+            transition: opacity 0.3s ease;
         }
 
         .products-controls {
@@ -751,6 +753,93 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 20px;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Beautiful Animated Loader */
+        .products-loader {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+            min-height: 400px;
+        }
+
+        .loader-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+
+        .loader-spinner {
+            width: 80px;
+            height: 80px;
+            border: 4px solid #f3f4f6;
+            border-top-color: #7c3aed;
+            border-right-color: #a855f7;
+            border-radius: 50%;
+            animation: loader-spin 1s linear infinite;
+        }
+
+        .loader-inner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            border: 3px solid transparent;
+            border-top-color: #8b5cf6;
+            border-radius: 50%;
+            animation: loader-spin-reverse 0.8s linear infinite;
+        }
+
+        .loader-dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 12px;
+            height: 12px;
+            background: #7c3aed;
+            border-radius: 50%;
+            animation: loader-pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes loader-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes loader-spin-reverse {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(-360deg); }
+        }
+
+        @keyframes loader-pulse {
+            0%, 100% { 
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.5);
+                opacity: 0.6;
+            }
+        }
+
+        .loader-text {
+            margin-top: 24px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #6b7280;
+            animation: loader-fade 2s ease-in-out infinite;
+        }
+
+        @keyframes loader-fade {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
         }
 
         /* Product Card */
@@ -2592,6 +2681,23 @@ function getPriceRange() {
     return { min: Math.min(...prices), max: Math.max(...prices) };
 }
 
+// Show beautiful loader
+function showLoader() {
+    const grid = document.getElementById('productsGrid');
+    if (!grid) return;
+    
+    grid.innerHTML = `
+        <div class="products-loader">
+            <div class="loader-container">
+                <div class="loader-spinner"></div>
+                <div class="loader-inner"></div>
+                <div class="loader-dot"></div>
+            </div>
+            <div class="loader-text">Loading products...</div>
+        </div>
+    `;
+}
+
 // Render products (now uses API data)
 async function renderProducts() {
     const grid = document.getElementById('productsGrid');
@@ -2602,25 +2708,44 @@ async function renderProducts() {
     
     console.log('🎨 renderProducts() called - updating product grid...');
     
-    // Keep current products visible - don't show loading state
-    // Store current state to preserve it during fetch
-    const currentProductsCount = grid.children.length;
-    console.log(`📦 Keeping ${currentProductsCount} current products visible while fetching...`);
+    // Get title and count elements
+    const categoryTitleEl = document.getElementById('categoryTitle');
+    const productsCountEl = document.getElementById('productsCount');
     
-    // Fetch new products (keep old ones visible)
+    // Check if this is initial load (no products in grid yet)
+    const isInitialLoad = grid.children.length === 0;
+    
+    if (isInitialLoad) {
+        // On initial load, show beautiful loader
+        showLoader();
+        // Hide title/count initially
+        if (categoryTitleEl) {
+            categoryTitleEl.style.opacity = '0';
+            categoryTitleEl.style.transition = 'opacity 0.3s ease';
+        }
+        if (productsCountEl) {
+            productsCountEl.style.opacity = '0';
+            productsCountEl.style.transition = 'opacity 0.3s ease';
+        }
+    } else {
+        // Keep current products visible - don't show loading state
+        const currentProductsCount = grid.children.length;
+        console.log(`📦 Keeping ${currentProductsCount} current products visible while fetching...`);
+    }
+    
+    // Fetch new products (keep old ones visible or show loader)
     const products = await fetchProducts();
     
     console.log(`📦 Received ${products.length} products from API`);
     
-    // Update title and count
-    const categoryTitleEl = document.getElementById('categoryTitle');
-    const productsCountEl = document.getElementById('productsCount');
-    
+    // Update title and count (only after data arrives)
     if (categoryTitleEl) {
         categoryTitleEl.textContent = categoryTitles[currentState.category] || 'Products';
+        categoryTitleEl.style.opacity = '1';
     }
     if (productsCountEl) {
         productsCountEl.textContent = `${currentState.total} products`;
+        productsCountEl.style.opacity = '1';
     }
     
     // Update pagination
@@ -3037,8 +3162,8 @@ async function initPriceRangeSlider() {
         // Trigger API call
         if (triggerAPI) {
             // Immediate API call (for change events)
-            currentState.page = 1;
-            updateURL();
+        currentState.page = 1;
+        updateURL();
             console.log('💰 Triggering IMMEDIATE API call with price range:', { priceMin: minVal, priceMax: maxVal });
             console.log('📤 Current state before API call:', JSON.parse(JSON.stringify(currentState)));
             renderProducts().then(() => {
@@ -3236,22 +3361,22 @@ async function initPriceRangeSlider() {
     console.log('✅ All price slider event listeners attached');
     
     // Input field handlers - trigger API on change
-        if (inputMin) {
-    inputMin.addEventListener('change', function() {
+    if (inputMin) {
+        inputMin.addEventListener('change', function() {
             let val = parseInt(this.value.replace('£', '').replace(/[^0-9]/g, ''));
         if (isNaN(val)) val = catalogMinPrice;
         val = Math.max(catalogMinPrice, Math.min(val, parseInt(sliderMax.value)));
-        sliderMin.value = val;
+            sliderMin.value = val;
             updateSlider(true); // Trigger API immediately
-    });
-        }
+        });
+    }
     
-        if (inputMax) {
-    inputMax.addEventListener('change', function() {
+    if (inputMax) {
+        inputMax.addEventListener('change', function() {
             let val = parseInt(this.value.replace('£', '').replace(/[^0-9]/g, ''));
         if (isNaN(val)) val = catalogMaxPrice;
         val = Math.min(catalogMaxPrice, Math.max(val, parseInt(sliderMin.value)));
-        sliderMax.value = val;
+            sliderMax.value = val;
             updateSlider(true); // Trigger API immediately
         });
     }
@@ -3457,7 +3582,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     const totalCheckboxes = document.querySelectorAll('.filter-checkbox-item input[type="checkbox"]').length;
     console.log(`✅ Found ${totalCheckboxes} filter checkboxes, event handlers attached`);
     
-    // Load initial products
+    // Hide title and count initially to prevent flash
+    const categoryTitleEl = document.getElementById('categoryTitle');
+    const productsCountEl = document.getElementById('productsCount');
+    if (categoryTitleEl) categoryTitleEl.style.opacity = '0';
+    if (productsCountEl) productsCountEl.style.opacity = '0';
+    
+    // Load initial products (will show loader automatically)
     await renderProducts();
     await fetchFilterCounts();
     // #region agent log

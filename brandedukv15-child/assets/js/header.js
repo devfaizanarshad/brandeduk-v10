@@ -246,7 +246,8 @@
     }
 
     function initSearchExpandToggle() {
-        const containers = document.querySelectorAll('.searchbar-header__search-expand');
+        // Handle both desktop (.searchbar-header__search-expand) and mobile (.search-wrapper-expand) search containers
+        const containers = document.querySelectorAll('.searchbar-header__search-expand, .search-wrapper-expand');
         if (!containers.length) return;
 
         containers.forEach((container) => {
@@ -272,21 +273,36 @@
                 const query = input.value.trim();
                 if (!query) return;
                 
-                // Determine the correct shop page path based on current location
+                // Detect if user is on mobile/tablet (screen width < 1024px)
+                const isMobile = window.innerWidth < 1024;
+                
+                // Determine the correct shop page path based on current location and device
                 const currentPath = window.location.pathname;
                 let shopPage;
                 
-                // Check if we're already in brandeduk.com folder
-                // If path contains /brandeduk.com/, we're already there - use relative path
-                if (currentPath.includes('/brandeduk.com/')) {
-                    // Already in brandeduk.com folder, use relative path
-                    shopPage = 'shop-pc.html';
+                if (isMobile) {
+                    // Mobile/tablet: navigate to shop.html
+                    // Check if we're already in the root or in a subdirectory
+                    if (currentPath.includes('/brandeduk.com/')) {
+                        // Already in brandeduk.com folder, go up one level to root
+                        shopPage = '../shop.html';
+                    } else {
+                        // At root level, use relative path
+                        shopPage = 'shop.html';
+                    }
                 } else {
-                    // Not in brandeduk.com folder, navigate to it
-                    shopPage = 'brandeduk.com/shop-pc.html';
+                    // Desktop: navigate to shop-pc.html
+                    // Check if we're already in brandeduk.com folder
+                    if (currentPath.includes('/brandeduk.com/')) {
+                        // Already in brandeduk.com folder, use relative path
+                        shopPage = 'shop-pc.html';
+                    } else {
+                        // Not in brandeduk.com folder, navigate to it
+                        shopPage = 'brandeduk.com/shop-pc.html';
+                    }
                 }
                 
-                // Navigate to shop page with search query
+                // Navigate to shop page with search query (using 'q' parameter)
                 window.location.href = `${shopPage}?q=${encodeURIComponent(query)}`;
             };
 

@@ -1261,17 +1261,20 @@
         
         // Handle form submission
         if (quoteForm) {
-            quoteForm.addEventListener('submit', (e) => {
+            quoteForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
                 // Prevent double submit
                 if (popupSubmitBtn.classList.contains('submitted')) return;
                 
                 // Get form data
-                const emailValue = document.getElementById('quoteEmail').value;
+                const name = document.getElementById('quoteName').value.trim();
+                const phone = document.getElementById('quotePhone').value.trim();
+                const emailValue = document.getElementById('quoteEmail').value.trim();
                 
-                // Validate email - must contain @
-                if (!emailValue.includes('@')) {
+                // Validate email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailValue || !emailRegex.test(emailValue)) {
                     const emailInput = document.getElementById('quoteEmail');
                     emailInput.classList.add('invalid-email');
                     
@@ -1289,77 +1292,283 @@
                     
                     return; // Don't submit
                 }
-                
-                const formData = {
-                    name: document.getElementById('quoteName').value,
-                    phone: document.getElementById('quotePhone').value,
-                    email: emailValue,
-                    basket: JSON.parse(localStorage.getItem('quoteBasket') || '[]')
-                };
-                
-                // Store form data for quote page
-                sessionStorage.setItem('quoteFormData', JSON.stringify(formData));
-                
-                // Update button to submitted state
-                popupSubmitBtn.classList.add('submitted');
-                popupSubmitBtn.textContent = 'Quote Submitted! ✓';
-                
-                // Also update the main Submit Quote button
-                if (submitBtn) {
-                    submitBtn.classList.add('submitted');
-                    submitBtn.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                        Quote Submitted!
-                    `;
+
+                // Basic validation
+                if (!name || !phone) {
+                    alert('Please fill in all fields');
+                    return;
                 }
-                
-                // ===== COMPLETE SESSION/STORAGE CLEAR =====
-                // FIRST: Reset in-memory state to prevent beforeunload from re-saving
-                state.positionMethods = {};
-                state.positionCustomizations = {};
-                state.positionDesigns = {};
-                state.positions = [];
-                state.sizeQuantities = {};
-                state.quantity = 0;
-                state.selectedColor = null;
-                state.selectedColorName = null;
-                state.selectedColorImage = null;
-                
-                // Clear the basket
-                localStorage.removeItem('quoteBasket');
-                // Also set to empty array for code paths expecting the key
-                localStorage.setItem('quoteBasket', '[]');
-                
-                // Clear ALL customization state
-                sessionStorage.removeItem('brandeduk-customize-state');
-                sessionStorage.removeItem('quoteFormData');
-                sessionStorage.removeItem('selectedColorName');
-                sessionStorage.removeItem('selectedColorUrl');
-                sessionStorage.removeItem('selectedProduct');
-                sessionStorage.removeItem('selectedProductData');
-                sessionStorage.removeItem('customizingProduct');
-                sessionStorage.removeItem('selectedPositions');
-                sessionStorage.removeItem('positionCustomizations');
-                sessionStorage.removeItem('brandeduk-filters');
-                
-                // Clear any cached logo/upload data
-                sessionStorage.removeItem('uploadedLogo');
-                sessionStorage.removeItem('logoPreview');
-                
-                // Haptic feedback
-                if (navigator.vibrate) navigator.vibrate([10, 50, 10]);
-                
-                // Force full page reload to clear any in-memory state
-                setTimeout(() => {
-                    // Use replace to prevent back button returning to submitted form
-                    // Redirect path must work from both root pages and /mobile pages
-                    const pathname = (window.location && window.location.pathname) ? window.location.pathname : '';
-                    const isInMobileFolder = /\/mobile(\/|$)/.test(pathname);
-                    const homeUrl = isInMobileFolder ? 'home-mobile.html' : 'mobile/home-mobile.html';
-                    window.location.replace(homeUrl);
-                }, 1200);
+
+                // Show loading state
+                if (popupSubmitBtn) {
+                    popupSubmitBtn.textContent = 'Sending...';
+                    popupSubmitBtn.disabled = true;
+                }
+
+                const showToastOrAlert = (message) => {
+                    // Try to use toast if available, otherwise alert
+                    if (typeof showToast === 'function') {
+                        showToast(message);
+                    } else {
+                        alert(message);
+                    }
+                };
+
+                try {
+                    // Get basket from localStorage
+                    let basket = [];
+                    try {
+                        basket = JSON.parse(localStorage.getItem('quoteBasket')) || [];
+                    } catch {
+                        basket = [];
+                    }
+
+                    // Get product data from sessionStorage
+                    let productData = {};
+                    try {
+                        const savedProductData = sessionStorage.getItem('selectedProductData');
+                        if (savedProductData) {
+                            productData = JSON.parse(savedProductData);
+                        }
+                    } catch {
+                        // Ignore
+                    }
+
+                    // Get customizations from state or sessionStorage
+                    let positionCustomizations = {};
+                    try {
+                        const savedCustomizations = sessionStorage.getItem('positionCustomizations');
+                        if (savedCustomizations) {
+                            positionCustomizations = JSON.parse(savedCustomizations);
+                        } else if (state.positionCustomizations) {
+                            positionCustomizations = state.positionCustomizations;
+                        }
+                    } catch {
+                        // Ignore
+                    }
+
+                    // Calculate summary totals and build detailed basket items
+                    let totalGarmentCost = 0;
+                    let totalQuantity = 0;
+                    let customizationTotal = 0;
+                    let digitizingFee = 0;
+                    const basketItems = [];
+                    const customizationsList = [];
+
+                    // Process basket items
+                    basket.forEach((item) => {
+                        const qtyMap = item.quantities || item.sizes || {};
+                        const itemQuantity = item.quantity || Object.values(qtyMap).reduce((sum, q) => sum + (Number(q) || 0), 0);
+                        const unitPrice = Number(item.price) || 0;
+                        const itemTotal = unitPrice * itemQuantity;
+                        
+                        totalGarmentCost += itemTotal;
+                        totalQuantity += itemQuantity;
+                        
+                        const sizesBreakdown = Object.entries(qtyMap)
+                            .filter(([size, qty]) => Number(qty) > 0)
+                            .reduce((acc, [size, qty]) => {
+                                acc[size] = Number(qty);
+                                return acc;
+                            }, {});
+                        
+                        basketItems.push({
+                            name: item.name || productData.name || 'Product',
+                            code: item.code || productData.code || '',
+                            color: item.color || item.selectedColorName || state.selectedColorName || '',
+                            sizes: sizesBreakdown,
+                            quantity: itemQuantity,
+                            unitPrice: unitPrice,
+                            itemTotal: itemTotal
+                        });
+                    });
+
+                    // Process customizations
+                    const customizationsEntries = Object.entries(positionCustomizations);
+                    customizationsEntries.forEach(([position, customization]) => {
+                        if (!customization) return;
+                        
+                        const method = customization.method || 'embroidery';
+                        const type = customization.type || 'logo';
+                        const unitPrice = Number(customization.unitPrice) || 0;
+                        const quantity = Number(customization.quantity) || totalQuantity;
+                        const hasLogo = !!(customization.logoUrl || customization.logoData || customization.uploadedLogo);
+                        
+                        let lineTotal = 'POA';
+                        if (customization.lineTotal && customization.lineTotal !== 'POA') {
+                            lineTotal = Number(customization.lineTotal);
+                            customizationTotal += lineTotal;
+                        } else if (unitPrice > 0 && quantity > 0) {
+                            lineTotal = unitPrice * quantity;
+                            customizationTotal += lineTotal;
+                        }
+                        
+                        // Check if digitizing fee applies (first logo upload)
+                        if (hasLogo && method === 'embroidery' && !customization.digitizingFeePaid) {
+                            digitizingFee = 25.00; // Standard digitizing fee
+                        }
+                        
+                        customizationsList.push({
+                            position: position,
+                            method: method,
+                            type: type,
+                            unitPrice: unitPrice,
+                            quantity: quantity,
+                            lineTotal: lineTotal,
+                            hasLogo: hasLogo,
+                            customizationName: customization.name || ''
+                        });
+                    });
+
+                    // Calculate totals
+                    const isVatIncluded = localStorage.getItem('brandeduk-vat-mode') === 'on';
+                    const vatRate = 0.20;
+                    const totalCostExVat = totalGarmentCost + customizationTotal + digitizingFee;
+                    const vatAmount = totalCostExVat * vatRate;
+                    const totalCostIncVat = totalCostExVat + vatAmount;
+
+                    const quoteData = {
+                        customer: {
+                            fullName: name,
+                            phone: phone,
+                            email: emailValue
+                        },
+                        summary: {
+                            totalQuantity: totalQuantity,
+                            totalItems: basket.length,
+                            garmentCost: totalGarmentCost,
+                            customizationCost: customizationTotal,
+                            digitizingFee: digitizingFee,
+                            subtotal: totalCostExVat,
+                            vatRate: vatRate,
+                            vatAmount: vatAmount,
+                            totalExVat: totalCostExVat,
+                            totalIncVat: totalCostIncVat,
+                            vatMode: isVatIncluded ? 'inc' : 'ex',
+                            displayTotal: isVatIncluded ? totalCostIncVat : totalCostExVat,
+                            hasPoa: customizationsList.some(c => c.lineTotal === 'POA')
+                        },
+                        basket: basketItems,
+                        customizations: customizationsList,
+                        timestamp: new Date().toISOString()
+                    };
+
+                    // Submit quote via API
+                    let result = { success: false };
+                    const API_BASE_URL = 'https://brandeduk-backend.onrender.com';
+                    
+                    try {
+                        // Try using BrandedAPI if available
+                        if (window.BrandedAPI && typeof window.BrandedAPI.submitQuote === 'function') {
+                            result = await window.BrandedAPI.submitQuote(quoteData);
+                        } else {
+                            // Fallback: direct fetch to API
+                            const response = await fetch(`${API_BASE_URL}/api/quotes`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(quoteData)
+                            });
+
+                            if (!response.ok) {
+                                const errorText = await response.text();
+                                throw new Error(`API Error: ${response.status} - ${errorText}`);
+                            }
+
+                            const contentType = response.headers.get('content-type');
+                            if (contentType && contentType.includes('application/json')) {
+                                result = await response.json();
+                            } else {
+                                const text = await response.text();
+                                console.error('Non-JSON response:', text);
+                                throw new Error('Server returned non-JSON response');
+                            }
+                        }
+                    } catch (apiError) {
+                        console.error('Quote API error:', apiError);
+                        showToastOrAlert('Failed to send quote. Please contact info@brandeduk.com directly.');
+                        if (popupSubmitBtn) {
+                            popupSubmitBtn.textContent = 'Submit Quote Request';
+                            popupSubmitBtn.disabled = false;
+                        }
+                        return;
+                    }
+
+                    if (result.success) {
+                        console.log('✅ Quote submitted successfully');
+                        
+                        // Update button to submitted state
+                        if (popupSubmitBtn) {
+                            popupSubmitBtn.classList.add('submitted');
+                            popupSubmitBtn.textContent = 'Quote Submitted! ✓';
+                        }
+                        
+                        // Also update the main Submit Quote button
+                        if (submitBtn) {
+                            submitBtn.classList.add('submitted');
+                            submitBtn.innerHTML = `
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                Quote Submitted!
+                            `;
+                        }
+                        
+                        // Haptic feedback
+                        if (navigator.vibrate) navigator.vibrate([10, 50, 10]);
+                        
+                        // Clear storage and redirect after delay
+                        setTimeout(() => {
+                            // Clear the basket
+                            localStorage.removeItem('quoteBasket');
+                            localStorage.setItem('quoteBasket', '[]');
+                            
+                            // Clear ALL customization state
+                            sessionStorage.removeItem('brandeduk-customize-state');
+                            sessionStorage.removeItem('quoteFormData');
+                            sessionStorage.removeItem('selectedColorName');
+                            sessionStorage.removeItem('selectedColorUrl');
+                            sessionStorage.removeItem('selectedProduct');
+                            sessionStorage.removeItem('selectedProductData');
+                            sessionStorage.removeItem('customizingProduct');
+                            sessionStorage.removeItem('selectedPositions');
+                            sessionStorage.removeItem('positionCustomizations');
+                            sessionStorage.removeItem('brandeduk-filters');
+                            sessionStorage.removeItem('uploadedLogo');
+                            sessionStorage.removeItem('logoPreview');
+                            
+                            // Reset in-memory state
+                            state.positionMethods = {};
+                            state.positionCustomizations = {};
+                            state.positionDesigns = {};
+                            state.positions = [];
+                            state.sizeQuantities = {};
+                            state.quantity = 0;
+                            state.selectedColor = null;
+                            state.selectedColorName = null;
+                            state.selectedColorImage = null;
+                            
+                            // Close popup
+                            if (popupOverlay) {
+                                popupOverlay.classList.remove('active');
+                                document.body.style.overflow = '';
+                            }
+                            
+                            // Redirect to index-mobile.html
+                            window.location.replace('index-mobile.html');
+                        }, 1500);
+                    } else {
+                        throw new Error(result.message || 'Unknown error');
+                    }
+                } catch (error) {
+                    console.error('Quote submission error:', error);
+                    showToastOrAlert('Failed to send quote. Please try again or contact info@brandeduk.com directly.');
+                    if (popupSubmitBtn) {
+                        popupSubmitBtn.textContent = 'Submit Quote Request';
+                        popupSubmitBtn.disabled = false;
+                    }
+                }
             });
         }
         

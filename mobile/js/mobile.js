@@ -190,19 +190,28 @@ function initSearch() {
             if (e.key === 'Enter') {
                 const query = searchInput.value.trim();
                 if (query) {
-                    window.location.href = `shop-mobile.html?search=${encodeURIComponent(query)}`;
+                    // Navigate to shop.html with 'q' parameter (not shop-mobile.html with 'search')
+                    window.location.href = `shop.html?q=${encodeURIComponent(query)}`;
                 }
             }
         });
     }
 
-    // Toggle search open/close by clicking the lens icon.
+    // Handle search wrapper (mobile header search) - perform search on icon click if query exists
     document.querySelectorAll('.search-wrapper-expand').forEach((wrapper) => {
         const input = wrapper.querySelector('.search-input-expand');
         const icon = wrapper.querySelector('.search-icon-expand');
         if (!(input instanceof HTMLInputElement) || !(icon instanceof SVGElement)) return;
         if (icon.dataset.searchToggleBound === 'true') return;
         icon.dataset.searchToggleBound = 'true';
+
+        const performSearch = () => {
+            const query = input.value.trim();
+            if (query) {
+                // Navigate to shop.html with 'q' parameter
+                window.location.href = `shop.html?q=${encodeURIComponent(query)}`;
+            }
+        };
 
         const toggle = (event) => {
             event.preventDefault();
@@ -217,10 +226,26 @@ function initSearch() {
 
         icon.setAttribute('role', 'button');
         icon.setAttribute('tabindex', '0');
-        icon.addEventListener('pointerdown', toggle);
+        icon.addEventListener('pointerdown', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            const isOpen = document.activeElement === input;
+            if (isOpen && input.value.trim()) {
+                // If input is focused and has text, perform search
+                performSearch();
+            } else {
+                // Otherwise, toggle focus
+                toggle(event);
+            }
+        });
         icon.addEventListener('keydown', (event) => {
             if (event.key === 'Enter' || event.key === ' ') {
-                toggle(event);
+                event.preventDefault();
+                if (input.value.trim()) {
+                    performSearch();
+                } else {
+                    toggle(event);
+                }
             }
         });
     });
