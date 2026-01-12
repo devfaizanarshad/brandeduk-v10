@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product - Branded UK</title>
+    <title>GD067 Premium Hoodie - Branded UK</title>
     <link rel="stylesheet" href="brandedukv15-child/assets/css/components/header.css?v=20251230">
-    <link rel="stylesheet" href="brandedukv15-child/assets/css/pages/product.css">
-    <link rel="stylesheet" href="brandedukv15-child/assets/css/pages/customize-positions.css">
-    <link rel="stylesheet" href="brandedukv15-child/assets/css/pages/customize-positions-desktop.css">
+    <link rel="stylesheet" href="brandedukv15-child/assets/css/pages/product.css?v=20251230">
+    <link rel="stylesheet" href="brandedukv15-child/assets/css/pages/customize-positions.css?v=20260107">
+    <link rel="stylesheet" href="brandedukv15-child/assets/css/pages/customize-positions-desktop.css?v=20260107">
     <style>
         /* Logo e Search expand per header uniforme */
         .searchbar-header__brand-img { width: 40px; height: 40px; object-fit: contain; }
@@ -73,14 +73,6 @@
             max-width: 1440px;
             margin: 0 auto;
             padding: 0 24px;
-        }
-
-        .shop-title {
-            font-size: 32px;
-            font-weight: 700;
-            color: #1f2937;
-            margin: 0;
-            line-height: 1.2;
         }
 
         .back-btn:hover {
@@ -405,6 +397,135 @@
             transition: all 0.2s ease;
         }
         .account-logout-btn:hover { background: #dc2626; transform: translateY(-2px); }
+        
+        /* ===== IMAGE LIGHTBOX / ZOOM POPUP ===== */
+        .image-lightbox-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .image-lightbox-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .image-lightbox-container {
+            position: relative;
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 600px;
+            max-height: 85vh;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        .image-lightbox-overlay.active .image-lightbox-container {
+            transform: scale(1);
+        }
+        .image-lightbox-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 32px;
+            height: 32px;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+        .image-lightbox-close:hover {
+            background: #e5e7eb;
+            transform: scale(1.1);
+        }
+        .image-lightbox-close svg {
+            stroke: #6b7280;
+        }
+        .image-lightbox-img {
+            max-width: 100%;
+            max-height: 60vh;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        .image-lightbox-close-btn {
+            margin-top: 16px;
+            padding: 10px 32px;
+            background: #0ea5e9;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .image-lightbox-close-btn:hover {
+            background: #0284c7;
+        }
+        /* Zoom button on main image */
+        .product-main {
+            position: relative;
+        }
+        .zoom-btn {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #e5e7eb;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+        .zoom-btn:hover {
+            background: #7c3aed;
+            border-color: #7c3aed;
+            transform: scale(1.1);
+        }
+        .zoom-btn:hover svg {
+            stroke: #fff;
+        }
+        .zoom-btn svg {
+            stroke: #4b5563;
+            transition: stroke 0.2s ease;
+        }
+        /* Mobile/Tablet responsive */
+        @media (max-width: 1023px) {
+            .image-lightbox-container {
+                max-width: 90%;
+                padding: 16px;
+            }
+            .image-lightbox-img {
+                max-height: 55vh;
+            }
+            .zoom-btn {
+                width: 40px;
+                height: 40px;
+                bottom: 12px;
+                right: 12px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -929,15 +1050,12 @@
 <!-- Back Button Bar -->
 <div class="back-bar">
     <div class="header-container">
-        <div style="display: flex; align-items: center; gap: 24px;">
-            <button type="button" class="back-btn" onclick="window.history.back()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="15 18 9 12 15 6"></polyline>
-                </svg>
-                Back
-            </button>
-            <h1 class="shop-title" id="productTypeTitle" style="display: none; margin: 0; font-size: 32px; font-weight: 700; color: #1f2937; line-height: 1.2;">Product Type</h1>
-        </div>
+        <button type="button" class="back-btn" onclick="window.history.back()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            Back
+        </button>
     </div>
 </div>
 
@@ -947,17 +1065,45 @@
     <div class="left-column">
         <div class="product-visual">
             <div class="thumb-column" id="productThumbColumn">
-                <!-- Thumbnail images will be populated dynamically from API -->
+                <button type="button" class="thumb-item active" data-image="https://i.postimg.cc/fbC2Zn4L/GD067-Aquatic-FT.jpg" aria-label="View Aquatic hoodie">
+                    <img src="https://i.postimg.cc/fbC2Zn4L/GD067-Aquatic-FT.jpg" alt="Aquatic hoodie thumbnail">
+                </button>
+                <button type="button" class="thumb-item" data-image="https://i.postimg.cc/fbC2Zn4t/GD067-Ash-Grey-FT.jpg" aria-label="View Ash Grey hoodie">
+                    <img src="https://i.postimg.cc/fbC2Zn4t/GD067-Ash-Grey-FT.jpg" alt="Ash Grey hoodie thumbnail">
+                </button>
+                <button type="button" class="thumb-item" data-image="https://i.postimg.cc/R0ds95rf/GD067-Black-FT.jpg" aria-label="View Black hoodie">
+                    <img src="https://i.postimg.cc/R0ds95rf/GD067-Black-FT.jpg" alt="Black hoodie thumbnail">
+                </button>
+                <button type="button" class="thumb-item" data-image="https://i.postimg.cc/VNmG3sVH/GD067-Royal-FT.jpg" aria-label="View Royal hoodie">
+                    <img src="https://i.postimg.cc/VNmG3sVH/GD067-Royal-FT.jpg" alt="Royal hoodie thumbnail">
+                </button>
+                <button type="button" class="thumb-item" data-image="https://i.postimg.cc/brD3QZZd/GD067-Red-FT.jpg" aria-label="View Red hoodie">
+                    <img src="https://i.postimg.cc/brD3QZZd/GD067-Red-FT.jpg" alt="Red hoodie thumbnail">
+                </button>
             </div>
             <div class="product-main">
-                <img id="mainImage" class="main-img" src="" alt="Product">
+                <img id="mainImage" class="main-img" src="https://i.postimg.cc/fbC2Zn4L/GD067-Aquatic-FT.jpg" alt="GD067 Hoodie">
+                <button type="button" class="zoom-btn" id="zoomImageBtn" aria-label="Zoom image">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                        <path d="M11 8v6"></path>
+                        <path d="M8 11h6"></path>
+                    </svg>
+                </button>
             </div>
         </div>
 
         <div class="description-box">
-            <h2 id="productDescriptionTitle">Product</h2>
-            <p id="productDescriptionText">
-                <!-- Description will be populated dynamically from API -->
+            <h2>GD067 Premium Hoodie</h2>
+            <p>
+                A perfect combination of stylish design and practical detail. This amazing 80/20 cotton blend hoodie has a 100% cotton face so that it prints perfectly every time. Ideal for DTG, screen printing, discharge and embroidery.
+                <br><br>
+                Two-end ringspun cotton face fleece. Two-piece Jersey-lined hood. Dropped shoulder. Pouch pocket. 1x1 rib with Spandex cuffs and waistband for enhanced stretch and recovery. Classic fit, tubular body. Tear-away label.
+                <br><br>
+                <b>Fabric:</b> 80% Ringspun Cotton / 20% Polyester<br>
+                <b>Weight:</b> 285gsm (White 278gsm)<br>
+                <b>Washing:</b> Machine wash 30°C. Do not bleach. Low tumble. Do not iron. No dry clean.
             </p>
         </div>
 
@@ -973,31 +1119,60 @@
             <!-- PRODUCT TITLE BOX -->
             <div class="title-box">
                 <div class="title-left">
-                    <h1 class="garment-main-title" id="productTitle">
-                        Product Name
+                    <h1 class="garment-main-title">
+                        Softstyle™ midweight fleece adult hoodie
                     </h1>
                     
                     <div class="prod-code-line">
                         <span class="prod-label">Product code:</span>
-                        <span class="prod-code-value" id="productCode">-</span>
+                        <span class="prod-code-value">GD067</span>
                     </div>
                 </div>
-                <a href="#" id="brandLink" class="brand-link" title="" style="display:none;">
-                    <img id="brandLogo" src="" class="title-gildan-logo" alt="">
+                <a href="/shop/?brand=gildan" title="View all Gildan products" class="brand-link">
+                    <img src="https://i.postimg.cc/tRvrwTBg/Gildan-logo.jpg" class="title-gildan-logo" alt="Gildan">
                 </a>
             </div>
 
             <!-- CUSTOMIZATION BADGE -->
-            <div class="customization-badge" id="customizationBadge">
-                <!-- Customization badges will be populated dynamically from API -->
+            <div class="customization-badge">
+                <span class="cust-badge embroidery">EMBROIDERY</span>
+                <span class="cust-badge print">PRINT</span>
             </div>
 
             <!-- MAIN PRICE -->
-            <div id="mainPrice" class="main-price">£0.00 <span>each ex VAT</span></div>
+            <div id="mainPrice" class="main-price">£17.58 <span>each ex VAT</span></div>
             
             <!-- TIER PRICING - Compact -->
-            <div id="tierPricingContainer" class="tier-pricing-compact">
-                <!-- Tier items will be populated dynamically from API -->
+            <div class="tier-pricing-compact">
+                <div class="tier-item" data-min="1" data-max="9" data-base-price="17.58">
+                    <span class="tier-qty">1-9</span>
+                    <span class="tier-price">£17.58</span>
+                </div>
+                <div class="tier-item" data-min="10" data-max="24" data-base-price="16.54">
+                    <span class="tier-qty">10+</span>
+                    <span class="tier-price">£16.54</span>
+                    <span class="tier-save">-8%</span>
+                </div>
+                <div class="tier-item" data-min="25" data-max="49" data-base-price="16.18">
+                    <span class="tier-qty">25+</span>
+                    <span class="tier-price">£16.18</span>
+                    <span class="tier-save">-10%</span>
+                </div>
+                <div class="tier-item" data-min="50" data-max="99" data-base-price="14.94">
+                    <span class="tier-qty">50+</span>
+                    <span class="tier-price">£14.94</span>
+                    <span class="tier-save">-15%</span>
+                </div>
+                <div class="tier-item" data-min="100" data-max="249" data-base-price="13.49">
+                    <span class="tier-qty">100+</span>
+                    <span class="tier-price">£13.49</span>
+                    <span class="tier-save">-25%</span>
+                </div>
+                <div class="tier-item" data-min="250" data-max="99999" data-base-price="12.59">
+                    <span class="tier-qty">250+</span>
+                    <span class="tier-price">£12.59</span>
+                    <span class="tier-save">-30%</span>
+                </div>
             </div>
 
             <!-- STEP PROGRESS BAR -->
@@ -1801,11 +1976,12 @@
     </div>
 </div>
 
-<script src="brandedukv15-child/assets/js/core.js"></script>
-<script src="brandedukv15-child/assets/js/header.js"></script>
-<script src="brandedukv15-child/assets/js/vat-toggle.js"></script>
-<script src="brandedukv15-child/assets/js/pages/product.js"></script>
-<script src="brandedukv15-child/assets/js/pages/customize-positions-inline.js"></script>
+<script src="brandedukv15-child/assets/js/config/mockup-images.js?v=20260111"></script>
+<script src="brandedukv15-child/assets/js/core.js?v=20251230"></script>
+<script src="brandedukv15-child/assets/js/header.js?v=20251230"></script>
+<script src="brandedukv15-child/assets/js/vat-toggle.js?v=20251230"></script>
+<script src="brandedukv15-child/assets/js/pages/product.js?v=20260109a"></script>
+<script src="brandedukv15-child/assets/js/pages/customize-positions-inline.js?v=20260107"></script>
 <!-- Color Change Confirmation Modal -->
 <div id="colorChangeModal" class="modal" style="display: none;">
     <div class="modal-content" style="max-width: 400px; text-align: center; padding: 30px;">
@@ -1819,7 +1995,7 @@
 </div>
 
 <script src="brandedukv15-child/assets/js/header.js?v=20251230"></script>
-<script src="brandeduk.com/js/main.js?v=20251230"></script>
+<script src="brandeduk.com 2/js/main.js?v=20251230"></script>
 
 <!-- Account Panel Script -->
 <script>
@@ -1904,19 +2080,15 @@
         }
     });
     
-    if (signupForm) {
-        signupForm.addEventListener('click', function() {
-            if (!signupForm.classList.contains('active')) {
-                signupForm.classList.add('active');
-                signupForm.classList.remove('inactive');
-                if (signinForm) {
-                    signinForm.classList.add('inactive');
-                    signinForm.classList.remove('active');
-                }
-                if (accountArrow) accountArrow.classList.add('visible');
-            }
-        });
-    }
+    signupForm.addEventListener('click', function() {
+        if (!signupForm.classList.contains('active')) {
+            signupForm.classList.add('active');
+            signupForm.classList.remove('inactive');
+            signinForm.classList.add('inactive');
+            signinForm.classList.remove('active');
+            accountArrow.classList.add('visible');
+        }
+    });
     
     accountArrow.addEventListener('click', function(e) {
         e.stopPropagation();
@@ -2109,20 +2281,30 @@
         
         <form id="quoteRequestForm" class="quote-popup__form">
             <div class="quote-popup__field">
-                <label for="quoteName">Full Name</label>
+                <label for="quoteName">Full Name *</label>
                 <input type="text" id="quoteName" name="name" placeholder="John Smith" required>
             </div>
             
             <div class="quote-popup__field">
-                <label for="quotePhone">Phone Number</label>
+                <label for="quoteCompany">Company Name</label>
+                <input type="text" id="quoteCompany" name="company" placeholder="Your Company Ltd">
+            </div>
+            
+            <div class="quote-popup__field">
+                <label for="quotePhone">Phone Number *</label>
                 <input type="tel" id="quotePhone" name="phone" placeholder="+44 7700 900000" required inputmode="tel">
                 <span class="quote-popup__error" id="phoneError">Only numbers allowed</span>
             </div>
             
             <div class="quote-popup__field">
-                <label for="quoteEmail">E-mail</label>
+                <label for="quoteEmail">E-mail *</label>
                 <input type="email" id="quoteEmail" name="email" placeholder="john@company.com" required>
                 <span class="quote-popup__error" id="emailError">Please enter a valid email address</span>
+            </div>
+            
+            <div class="quote-popup__field">
+                <label for="quoteAddress">Address</label>
+                <input type="text" id="quoteAddress" name="address" placeholder="123 High Street, London, SW1A 1AA">
             </div>
             
             <button type="submit" class="quote-popup__submit" id="quoteSubmitBtn">
@@ -2131,6 +2313,81 @@
         </form>
     </div>
 </div>
+
+<!-- IMAGE LIGHTBOX / ZOOM POPUP -->
+<div class="image-lightbox-overlay" id="imageLightbox">
+    <div class="image-lightbox-container">
+        <button type="button" class="image-lightbox-close" id="closeLightboxX" aria-label="Close">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+        <img class="image-lightbox-img" id="lightboxImage" src="" alt="Zoomed product image">
+        <button type="button" class="image-lightbox-close-btn" id="closeLightbox">Close</button>
+    </div>
+</div>
+
+<script>
+// ===== IMAGE LIGHTBOX / ZOOM FUNCTIONALITY =====
+(function() {
+    var lightbox = document.getElementById('imageLightbox');
+    var lightboxImg = document.getElementById('lightboxImage');
+    var closeLightboxBtn = document.getElementById('closeLightbox');
+    var closeLightboxX = document.getElementById('closeLightboxX');
+    var zoomBtn = document.getElementById('zoomImageBtn');
+    var mainImage = document.getElementById('mainImage');
+    
+    function openLightbox() {
+        if (!mainImage || !lightbox || !lightboxImg) return;
+        lightboxImg.src = mainImage.src;
+        lightboxImg.alt = mainImage.alt;
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeLightboxFn() {
+        if (!lightbox) return;
+        lightbox.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    // Open on zoom button click
+    if (zoomBtn) {
+        zoomBtn.addEventListener('click', openLightbox);
+    }
+    
+    // Also open on main image click (optional, for accessibility)
+    if (mainImage) {
+        mainImage.style.cursor = 'zoom-in';
+        mainImage.addEventListener('click', openLightbox);
+    }
+    
+    // Close on buttons click
+    if (closeLightboxBtn) {
+        closeLightboxBtn.addEventListener('click', closeLightboxFn);
+    }
+    if (closeLightboxX) {
+        closeLightboxX.addEventListener('click', closeLightboxFn);
+    }
+    
+    // Close on overlay click (but not on container)
+    if (lightbox) {
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === lightbox) {
+                closeLightboxFn();
+            }
+        });
+    }
+    
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && lightbox && lightbox.classList.contains('active')) {
+            closeLightboxFn();
+        }
+    });
+})();
+</script>
 
 </body>
 </html>

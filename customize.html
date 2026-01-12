@@ -7,9 +7,9 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Customize Product - BrandedUK</title>
-    <link rel="stylesheet" href="mobile/css/mobile.css?v=20260102b">
-    <link rel="stylesheet" href="mobile/css/social-buttons.css?v=20260102b">
-    <link rel="stylesheet" href="brandedukv15-child/assets/css/responsive.css?v=20260102b">
+    <link rel="stylesheet" href="mobile/css/mobile.css?v=20260106a">
+    <link rel="stylesheet" href="mobile/css/social-buttons.css?v=20260106a">
+    <link rel="stylesheet" href="brandedukv15-child/assets/css/responsive.css?v=20260106a">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -30,6 +30,66 @@
         }
         .social-icons-mobile .social-icon i {
             font-size: 12px !important;
+        }
+
+        /* Customize (mobile): shrink back button without shifting layout,
+           and keep the BrandedUK logo aligned to the left cluster. */
+        body.customize-page .header-logo-row {
+            justify-content: flex-start;
+            gap: 10px;
+        }
+
+        body.customize-page .header-logo-row .search-wrapper-expand {
+            margin-left: auto;
+        }
+
+        body.customize-page .header-logo-row .back-btn-header {
+            display: none !important;
+        }
+
+        /* Back button square above gallery */
+        .back-btn-gallery {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            color: #111827;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin: 6px 0 6px 16px;
+            overflow: visible;
+        }
+        
+        .back-btn-gallery:hover {
+            background: #e5e7eb;
+            color: #000;
+        }
+        
+        .back-btn-gallery svg {
+            flex-shrink: 0;
+            width: 14px;
+            height: 14px;
+        }
+        
+        /* MOBILE ONLY - only arrow, no box */
+        @media (max-width: 767px) {
+            .back-btn-gallery {
+                width: auto;
+                height: auto;
+                background: transparent;
+                border: none;
+                border-radius: 0;
+                margin: 4px 0 4px 12px;
+            }
+            .back-btn-gallery svg {
+                width: 18px;
+                height: 18px;
+            }
         }
     </style>
 </head>
@@ -115,11 +175,6 @@
 
         <!-- Bottom Row: Back + Logo + Search -->
         <div class="header-logo-row">
-            <button class="back-btn-header" onclick="window.history.back()" aria-label="Go back">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M15 18l-6-6 6-6"/>
-                </svg>
-            </button>
             <a href="index.html" class="mobile-logo-center">
                 <img src="brandedukv15-child/assets/images/ui/bd-logo-3d.png" alt="BD" class="logo-badge-img">
                 <span class="logo-text-styled">branded<span class="logo-uk">uk</span></span>
@@ -143,10 +198,18 @@
         
         <!-- Product Gallery -->
         <section class="product-gallery">
+            <!-- Back Button -->
+            <button type="button" class="back-btn-gallery" onclick="history.back()" aria-label="Go back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5"/>
+                    <polyline points="12 19 5 12 12 5"/>
+                </svg>
+            </button>
+            
             <div class="gallery-main">
                 <div class="gallery-badge bestseller">BESTSELLER</div>
                 <div class="product-img-placeholder large" id="productPreviewContainer">
-                    <img src="" alt="" id="mainImage" style="width: 100%; height: 100%; object-fit: contain;">
+                    <img src="https://i.postimg.cc/fbC2Zn4L/GD067-Aquatic-FT.jpg" alt="Gildan Softstyle Hoodie" id="mainImage" style="width: 100%; height: 100%; object-fit: contain;">
                     <!-- Logo Overlay Box - posizioni predefinite -->
                     <div class="logo-overlay-box" id="logoOverlayBox" hidden>
                         <img src="" alt="Your Logo" id="logoOverlayImg" class="logo-overlay-img">
@@ -160,8 +223,27 @@
                     </svg>
                 </div>
             </div>
-            <div class="gallery-thumbs" id="galleryThumbsContainer">
-                <!-- Color thumbnails will be dynamically generated by JavaScript -->
+            <div class="gallery-thumbs">
+                <button class="thumb active" data-view="front">
+                    <div class="thumb-placeholder">
+                        <img src="brandedukv15-child/assets/images/ui/icons/categories/icon-hoodies-71%201.png" alt="Front">
+                    </div>
+                </button>
+                <button class="thumb" data-view="back">
+                    <div class="thumb-placeholder">
+                        <img src="brandedukv15-child/assets/images/ui/icons/categories/icon-hoodies-71%201.png" alt="Back">
+                    </div>
+                </button>
+                <button class="thumb" data-view="side">
+                    <div class="thumb-placeholder">
+                        <img src="brandedukv15-child/assets/images/ui/icons/categories/icon-hoodies-71%201.png" alt="Side">
+                    </div>
+                </button>
+                <button class="thumb" data-view="detail">
+                    <div class="thumb-placeholder">
+                        <img src="brandedukv15-child/assets/images/ui/icons/categories/icon-hoodies-71%201.png" alt="Detail">
+                    </div>
+                </button>
             </div>
         </section>
 
@@ -740,7 +822,7 @@
                 <!-- Populated by JavaScript -->
             </div>
             
-            <p class="summary-note">Shipping calculated at checkout after Quote approval. Delivery in 5-7 working days.</p>
+            <p class="summary-note">Shipping cost TBC after quote approval<br>Delivery 5/7 working days after approval</p>
             
             <!-- Submit Quote Button -->
             <button class="submit-quote-btn" id="submitQuoteBtn">
@@ -748,7 +830,7 @@
                     <path d="M22 2L11 13"/>
                     <path d="M22 2L15 22L11 13L2 9L22 2Z"/>
                 </svg>
-                Submit your QUOTE
+                Submit Your Quote
             </button>
         </section>
 
@@ -934,19 +1016,27 @@
             
             <form id="quoteRequestForm" class="quote-popup-form">
                 <div class="form-group">
-                    <label for="quoteName">Full Name</label>
+                    <label for="quoteName">Full Name *</label>
                     <input type="text" id="quoteName" name="name" placeholder="John Smith" required>
                 </div>
                 <div class="form-group">
-                    <label for="quotePhone">Phone Number</label>
+                    <label for="quoteCompany">Company Name</label>
+                    <input type="text" id="quoteCompany" name="company" placeholder="Your Company Ltd">
+                </div>
+                <div class="form-group">
+                    <label for="quotePhone">Phone Number *</label>
                     <div class="phone-input-wrapper">
                         <span class="phone-prefix">+44</span>
                         <input type="tel" id="quotePhone" name="phone" placeholder="7700 900000" pattern="[0-9\s]{10,11}" inputmode="numeric" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="quoteEmail">E-mail</label>
+                    <label for="quoteEmail">E-mail *</label>
                     <input type="email" id="quoteEmail" name="email" placeholder="john@company.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="quoteAddress">Address</label>
+                    <input type="text" id="quoteAddress" name="address" placeholder="123 High Street, London, SW1A 1AA">
                 </div>
                 <button type="submit" class="quote-popup-submit" id="quotePopupSubmitBtn">
                     Submit Quote Request

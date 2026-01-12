@@ -1205,6 +1205,11 @@
                 <span class="step-num">3</span>
                 <span class="step-label">Customize</span>
             </div>
+            <div class="step-connector" id="connector-3-4"></div>
+            <div class="step-item" data-step="4">
+                <span class="step-num">4</span>
+                <span class="step-label">SUBMIT YOUR QUOTE</span>
+            </div>
             <!-- SUBMIT BUTTON - appears after logo upload -->
             <button id="submitQuoteBtn" class="submit-quote-btn" style="display:none;"></button>
         </div>
@@ -1596,20 +1601,30 @@
         
         <form id="quoteRequestForm" class="quote-popup__form">
             <div class="quote-popup__field">
-                <label for="quoteName">Full Name</label>
+                <label for="quoteName">Full Name *</label>
                 <input type="text" id="quoteName" name="name" placeholder="John Smith" required>
             </div>
             
             <div class="quote-popup__field">
-                <label for="quotePhone">Phone Number</label>
+                <label for="quoteCompany">Company Name</label>
+                <input type="text" id="quoteCompany" name="company" placeholder="Your Company Ltd">
+            </div>
+            
+            <div class="quote-popup__field">
+                <label for="quotePhone">Phone Number *</label>
                 <input type="tel" id="quotePhone" name="phone" placeholder="+44 7700 900000" required inputmode="tel">
                 <span class="quote-popup__error" id="phoneError">Only numbers allowed</span>
             </div>
             
             <div class="quote-popup__field">
-                <label for="quoteEmail">E-mail</label>
+                <label for="quoteEmail">E-mail *</label>
                 <input type="email" id="quoteEmail" name="email" placeholder="john@company.com" required>
                 <span class="quote-popup__error" id="emailError">Please enter a valid email address (e.g. name@company.com)</span>
+            </div>
+            
+            <div class="quote-popup__field">
+                <label for="quoteAddress">Address</label>
+                <input type="text" id="quoteAddress" name="address" placeholder="123 High Street, London, SW1A 1AA">
             </div>
             
             <button type="submit" class="quote-popup__submit" id="quoteSubmitBtn">
@@ -1753,7 +1768,7 @@
 <script src="../brandedukv15-child/assets/js/core.js?v=20260101c"></script>
 <script src="../brandedukv15-child/assets/js/header.js?v=20260101c"></script>
 <script src="../brandedukv15-child/assets/js/vat-toggle.js?v=20260101c"></script>
-<script src="../brandedukv15-child/assets/js/pages/customize-positions.js?v=20260101j"></script>
+<script src="../brandedukv15-child/assets/js/pages/customize-positions.js?v=20260109c"></script>
 <script>
 // Account Panel functionality
 (function() {

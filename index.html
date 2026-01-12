@@ -3,7 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrandedUK - Redirecting...</title>
+    <title>BrandedUK - Coming Soon</title>
+    <script>
+        // DEV MODE: Add ?dev=1 to URL to bypass coming soon redirect
+        // Example: http://127.0.0.1:5501/index.html?dev=1
+        (function() {
+            var params = new URLSearchParams(window.location.search);
+            var isDevMode = params.get('dev') === '1' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            
+            if (!isDevMode) {
+                // Production: redirect to coming soon
+                window.location.replace('indexcomingsoon.html');
+            }
+            // Dev mode: continue to normal site detection below
+        })();
+    </script>
     <style>
         body {
             font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
@@ -34,10 +48,20 @@
         }
         a { color: #7c3aed; text-decoration: none; }
         a:hover { text-decoration: underline; }
+        .dev-notice {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #92400e;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
     <div class="loader">
+        <div class="dev-notice">🛠️ DEV MODE - Coming soon redirect bypassed</div>
         <div class="spinner"></div>
         <p>Detecting your device...</p>
         <p id="debugInfo" style="font-size:12px; color:#666; margin:6px 0 10px;"></p>
@@ -45,6 +69,8 @@
             <a href="index-mobile.html" id="mobileLink">Mobile/Tablet</a>
             &nbsp;|&nbsp;
             <a href="brandeduk.com/home-pc.html" id="desktopLink">Desktop</a>
+            &nbsp;|&nbsp;
+            <a href="indexcomingsoon.html">Coming Soon Page</a>
         </p>
         <noscript>
             <p>
@@ -64,49 +90,55 @@
 
             function updateDebug(mode) {
                 if (!debugInfoEl) return;
-                debugInfoEl.textContent = 'width=' + window.innerWidth + ' • mode=' + mode;
+                debugInfoEl.textContent = 'width=' + window.innerWidth + ' • dpr=' + (window.devicePixelRatio || 1) + ' • mode=' + mode;
             }
 
             function getForcedTarget() {
-                // Optional override for testing: ?force=mobile or ?force=desktop
                 try {
                     var params = new URLSearchParams(window.location.search);
                     var force = (params.get('force') || '').toLowerCase();
                     if (force === 'mobile') return 'index-mobile.html';
                     if (force === 'desktop') return 'brandeduk.com/home-pc.html';
-                } catch (e) {
-                    // ignore
-                }
+                } catch (e) {}
                 return null;
             }
 
-            function computeTargetByViewport() {
-                // Mobile/tablet -> index.html
-                // Desktop -> 10.6 PC home (keeps your updated hero images)
-                var isMobile = window.matchMedia && window.matchMedia('(max-width: ' + (BREAKPOINT - 1) + 'px)').matches;
-                if (typeof isMobile !== 'boolean') {
-                    isMobile = window.innerWidth < BREAKPOINT;
+            function computeTargetByDevice() {
+                var ua = (navigator.userAgent || '').toLowerCase();
+                var uaDataMobile = false;
+                try {
+                    uaDataMobile = !!(navigator.userAgentData && navigator.userAgentData.mobile);
+                } catch (e) {
+                    uaDataMobile = false;
                 }
-                return isMobile
-                    ? 'index-mobile.html'
-                    : 'brandeduk.com/home-pc.html';
+                var isIPad = ua.indexOf('ipad') !== -1 || (ua.indexOf('macintosh') !== -1 && (navigator.maxTouchPoints || 0) > 1);
+                var isIPhone = ua.indexOf('iphone') !== -1 || ua.indexOf('ipod') !== -1;
+                var isAndroid = ua.indexOf('android') !== -1;
+                var isAndroidTablet = isAndroid && ua.indexOf('mobile') === -1;
+                var isTabletUA = isIPad || isAndroidTablet || ua.indexOf('tablet') !== -1 || ua.indexOf('silk') !== -1;
+                var isMobileUA = uaDataMobile || isIPhone || /\bmobi\b/.test(ua) || ua.indexOf('iemobile') !== -1 || ua.indexOf('opera mini') !== -1;
+                var isViewportMobile = window.matchMedia
+                    ? window.matchMedia('(max-width: ' + (BREAKPOINT - 1) + 'px)').matches
+                    : (window.innerWidth < BREAKPOINT);
+                var shouldUseMobile = isMobileUA || isTabletUA || isViewportMobile;
+                return shouldUseMobile ? 'index-mobile.html' : 'brandeduk.com/home-pc.html';
             }
 
             function redirectIfNeeded() {
                 var forced = getForcedTarget();
-
-                // Default behavior: mobile/tablet -> index.html, desktop -> 10.6 PC
-                var target = forced || computeTargetByViewport();
-
-                updateDebug(forced ? ('forced:' + forced) : (target === 'index-mobile.html' ? 'auto:mobile' : 'auto:desktop'));
+                var target = forced || computeTargetByDevice();
+                // Preserve dev=1 param when redirecting
+                var params = new URLSearchParams(window.location.search);
+                if (params.get('dev') === '1') {
+                    target += (target.indexOf('?') === -1 ? '?' : '&') + 'dev=1';
+                }
+                updateDebug(forced ? ('forced:' + forced) : (target.indexOf('mobile') !== -1 ? 'auto:mobile' : 'auto:desktop'));
                 if (target && target !== lastTarget) {
                     lastTarget = target;
                     window.location.replace(target);
                 }
             }
 
-            // Give the browser a moment to apply DevTools emulation if it was toggled,
-            // then redirect.
             updateDebug('pending');
             autoTimer = setTimeout(redirectIfNeeded, 250);
         })();
