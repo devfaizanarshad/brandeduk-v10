@@ -2919,11 +2919,32 @@
         }, 300);
     }
     
+    // Header searchbar handler - redirects to shop page with search query
+    function setupHeaderSearch() {
+        const headerSearch = document.getElementById('searchbarHeaderInput');
+        if (headerSearch) {
+            headerSearch.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const searchQuery = e.target.value.trim();
+                    if (searchQuery) {
+                        // Redirect to shop page with search query parameter
+                        window.location.href = 'brandeduk.com/shop-pc.html?q=' + encodeURIComponent(searchQuery);
+                    }
+                }
+            });
+        }
+    }
+    
     // Run on DOMContentLoaded or immediately if already loaded
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', function() {
+            init();
+            setupHeaderSearch();
+        });
     } else {
         init();
+        setupHeaderSearch();
     }
 })();
 </script>

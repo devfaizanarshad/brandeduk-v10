@@ -2723,6 +2723,32 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 })();
 
+// Header searchbar handler - redirects to shop page with search query
+(function() {
+    function setupHeaderSearch() {
+        const headerSearch = document.getElementById('searchbarHeaderInput');
+        if (headerSearch) {
+            headerSearch.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const searchQuery = e.target.value.trim();
+                    if (searchQuery) {
+                        // Redirect to shop page with search query parameter
+                        window.location.href = 'shop-pc.html?q=' + encodeURIComponent(searchQuery);
+                    }
+                }
+            });
+        }
+    }
+    
+    // Initialize on DOMContentLoaded or immediately if already loaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupHeaderSearch);
+    } else {
+        setupHeaderSearch();
+    }
+})();
+
 // Responsive routing helper (for DevTools/device emulation)
 (function() {
     var BREAKPOINT = 1024;

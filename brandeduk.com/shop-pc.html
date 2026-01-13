@@ -3032,9 +3032,12 @@ async function renderProducts() {
     
     // Check if this is initial load (no products in grid yet)
     const isInitialLoad = grid.children.length === 0;
+    // Check if we're performing a search
+    const isSearching = currentState.search && currentState.search.trim().length > 0;
     
-    if (isInitialLoad) {
-        // On initial load, show beautiful loader
+    // Show loader on initial load OR when searching
+    if (isInitialLoad || isSearching) {
+        // Show beautiful loader
         showLoader();
         // Hide title/count initially
         if (categoryTitleEl) {
@@ -3046,7 +3049,7 @@ async function renderProducts() {
             productsCountEl.style.transition = 'opacity 0.3s ease';
         }
     } else {
-        // Keep current products visible - don't show loading state
+        // Keep current products visible - don't show loading state for filter changes
         const currentProductsCount = grid.children.length;
         console.log(`📦 Keeping ${currentProductsCount} current products visible while fetching...`);
     }
